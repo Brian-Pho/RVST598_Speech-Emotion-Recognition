@@ -6,27 +6,16 @@ My summer research project on using machine learning to detect emotions in speec
 
 ```bash
 ├───data
-│   └───iemocap
-│       ├───data
-│       │   ├───S1
-│       │   │   ├───Ses01F_impro01
-│       │   │   ├───Ses01F_impro02
-│       │   │   ├───...
-│       │   ├───S2
-│       │   │   ├───Ses02F_impro01
-│       │   │   ├───Ses02F_impro02
-│       │   │   ├───...
-│       └───labels
-│           ├───S1
-│           ├───S2
-│           ├───...
+    ├───crema-d
+    ├───iemocap
+│   └───ravdess
 ├───src
 │   └───database_formatter
 ```
 
 ## Database Information
 
-The following databases were used
+The following databases were used/considered
 
 - [IEMOCAP](https://sail.usc.edu/iemocap/)
 - [MSP-IMPROV](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html)
@@ -48,4 +37,4 @@ A table comparing the different emotions in each dataset.
 | SAVEE      | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10006; | &#10006;   | &#10006;   | &#10006; | &#10006; |
 | EmoV-DB    | &#10004; | &#10004; | &#10004; | &#10006; | &#10006; | &#10006; | &#10006; | &#10006; | &#10006;   | &#10006;   | &#10004; | &#10004; |
 
-The databases were not upload to Github due to their size and copy restrictions.
+The databases were not uploaded to Github due to their size and copy restrictions.
