@@ -23,18 +23,18 @@ The following databases were used/considered
 - [TESS](https://tspace.library.utoronto.ca/handle/1807/24487)
 - [RAVDESS](https://smartlaboratory.org/ravdess)
 - [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Database.html)
-- [EmoV-DB](https://github.com/numediart/EmoV-DB)
+- [~~EmoV-DB~~](https://github.com/numediart/EmoV-DB)
 
 A table comparing the different emotions in each dataset.
 
-|            |  Neutral |   Anger  |  Disgust |   Fear   |   Happy  |    Sad   | Surprise |   Calm   | Excitement | Fustration |  Amused  |  Sleepy  |
+|            |  Neutral |   Anger  |  Disgust |   Fear   |   Happy  |    Sad   | Surprise |   Calm   | Excitement | Frustration |  Amused  |  Sleepy  |
 |------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:----------:|:----------:|:--------:|:--------:|
-| IEMOCAP    | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10006; |  &#10004;  | &#10004;   | &#10006; | &#10006; |
-| MSP-IMPROV | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10006; | &#10006;   | &#10006;   | &#10006; | &#10006; |
-| CREMA-D    | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10006; | &#10006; | &#10006;   | &#10006;   | &#10006; | &#10006; |
-| TESS       | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10006; | &#10006;   | &#10006;   | &#10006; | &#10006; |
-| RAVDESS    | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10006;   | &#10006;   | &#10006; | &#10006; |
-| SAVEE      | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10004; | &#10006; | &#10006;   | &#10006;   | &#10006; | &#10006; |
-| EmoV-DB    | &#10004; | &#10004; | &#10004; | &#10006; | &#10006; | &#10006; | &#10006; | &#10006; | &#10006;   | &#10006;   | &#10004; | &#10004; |
+| IEMOCAP    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |  :heavy_check_mark:  | :heavy_check_mark:   | :x: | :x: |
+| MSP-IMPROV | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:   | :x:   | :x: | :x: |
+| CREMA-D    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x:   | :x:   | :x: | :x: |
+| TESS       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:   | :x:   | :x: | :x: |
+| RAVDESS    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:   | :x:   | :x: | :x: |
+| SAVEE      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:   | :x:   | :x: | :x: |
+| EmoV-DB    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x: | :x: | :x: | :x:   | :x:   | :heavy_check_mark: | :heavy_check_mark: |
 
 The databases were not uploaded to Github due to their size and copy restrictions.
