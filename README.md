@@ -17,13 +17,15 @@ My summer research project on using machine learning to detect emotions in speec
 
 The following databases were used/considered
 
-- [IEMOCAP](https://sail.usc.edu/iemocap/)
-- [MSP-IMPROV](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html)
-- [CREMA-D](https://github.com/CheyneyComputerScience/CREMA-D)
-- [TESS](https://tspace.library.utoronto.ca/handle/1807/24487)
-- [RAVDESS](https://smartlaboratory.org/ravdess)
-- [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Database.html)
-- [~~EmoV-DB~~](https://github.com/numediart/EmoV-DB)
+|            | Link                                                                   |       Using?       | File Types | Label Type | Label Level        |
+|------------|------------------------------------------------------------------------|:------------------:|:----------:|------------|--------------------|
+| IEMOCAP    | <https://sail.usc.edu/iemocap/>                                          | :heavy_check_mark: | wav        | Multi      | Sentence + Phoneme |
+| MSP-IMPROV | <https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html> |         :x:        | ???        | ???        | ???                |
+| CREMA-D    | <https://github.com/CheyneyComputerScience/CREMA-D>                      | :heavy_check_mark: | mp3 + wav  | Multi      |                    |
+| TESS       | <https://tspace.library.utoronto.ca/handle/1807/24487>                   | :heavy_check_mark: | wav        | Single     |                    |
+| RAVDESS    | <https://smartlaboratory.org/ravdess>                                    | :heavy_check_mark: | wav        | Single     | Sentence           |
+| SAVEE      | <http://kahlan.eps.surrey.ac.uk/savee/Database.html>                     |         :x:        | wav        | Single     | Phoneme            |
+| EmoV-DB    | <https://github.com/numediart/EmoV-DB>                                   |         :x:        | wav        | Single     |                    |
 
 A table comparing the different emotions in each dataset.
 
