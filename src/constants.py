@@ -21,3 +21,5 @@ EMOTION_MAP = {
     SAD: 5,
     SUR: 6,
 }
+# The inverted map is useful for interpreting the output of the neural network.
+INVERT_EMOTION_MAP = {v: k for k, v in EMOTION_MAP.items()}
