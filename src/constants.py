@@ -23,3 +23,5 @@ EMOTION_MAP = {
 }
 # The inverted map is useful for interpreting the output of the neural network.
 INVERT_EMOTION_MAP = {v: k for k, v in EMOTION_MAP.items()}
+
+NUM_EMOTIONS = len(EMOTION_MAP.keys())

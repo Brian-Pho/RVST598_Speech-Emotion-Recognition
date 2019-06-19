@@ -1,21 +1,35 @@
-import numpy as np
-import scipy.io as io
-import matplotlib.pyplot as plt
-from scipy import signal
-from scipy.io import wavfile
-from playsound import playsound
+from src.database_loader import ravdess
+from src import preprocesser as pp
+import tensorflow as tf
 
 
 def main():
-    fs, data = io.wavfile.read('../data/OAF_youth_happy.wav')
-    f, t, Zxx = signal.stft(data, fs, nperseg=512, noverlap=300)
-    plt.pcolormesh(t, f, np.log10(np.abs(Zxx)))
-    plt.title('STFT Magnitude')
-    plt.ylabel('Frequency [Hz]')
-    plt.xlabel('Time [sec]')
-    plt.show()
-    print(data.shape)
-    playsound('../data/OAF_youth_happy.wav')
+    # Get the data
+    ravdess_samples, ravdess_labels = ravdess.load_data()
+
+    # Combine the datasets
+    samples = ravdess_samples
+    labels = ravdess_labels
+
+    # Preprocess the data
+    processed_samples = pp.preprocess_samples(samples)
+    processed_labels = pp.preprocess_labels(labels)
+    # print(labels.shape)
+    # print(labels[::13])
+    print(processed_labels.shape)
+    # print(processed_labels[::20])
+
+    # Shuffle and create the train, validation, and testing sets
+
+    # Create the ML model
+
+    # Training the model
+
+    # Save the model and training history
+
+    # Test the model
+
+    # Display results
 
 
 if __name__ == "__main__":
