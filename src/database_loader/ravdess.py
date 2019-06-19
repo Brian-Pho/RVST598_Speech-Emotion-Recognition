@@ -23,8 +23,6 @@ RAVDESS_EMOTION_MAP = {
 def generate_stats():
     """
     Generates statistics about the RAVDESS database.
-
-    :return: None
     """
     ravdess_samples, ravdess_labels = load_data()
 
@@ -65,6 +63,7 @@ def load_data():
         print("Successfully cached the RAVDESS database.")
 
     finally:
+        # Pack the data
         ravdess_data = (ravdess_samples, ravdess_labels)
         return ravdess_data
 
@@ -121,12 +120,12 @@ def main():
     """
     Local testing and cache creation.
     """
-    # ravdess_samples, ravdess_labels = load_data()
-    # print(ravdess_samples.shape)
-    # # print(ravdess_samples[0][0])  # Amplitude data
-    # # print(ravdess_samples[0][1])  # Sampling rate data
-    # print(ravdess_labels.shape)
-    generate_stats()
+    ravdess_samples, ravdess_labels = load_data()
+    print(ravdess_samples.shape)
+    print(ravdess_samples[0][0])  # Amplitude data
+    print(ravdess_samples[0][1])  # Sampling rate data
+    print(ravdess_labels.shape)
+    # generate_stats()
 
 
 if __name__ == "__main__":

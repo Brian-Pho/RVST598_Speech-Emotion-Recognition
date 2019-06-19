@@ -20,5 +20,5 @@ RAV_SAMPLES_CACHE_PATH = os.path.join(
     RAV_RAW_DB_PATH, "ravdess_samples_cache.npy")
 RAV_LABELS_CACHE_PATH = os.path.join(
     RAV_RAW_DB_PATH, "ravdess_labels_cache.npy")
-RAV_FREQ_CACHE_PATH = os.path.join(
-    RAV_PROCESS_DB_PATH, "ravdess_freq_cache.npy")
+# RAV_FREQ_CACHE_PATH = os.path.join(
+#     RAV_PROCESS_DB_PATH, "ravdess_freq_cache.npy")
