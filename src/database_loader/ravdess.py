@@ -1,8 +1,9 @@
 import os
 
-import matplotlib.pyplot as plt
 import librosa
+import matplotlib.pyplot as plt
 import numpy as np
+
 from db_constants import (
     RAV_RAW_DB_PATH, RAV_SAMPLES_CACHE_PATH, RAV_LABELS_CACHE_PATH)
 from src import constants as c
@@ -24,18 +25,48 @@ def generate_stats():
     """
     Generates statistics about the RAVDESS database.
     """
-    ravdess_samples, ravdess_labels = load_data()
-
     # Convert each label back into an emotion.
+    ravdess_samples, ravdess_labels = load_data()
     ravdess_labels = [c.INVERT_EMOTION_MAP[label] for label in ravdess_labels]
         
-    # Calculate the class percentages
-    unique, counts = np.unique(ravdess_labels, return_counts=True)
+    # Calculate the class percentages. The neutral class has the most samples
+    # due to combining it with the calm class.
+    # unique, counts = np.unique(ravdess_labels, return_counts=True)
     # print(dict(zip(unique, counts)))
-    plt.pie(x=counts, labels=unique)
+    # plt.pie(x=counts, labels=unique)
+    # plt.show()
+
+    # Calculate the distribution of tensor shapes for the samples
+    # time_series = [len(ts[0]) for ts in ravdess_samples]
+    # unique, counts = np.unique(time_series, return_counts=True)
+    # print(dict(zip(unique, counts)))
+    # min = time_series.index(unique[0])
+    # max = time_series.index(unique[-1])
+    # print(len(ravdess_samples[min][0]))
+    # print(len(ravdess_samples[max][0]))
+    # print(ravdess_labels[min])
+    # print(ravdess_labels[max])
+    # plt.bar(unique, counts, width=1000)
+    # plt.xlabel("Number of Data Points")
+    # plt.ylabel("Number of Samples")
+    # plt.title("The Distribution of Samples with Certain Data Points")
+    # plt.show()
+
+    # Calculate the distribution of data points for the first second which is
+    # the same as the first 48000 data points
+    # first_sec_time_series = [ts[0][0:48000] for ts in ravdess_samples]
+    # unique, counts = np.unique(first_sec_time_series, return_counts=True)
+    # print(dict(zip(unique, counts)))
+    # print(unique[0])
+    # print(unique[-1])
+    # plt.bar(unique, counts, width=0.1)
+    # plt.show()
+
+    # Test displaying a waveform
+    first_sample = ravdess_samples[0][0]
+    index = np.arange(len(first_sample))
+    plt.bar(index, first_sample)
     plt.show()
-    # The neutral class has the most samples due to combining it with the calm
-    # class.
 
 
 def load_data():
@@ -55,8 +86,8 @@ def load_data():
         print("Successfully loaded the RAVDESS cache.")
 
     except IOError as e:
-        print(str(e))
         # Since the cache doesn't exist, create it.
+        print(str(e))
         ravdess_samples, ravdess_labels = read_data()
         np.save(RAV_SAMPLES_CACHE_PATH, ravdess_samples, allow_pickle=True)
         np.save(RAV_LABELS_CACHE_PATH, ravdess_labels, allow_pickle=True)
@@ -105,6 +136,7 @@ def _interpret_label(filename):
     """
     Given a filename, it returns an integer representing the emotion label of
     the file/sample.
+
     :return: Integer
     """
     # Parse emotion ID from filename. It's the third number from the left
@@ -120,12 +152,12 @@ def main():
     """
     Local testing and cache creation.
     """
-    ravdess_samples, ravdess_labels = load_data()
-    print(ravdess_samples.shape)
-    print(ravdess_samples[0][0])  # Amplitude data
-    print(ravdess_samples[0][1])  # Sampling rate data
-    print(ravdess_labels.shape)
-    # generate_stats()
+    # ravdess_samples, ravdess_labels = load_data()
+    # print(ravdess_samples.shape)
+    # print(ravdess_samples[0][0])  # Amplitude data
+    # print(ravdess_samples[0][1])  # Sampling rate data
+    # print(ravdess_labels.shape)
+    generate_stats()
 
 
 if __name__ == "__main__":
