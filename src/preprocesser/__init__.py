@@ -1,1 +1,1 @@
-from .preprocess import preprocess_samples, preprocess_labels
+from .preprocess import load_preprocess_samples, load_preprocess_labels
