@@ -25,3 +25,9 @@ EMOTION_MAP = {
 INVERT_EMOTION_MAP = {v: k for k, v in EMOTION_MAP.items()}
 
 NUM_EMOTIONS = len(EMOTION_MAP.keys())
+DATA_INDEX = 0
+SAM_RATE_INDEX = 1
+
+# Train, Validation, Test allocations
+# Standard sampling rate
+# Standard input tensor shape
