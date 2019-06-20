@@ -1,14 +1,73 @@
+
+
 import numpy as np
 from keras.utils import to_categorical
+from scipy import signal
 
 from src import constants as c
 from src.database_loader import db_constants as dbc
 
 
 def load_preprocess_samples(samples):
-    # Standarize the shape of all samples to what's set in constants
-    # Normalize the values
-    pass
+    """
+    Preprocesses the samples for use with a machine learning model. Loads the
+    preprocessed samples from the cached files but if they don't exist, create
+    them.
+
+    :param samples: Tensor of shape (num_samples,)
+    :return: Tensor of shape (num_samples,)
+    """
+    # Check if the preprocessed samples were cached
+    preprocessed_samples = None
+
+    try:
+        preprocessed_samples = np.load(
+            dbc.PRE_SAMPLES_CACHE_PATH, allow_pickle=True)
+        print("Successfully loaded the preprocessed samples cache.")
+
+    except IOError as e:
+        print(str(e))
+        preprocessed_samples = _preprocess_samples(samples)
+        np.save(
+            dbc.PRE_SAMPLES_CACHE_PATH, preprocessed_samples, allow_pickle=True)
+        print("Successfully cached the preprocessed samples.")
+
+    finally:
+        return preprocessed_samples
+
+
+def _preprocess_samples(samples):
+    """
+    Private function to preprocess the samples.
+
+    :param samples: Tensor of shape (num_samples, 2)
+    :return:
+    """
+    # Unpack the samples into two arrays, one of data and one of sampling rates
+    data = np.array([sample[c.DATA_INDEX] for sample in samples])
+    sr = np.array([sample[c.SR_INDEX] for sample in samples])
+
+    # Normalize amplitudes
+    data = _norm_amplitude(data)
+
+    # Normalize durations
+    data = _norm_durations(data)
+
+    # Resample data to the highest sampling rate
+    # samples = _norm_sampling_rates(samples)
+
+    # Confirm that each sample has the same data shape and sampling rate
+    if not _confirm_norm(data, sr):
+        print("The dataset isn't consistent and an error occurred during the "
+              "normalization of the samples.")
+        return None
+    else:
+        print("The dataset is consistent.")
+
+    # Convert into spectrogram
+    # samples = _convert_to_spec(samples)
+
+    return np.array(list(zip(data, sr)))
 
 
 def load_preprocess_labels(labels):
@@ -26,14 +85,14 @@ def load_preprocess_labels(labels):
     try:
         preprocessed_labels = np.load(
             dbc.PRE_LABELS_CACHE_PATH, allow_pickle=True)
-        print("Successfully loaded the preprocessed data cache.")
+        print("Successfully loaded the preprocessed labels cache.")
 
     except IOError as e:
         print(str(e))
         preprocessed_labels = _preprocess_labels(labels)
         np.save(
             dbc.PRE_LABELS_CACHE_PATH, preprocessed_labels, allow_pickle=True)
-        print("Successfully cached the preprocessed data.")
+        print("Successfully cached the preprocessed labels.")
 
     finally:
         return preprocessed_labels
@@ -59,41 +118,97 @@ def _preprocess_labels(labels):
     return to_categorical(labels, num_classes=c.NUM_EMOTIONS)
 
 
-def _scale_sample(sample):
+def _norm_amplitude(data):
     """
-    Scales a sample to be between 0 and 1.
+    Normalizes the amplitude of each audio sample. In audio terms, this
+    makes no sound too loud or too quiet within each sample. Performs
+    sample-level amplitude normalization.
 
-    :param sample:
-    :return:
-    """
-    pass
-
-
-def _norm_sample_lvl(db):
-    """
-    Normalize the database at the sample level. This means .
-
+    :param data: Time-series audio data.
     :return: Tensor
     """
-    pass
+    norm_amplitude_samples = []
+    for sample in data:
+        sample -= sample.mean(axis=0)  # Set the mean to 0
+        sample /= sample.std(axis=0)  # Set the variance to 1
+        norm_amplitude_samples.append(sample)
+
+    return np.array(norm_amplitude_samples)
 
 
-def _norm_db_lvl(db):
+def _norm_durations(data):
     """
-    Normalize the database at the database level. This means we calculate the
-    mean and variance from all samples and apply it to each sample.
+    Normalizes the duration/length of each audio sample. We pad all samples that
+    are shorter than the longest sample in the dataset.
 
+    :param data: Time-series audio data.
     :return: Tensor
     """
-    db -= db.mean(axis=0)  # Set the mean to 0
-    db /= db.std(axis=0)  # Set the variance to 1
-    return db
+    AXIS_ZERO = 0
+
+    durations = [sample.shape[AXIS_ZERO] for sample in data]
+    longest_duration = np.amax(durations)
+
+    norm_duration_samples = []
+    for sample in data:
+        duration_diff = longest_duration - sample.shape[AXIS_ZERO]
+
+        if duration_diff != 0:
+            # For the time series, pad the ending with zeros.
+            sample = np.pad(sample, pad_width=(0, duration_diff),
+                            mode='constant', constant_values=0)
+        norm_duration_samples.append(sample)
+
+    return np.array(norm_duration_samples)
 
 
-# Convert time domain to frequency domain
-# - fourier transform
+def _norm_sampling_rates(samples):
+    """
+    Normalizes the sampling rates of each audio sample. We up/down sample.
 
-# Standardize time length
-# - Padding/cropping
+    :param samples: Samples from all databases.
+    :return: Tensor
+    """
+    return samples
 
-# Resample data to the highest sampling rate
+
+def _confirm_norm(data, sr):
+    """
+    Confirms that all samples are normalized with the same duration and sampling
+    rate.
+
+    :param data: Time-series audio data.
+    :param sr: Sampling rates of the audio data.
+    :return: True if all samples are consistent in data shape and sampling rate.
+    """
+    # Data shape mismatch
+    data_shapes = [sample.shape[0] for sample in data]
+    unique = np.unique(data_shapes)
+    if len(unique) > 1:
+        print("The data shapes for the samples aren't consistent.")
+        return False
+
+    # Sampling rate mismatch
+    unique = np.unique(sr)
+    if len(unique) > 1:
+        print("The sampling rates for the samples aren't consistent.")
+        return False
+
+    # If we've gone through all of the samples and haven't returned, then all
+    # samples are consistent.
+    return True
+
+
+def _convert_to_spec(samples):
+    """
+    Converts each audio sample from the time domain to the frequency domain.
+    Uses the Short-Time Fourier Transform.
+
+    :param samples: Samples from all databases.
+    :return: Tensor
+    """
+    for sample in samples:
+        f, t, Zxx = signal.stft(
+            sample[c.DATA_INDEX], sample[c.SR_INDEX], nperseg=512, noverlap=300)
+
+    return samples
