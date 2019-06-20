@@ -1,8 +1,10 @@
 import os
 
 import librosa
+import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
+import sounddevice as sd
 
 from db_constants import (
     RAV_RAW_DB_PATH, RAV_SAMPLES_CACHE_PATH, RAV_LABELS_CACHE_PATH)
@@ -63,9 +65,9 @@ def generate_stats():
     # plt.show()
 
     # Test displaying a waveform
-    first_sample = ravdess_samples[0][0]
-    index = np.arange(len(first_sample))
-    plt.bar(index, first_sample)
+    sd.play(ravdess_samples[0][0], ravdess_samples[0][1], blocking=True)
+    plt.figure()
+    librosa.display.waveplot(ravdess_samples[0][0], sr=ravdess_samples[0][1])
     plt.show()
 
 
@@ -123,7 +125,6 @@ def read_data():
             sample_path = os.path.join(actor_path, sample_filename)
 
             # Read the sample
-            # print(sample_filename)
             samples.append(librosa.load(sample_path, sr=None))
 
             # Read the label
@@ -148,16 +149,38 @@ def _interpret_label(filename):
     return c.EMOTION_MAP[emotion]
 
 
+def remove_first_sec(rav_samples):
+    """
+    Removes the first second (the first 48,000 data points because the audio is
+    sampled at 48 kHz) from the Ravdess database.
+
+    :param rav_samples: Samples from the Ravdess database
+    :return: Tensor
+    """
+    processed_rav_db = []
+
+    for sample in rav_samples:
+        # Slice the first second out of the data
+        sr = sample[c.SR_INDEX]
+        sliced_data = sample[c.DATA_INDEX][sr:]
+        # Copy the sampling rate to the new database
+        processed_rav_db.append((sliced_data, sample[c.SR_INDEX]))
+
+    return np.array(processed_rav_db)
+
+
 def main():
     """
     Local testing and cache creation.
     """
-    # ravdess_samples, ravdess_labels = load_data()
-    # print(ravdess_samples.shape)
-    # print(ravdess_samples[0][0])  # Amplitude data
-    # print(ravdess_samples[0][1])  # Sampling rate data
+    ravdess_samples, ravdess_labels = load_data()
+    print(ravdess_samples.shape)
+    print(ravdess_samples[0][0].shape)  # Amplitude data
+    ravdess_samples = remove_first_sec(ravdess_samples)
+    print(ravdess_samples[0][0].shape)
+    print(ravdess_samples[0][1])  # Sampling rate data
     # print(ravdess_labels.shape)
-    generate_stats()
+    # generate_stats()
 
 
 if __name__ == "__main__":
