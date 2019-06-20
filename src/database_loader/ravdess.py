@@ -39,6 +39,7 @@ def generate_stats():
     # plt.show()
 
     # Calculate the distribution of tensor shapes for the samples
+    # ravdess_samples = remove_first_sec(ravdess_samples)
     # time_series = [len(ts[0]) for ts in ravdess_samples]
     # unique, counts = np.unique(time_series, return_counts=True)
     # print(dict(zip(unique, counts)))
@@ -64,11 +65,11 @@ def generate_stats():
     # plt.bar(unique, counts, width=0.1)
     # plt.show()
 
-    # Test displaying a waveform
-    sd.play(ravdess_samples[0][0], ravdess_samples[0][1], blocking=True)
-    plt.figure()
-    librosa.display.waveplot(ravdess_samples[0][0], sr=ravdess_samples[0][1])
-    plt.show()
+    # Test displaying and playing a waveform
+    # sd.play(ravdess_samples[0][0], ravdess_samples[0][1], blocking=True)
+    # plt.figure()
+    # librosa.display.waveplot(ravdess_samples[0][0], sr=ravdess_samples[0][1])
+    # plt.show()
 
 
 def load_data():
@@ -175,12 +176,15 @@ def main():
     """
     ravdess_samples, ravdess_labels = load_data()
     print(ravdess_samples.shape)
-    print(ravdess_samples[0][0].shape)  # Amplitude data
-    ravdess_samples = remove_first_sec(ravdess_samples)
     print(ravdess_samples[0][0].shape)
-    print(ravdess_samples[0][1])  # Sampling rate data
+    # print(ravdess_samples[0][0])  # Amplitude data
+    # print(ravdess_samples[0][1])  # Sampling rate data
     # print(ravdess_labels.shape)
     # generate_stats()
+    durations = [sample[0].shape[0] for sample in ravdess_samples]
+    longest_duration = np.amax(durations)
+    print(durations)
+    print(longest_duration)
 
 
 if __name__ == "__main__":
