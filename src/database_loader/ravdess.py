@@ -39,9 +39,14 @@ def generate_stats():
     # plt.show()
 
     # Calculate the distribution of tensor shapes for the samples
-    # ravdess_samples = remove_first_sec(ravdess_samples)
-    # time_series = [len(ts[0]) for ts in ravdess_samples]
-    # unique, counts = np.unique(time_series, return_counts=True)
+    ravdess_samples = remove_first_sec(ravdess_samples)
+    time_series = [len(ts[0]) for ts in ravdess_samples]
+    unique, counts = np.unique(time_series, return_counts=True)
+    cumulative = 0
+    cumulative_count = []
+    for number in counts:
+        cumulative += number
+        cumulative_count.append(cumulative)
     # print(dict(zip(unique, counts)))
     # min = time_series.index(unique[0])
     # max = time_series.index(unique[-1])
@@ -49,11 +54,13 @@ def generate_stats():
     # print(len(ravdess_samples[max][0]))
     # print(ravdess_labels[min])
     # print(ravdess_labels[max])
-    # plt.bar(unique, counts, width=1000)
-    # plt.xlabel("Number of Data Points")
-    # plt.ylabel("Number of Samples")
-    # plt.title("The Distribution of Samples with Certain Data Points")
-    # plt.show()
+
+    cumulative_count /= np.amax(cumulative_count)
+    plt.plot(np.arange(len(cumulative_count)), cumulative_count)
+    plt.xlabel("Number of Data Points")
+    plt.ylabel("Number of Samples")
+    plt.title("The Distribution of Samples with Certain Data Points")
+    plt.show()
 
     # Calculate the distribution of data points for the first second which is
     # the same as the first 48000 data points
@@ -180,11 +187,11 @@ def main():
     # print(ravdess_samples[0][0])  # Amplitude data
     # print(ravdess_samples[0][1])  # Sampling rate data
     # print(ravdess_labels.shape)
-    # generate_stats()
-    durations = [sample[0].shape[0] for sample in ravdess_samples]
-    longest_duration = np.amax(durations)
-    print(durations)
-    print(longest_duration)
+    generate_stats()
+    # durations = [sample[0].shape[0] for sample in ravdess_samples]
+    # longest_duration = np.amax(durations)
+    # print(durations)
+    # print(longest_duration)
 
 
 if __name__ == "__main__":
