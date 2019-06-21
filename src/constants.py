@@ -26,8 +26,19 @@ INVERT_EMOTION_MAP = {v: k for k, v in EMOTION_MAP.items()}
 
 NUM_EMOTIONS = len(EMOTION_MAP.keys())
 DATA_INDEX = 0
-SAM_RATE_INDEX = 1
+SR_INDEX = 1  # Sampling rate
 
-# Train, Validation, Test allocations
+# Training, validation, and testing allocations
+TRAIN_ALLOC = 0.8
+VALID_ALLOC = 0.1
+TEST_ALLOC = 0.1
+
 # Standard sampling rate
+SR = 480000
+
 # Standard input tensor shape
+DATA_POINTS = 205053
+
+# Short Time Fourier Transform (STFT) parameters
+WIN_SIZE = 3072
+NUM_OVERLAP = int(WIN_SIZE * 0.75)
