@@ -1,5 +1,4 @@
-
-
+import matplotlib.pyplot as plt
 import numpy as np
 from keras.utils import to_categorical
 from scipy import signal
@@ -41,7 +40,7 @@ def _preprocess_samples(samples):
     Private function to preprocess the samples.
 
     :param samples: Tensor of shape (num_samples, 2)
-    :return:
+    :return: Tensor of shape (num_samples, 2)
     """
     # Unpack the samples into two arrays, one of data and one of sampling rates
     data = np.array([sample[c.DATA_INDEX] for sample in samples])
@@ -65,7 +64,7 @@ def _preprocess_samples(samples):
         print("The dataset is consistent.")
 
     # Convert into spectrogram
-    # samples = _convert_to_spec(samples)
+    samples = _convert_to_freq(data, sr)
 
     return np.array(list(zip(data, sr)))
 
@@ -169,6 +168,7 @@ def _norm_sampling_rates(samples):
     :param samples: Samples from all databases.
     :return: Tensor
     """
+    # TODO
     return samples
 
 
@@ -199,16 +199,34 @@ def _confirm_norm(data, sr):
     return True
 
 
-def _convert_to_spec(samples):
+def _convert_to_freq(data, sr):
     """
     Converts each audio sample from the time domain to the frequency domain.
     Uses the Short-Time Fourier Transform.
 
-    :param samples: Samples from all databases.
-    :return: Tensor
+    :param data:
+    :param sr:
+    :return:
     """
-    for sample in samples:
-        f, t, Zxx = signal.stft(
-            sample[c.DATA_INDEX], sample[c.SR_INDEX], nperseg=512, noverlap=300)
+    freq_dom_repr = []
 
-    return samples
+    for data, sr in zip(data, sr):
+        f, t, Zxx = signal.stft(data, sr, nperseg=c.WIN_SIZE,
+                                noverlap=c.NUM_OVERLAP)
+
+        # print(np.unwrap(np.angle(Zxx)))
+        amplitude = np.log10(np.abs(Zxx))
+        amplitude[amplitude == np.NINF] = np.amin(amplitude[amplitude != np.NINF])
+        plt.pcolormesh(t, f, amplitude)
+        plt.ylabel('Frequency [Hz]')
+        plt.xlabel('Time [sec]')
+        plt.show()
+
+        plt.pcolormesh(t, f, np.unwrap(np.angle(Zxx)))
+        plt.ylabel('Frequency [Hz]')
+        plt.xlabel('Time [sec]')
+        plt.show()
+
+        freq_dom_repr.append((f, t, Zxx))
+
+    return np.array(freq_dom_repr)
