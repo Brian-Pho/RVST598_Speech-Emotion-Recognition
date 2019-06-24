@@ -25,8 +25,6 @@ EMOTION_MAP = {
 INVERT_EMOTION_MAP = {v: k for k, v in EMOTION_MAP.items()}
 
 NUM_EMOTIONS = len(EMOTION_MAP.keys())
-DATA_INDEX = 0
-SR_INDEX = 1  # Sampling rate
 
 # Training, validation, and testing allocations
 TRAIN_ALLOC = 0.8
