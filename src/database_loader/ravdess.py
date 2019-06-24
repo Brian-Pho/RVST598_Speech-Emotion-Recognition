@@ -5,15 +5,14 @@ import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 
-from db_constants import (
-    RAV_RAW_DB_PATH, RAV_SAMPLES_CACHE_PATH, RAV_LABELS_CACHE_PATH)
+import db_constants as dbc
 from src import constants as c
 
 NUM_ACTORS = 24
 SAMPLES_THRESHOLD = 206000  # The max number of data points for a file
 RAV_EMO_INDEX = 2  # The index into the filename for the emotion label
 RAV_SR = 48000  # The sampling rate for all Ravdess audio samples
-RAVDESS_EMOTION_MAP = {
+RAV_EMOTION_MAP = {
     "01": c.NEU,
     "02": c.NEU,  # Map calm to neutral
     "03": c.HAP,
@@ -102,16 +101,16 @@ def load_data():
 
     try:
         # Attempt to read the cache
-        ravdess_samples = np.load(RAV_SAMPLES_CACHE_PATH, allow_pickle=True)
-        ravdess_labels = np.load(RAV_LABELS_CACHE_PATH, allow_pickle=True)
+        ravdess_samples = np.load(dbc.RAV_SAMPLES_CACHE_PATH, allow_pickle=True)
+        ravdess_labels = np.load(dbc.RAV_LABELS_CACHE_PATH, allow_pickle=True)
         print("Successfully loaded the RAVDESS cache.")
 
     except IOError as e:
         # Since the cache doesn't exist, create it.
         print(str(e))
         ravdess_samples, ravdess_labels = read_data()
-        np.save(RAV_SAMPLES_CACHE_PATH, ravdess_samples, allow_pickle=True)
-        np.save(RAV_LABELS_CACHE_PATH, ravdess_labels, allow_pickle=True)
+        np.save(dbc.RAV_SAMPLES_CACHE_PATH, ravdess_samples, allow_pickle=True)
+        np.save(dbc.RAV_LABELS_CACHE_PATH, ravdess_labels, allow_pickle=True)
         print("Successfully cached the RAVDESS database.")
 
     finally:
@@ -134,9 +133,10 @@ def read_data():
     """
     samples = []
     labels = []
+
     for actor in range(1, NUM_ACTORS + 1):
         actor_foldername = "Actor_{:02d}".format(actor)
-        actor_path = os.path.join(RAV_RAW_DB_PATH, actor_foldername)
+        actor_path = os.path.join(dbc.RAV_DB_PATH, actor_foldername)
         print("Processing actor:", actor_foldername)
 
         for sample_filename in os.listdir(actor_path):
@@ -165,7 +165,7 @@ def _interpret_label(filename):
     # Parse emotion ID from filename. It's the third number from the left
     # according to https://zenodo.org/record/1188976.
     emotion_id = filename.split("-")[RAV_EMO_INDEX]
-    emotion = RAVDESS_EMOTION_MAP[emotion_id]
+    emotion = RAV_EMOTION_MAP[emotion_id]
 
     # Return a new emotion ID that's standardized across databases.
     return c.EMOTION_MAP[emotion]

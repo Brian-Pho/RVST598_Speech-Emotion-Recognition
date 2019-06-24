@@ -10,14 +10,18 @@ PROCESS_DB_PATH = os.path.join(DATA_PATH, "processed")
 IEMOCAP_DB_PATH = os.path.join(RAW_DB_PATH, "iemocap")
 
 # CREMA-D DATABASE
-CREMAD_DB_PATH = os.path.join(RAW_DB_PATH, "crema-d")
+CRE_DB_PATH = os.path.join(RAW_DB_PATH, "cremad")
+CRE_SAMPLES_CACHE_PATH = os.path.join(
+    CRE_DB_PATH, "cremad_samples_cache.npy")
+CRE_LABELS_CACHE_PATH = os.path.join(
+    CRE_DB_PATH, "cremad_labels_cache.npy")
 
 # RAVDESS DATABASE
-RAV_RAW_DB_PATH = os.path.join(RAW_DB_PATH, "ravdess")
+RAV_DB_PATH = os.path.join(RAW_DB_PATH, "ravdess")
 RAV_SAMPLES_CACHE_PATH = os.path.join(
-    RAV_RAW_DB_PATH, "ravdess_samples_cache.npy")
+    RAV_DB_PATH, "ravdess_samples_cache.npy")
 RAV_LABELS_CACHE_PATH = os.path.join(
-    RAV_RAW_DB_PATH, "ravdess_labels_cache.npy")
+    RAV_DB_PATH, "ravdess_labels_cache.npy")
 
 # PREPROCESSED DATA CACHES
 PRE_SAMPLES_CACHE_PATH = os.path.join(PROCESS_DB_PATH, "samples_cache.npy")
