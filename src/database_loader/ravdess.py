@@ -4,13 +4,13 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
-import sounddevice as sd
 
 from db_constants import (
     RAV_RAW_DB_PATH, RAV_SAMPLES_CACHE_PATH, RAV_LABELS_CACHE_PATH)
 from src import constants as c
 
 NUM_ACTORS = 24
+SAMPLES_THRESHOLD = 206000  # The max number of data points for a file
 RAVDESS_EMOTION_MAP = {
     "01": c.NEU,
     "02": c.NEU,  # Map calm to neutral
@@ -27,26 +27,34 @@ def generate_stats():
     """
     Generates statistics about the RAVDESS database.
     """
-    # Convert each label back into an emotion.
-    ravdess_samples, ravdess_labels = load_data()
-    ravdess_labels = [c.INVERT_EMOTION_MAP[label] for label in ravdess_labels]
+    # # Convert each label back into an emotion.
+    # ravdess_samples, ravdess_labels = load_data()
+    # ravdess_labels = [c.INVERT_EMOTION_MAP[label] for label in ravdess_labels]
         
-    # Calculate the class percentages. The neutral class has the most samples
-    # due to combining it with the calm class.
+    # # Calculate the class percentages. The neutral class has the most samples
+    # # due to combining it with the calm class.
     # unique, counts = np.unique(ravdess_labels, return_counts=True)
     # print(dict(zip(unique, counts)))
     # plt.pie(x=counts, labels=unique)
     # plt.show()
 
-    # Calculate the distribution of tensor shapes for the samples
-    ravdess_samples = remove_first_sec(ravdess_samples)
-    time_series = [len(ts[0]) for ts in ravdess_samples]
-    unique, counts = np.unique(time_series, return_counts=True)
-    cumulative = 0
-    cumulative_count = []
-    for number in counts:
-        cumulative += number
-        cumulative_count.append(cumulative)
+    # # Calculate the distribution of tensor shapes for the samples
+    # ravdess_samples = remove_first_last_sec(ravdess_samples)
+    # time_series = [len(ts[0]) for ts in ravdess_samples]
+    # unique, counts = np.unique(time_series, return_counts=True)
+    #
+    # counts_above_threshold = 0
+    # threshold = 110000
+    # for u, count in zip(unique, counts):
+    #     if u > threshold:
+    #         counts_above_threshold += count
+    # print("Percent above {} samples".format(threshold),
+    #       counts_above_threshold / np.sum(counts))
+    # cumulative = 0
+    # cumulative_count = []
+    # for number in counts:
+    #     cumulative += number
+    #     cumulative_count.append(cumulative)
     # print(dict(zip(unique, counts)))
     # min = time_series.index(unique[0])
     # max = time_series.index(unique[-1])
@@ -55,15 +63,16 @@ def generate_stats():
     # print(ravdess_labels[min])
     # print(ravdess_labels[max])
 
-    cumulative_count /= np.amax(cumulative_count)
-    plt.plot(np.arange(len(cumulative_count)), cumulative_count)
-    plt.xlabel("Number of Data Points")
-    plt.ylabel("Number of Samples")
-    plt.title("The Distribution of Samples with Certain Data Points")
-    plt.show()
+    # cumulative_count /= np.amax(cumulative_count)
+    # plt.plot(np.arange(len(cumulative_count)), cumulative_count)
+    # plt.bar(unique, counts, width=1000)
+    # plt.xlabel("Number of Data Points")
+    # plt.ylabel("Number of Samples")
+    # plt.title("The Distribution of Samples with Certain Data Points")
+    # plt.show()
 
-    # Calculate the distribution of data points for the first second which is
-    # the same as the first 48000 data points
+    # # Calculate the distribution of data points for the first second which is
+    # # the same as the first 48000 data points
     # first_sec_time_series = [ts[0][0:48000] for ts in ravdess_samples]
     # unique, counts = np.unique(first_sec_time_series, return_counts=True)
     # print(dict(zip(unique, counts)))
@@ -72,7 +81,7 @@ def generate_stats():
     # plt.bar(unique, counts, width=0.1)
     # plt.show()
 
-    # Test displaying and playing a waveform
+    # # Test displaying and playing a waveform
     # sd.play(ravdess_samples[0][0], ravdess_samples[0][1], blocking=True)
     # plt.figure()
     # librosa.display.waveplot(ravdess_samples[0][0], sr=ravdess_samples[0][1])
@@ -157,22 +166,42 @@ def _interpret_label(filename):
     return c.EMOTION_MAP[emotion]
 
 
-def remove_first_sec(rav_samples):
+def remove_first_last_sec(rav_db):
     """
-    Removes the first second (the first 48,000 data points because the audio is
-    sampled at 48 kHz) from the Ravdess database.
+    Removes the first and last second (the first and last 48,000 data points
+    because the audio is sampled at 48 kHz) from the Ravdess database. Most, if
+    not all, samples in the Ravdess database have empty/quiet first and last
+    seconds.
 
-    :param rav_samples: Samples from the Ravdess database
+    :param rav_db: Samples from the Ravdess database
     :return: Tensor
     """
     processed_rav_db = []
 
-    for sample in rav_samples:
-        # Slice the first second out of the data
+    for sample in rav_db:
         sr = sample[c.SR_INDEX]
-        sliced_data = sample[c.DATA_INDEX][sr:]
+        # Slice the first and last second out of the data
+        sliced_data = sample[c.DATA_INDEX][sr:-sr]
         # Copy the sampling rate to the new database
         processed_rav_db.append((sliced_data, sample[c.SR_INDEX]))
+
+    return np.array(processed_rav_db)
+
+
+def remove_outliers(rav_db):
+    """
+    Removes samples that have data points above a defined threshold. In audio
+    terms, removes samples that are too long (the top 6%).
+
+    :param rav_db: Samples from the Ravdess database
+    :return: Tensor
+    """
+    processed_rav_db = []
+
+    for sample in rav_db:
+        if sample[c.DATA_INDEX].shape[0] > SAMPLES_THRESHOLD:
+            continue
+        processed_rav_db.append(sample)
 
     return np.array(processed_rav_db)
 
