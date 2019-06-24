@@ -11,6 +11,8 @@ from src import constants as c
 
 NUM_ACTORS = 24
 SAMPLES_THRESHOLD = 206000  # The max number of data points for a file
+RAV_EMO_INDEX = 2  # The index into the filename for the emotion label
+RAV_SR = 48000  # The sampling rate for all Ravdess audio samples
 RAVDESS_EMOTION_MAP = {
     "01": c.NEU,
     "02": c.NEU,  # Map calm to neutral
@@ -27,16 +29,16 @@ def generate_stats():
     """
     Generates statistics about the RAVDESS database.
     """
-    # # Convert each label back into an emotion.
-    # ravdess_samples, ravdess_labels = load_data()
-    # ravdess_labels = [c.INVERT_EMOTION_MAP[label] for label in ravdess_labels]
-        
-    # # Calculate the class percentages. The neutral class has the most samples
-    # # due to combining it with the calm class.
-    # unique, counts = np.unique(ravdess_labels, return_counts=True)
-    # print(dict(zip(unique, counts)))
-    # plt.pie(x=counts, labels=unique)
-    # plt.show()
+    # Convert each label back into an emotion.
+    ravdess_samples, ravdess_labels = load_data()
+    ravdess_labels = [c.INVERT_EMOTION_MAP[label] for label in ravdess_labels]
+
+    # Calculate the emotion class percentages. The neutral class has the most
+    # samples due to combining it with the calm class.
+    unique, counts = np.unique(ravdess_labels, return_counts=True)
+    print(dict(zip(unique, counts)))
+    plt.pie(x=counts, labels=unique)
+    plt.show()
 
     # # Calculate the distribution of tensor shapes for the samples
     # ravdess_samples = remove_first_last_sec(ravdess_samples)
@@ -81,7 +83,7 @@ def generate_stats():
     # plt.bar(unique, counts, width=0.1)
     # plt.show()
 
-    # # Test displaying and playing a waveform
+    # # Test playing and displaying a waveform
     # sd.play(ravdess_samples[0][0], ravdess_samples[0][1], blocking=True)
     # plt.figure()
     # librosa.display.waveplot(ravdess_samples[0][0], sr=ravdess_samples[0][1])
@@ -123,26 +125,29 @@ def read_data():
     Reads the RAVDESS database into tensors.
 
     Sample output:
-        (array([[array([ 1.5591205e-07, -1.5845627e-07,  1.5362870e-07, ...,
-        0.0000000e+00,  0.0000000e+00,  0.0000000e+00], dtype=float32),
-        22050]], dtype=object), array([0, 0, 0, ..., 6]))
+        (array([ 3.0517578e-05,  3.0517578e-05,  3.0517578e-05, ...,
+        0.0000000e+00, -3.0517578e-05,  0.0000000e+00], dtype=float32), 0)
 
-    :return: Tuple of (samples, labels) where the samples are a tensor of shape
-             (files, data), and the labels are an array of integers. The data is
-             formatted as (audio time series, sampling rate).
+    :return: Tuple of (samples, labels) where the samples are a tensor of
+             varying shape due to varying audio lengths, and the labels are an
+             array of integers. The shape is (1440,) from 1440 audio files.
     """
     samples = []
     labels = []
     for actor in range(1, NUM_ACTORS + 1):
         actor_foldername = "Actor_{:02d}".format(actor)
         actor_path = os.path.join(RAV_RAW_DB_PATH, actor_foldername)
-        print(actor_foldername)
+        print("Processing actor:", actor_foldername)
 
         for sample_filename in os.listdir(actor_path):
             sample_path = os.path.join(actor_path, sample_filename)
 
             # Read the sample
-            samples.append(librosa.load(sample_path, sr=None))
+            audio_time_series, sampling_rate = librosa.load(sample_path, sr=None)
+            if sampling_rate != RAV_SR:
+                print("RAVDESS sampling rate mismatch.")
+                continue
+            samples.append(audio_time_series)  # Discard sampling rate
 
             # Read the label
             labels.append(_interpret_label(sample_filename))
@@ -159,7 +164,7 @@ def _interpret_label(filename):
     """
     # Parse emotion ID from filename. It's the third number from the left
     # according to https://zenodo.org/record/1188976.
-    emotion_id = filename.split("-")[2]
+    emotion_id = filename.split("-")[RAV_EMO_INDEX]
     emotion = RAVDESS_EMOTION_MAP[emotion_id]
 
     # Return a new emotion ID that's standardized across databases.
@@ -179,11 +184,10 @@ def remove_first_last_sec(rav_db):
     processed_rav_db = []
 
     for sample in rav_db:
-        sr = sample[c.SR_INDEX]
         # Slice the first and last second out of the data
-        sliced_data = sample[c.DATA_INDEX][sr:-sr]
+        sliced_data = sample[RAV_SR:-RAV_SR]
         # Copy the sampling rate to the new database
-        processed_rav_db.append((sliced_data, sample[c.SR_INDEX]))
+        processed_rav_db.append(sliced_data)
 
     return np.array(processed_rav_db)
 
@@ -199,7 +203,8 @@ def remove_outliers(rav_db):
     processed_rav_db = []
 
     for sample in rav_db:
-        if sample[c.DATA_INDEX].shape[0] > SAMPLES_THRESHOLD:
+        # If the sample is above the threshold, then skip it and don't add it.
+        if sample.shape[0] > SAMPLES_THRESHOLD:
             continue
         processed_rav_db.append(sample)
 
@@ -211,16 +216,12 @@ def main():
     Local testing and cache creation.
     """
     ravdess_samples, ravdess_labels = load_data()
-    print(ravdess_samples.shape)
-    print(ravdess_samples[0][0].shape)
-    # print(ravdess_samples[0][0])  # Amplitude data
-    # print(ravdess_samples[0][1])  # Sampling rate data
+    print((ravdess_samples[10], ravdess_labels[10]))
+    # print(ravdess_samples.shape)
+    # for sample in ravdess_samples[0:10]:
+    #     print(sample.shape)
     # print(ravdess_labels.shape)
-    generate_stats()
-    # durations = [sample[0].shape[0] for sample in ravdess_samples]
-    # longest_duration = np.amax(durations)
-    # print(durations)
-    # print(longest_duration)
+    # generate_stats()
 
 
 if __name__ == "__main__":
