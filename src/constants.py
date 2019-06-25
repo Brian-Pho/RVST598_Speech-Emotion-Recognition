@@ -32,11 +32,12 @@ VALID_ALLOC = 0.1
 TEST_ALLOC = 0.1
 
 # Standard sampling rate
-SR = 480000
+SR = 48000
 
 # Standard input tensor shape
 DATA_POINTS = 205053
 
 # Short Time Fourier Transform (STFT) parameters
 WIN_SIZE = 3072
-NUM_OVERLAP = int(WIN_SIZE * 0.75)
+STEP_SIZE = int(WIN_SIZE * 0.25)
+NUM_OVERLAP = WIN_SIZE - STEP_SIZE
