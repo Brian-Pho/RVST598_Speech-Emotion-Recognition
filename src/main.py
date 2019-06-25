@@ -1,38 +1,29 @@
 from src import preprocesser as pp
-from src.database_loader import ravdess
-import librosa
-import librosa.display
-import matplotlib.pyplot as plt
-import sounddevice as sd
+from src.database_loader import ravdess, cremad
 import numpy as np
 
 
 def main():
+    """
+    The main entry point to this program. This gets the data, preprocesses it
+    for the machine learning model, submits it to the ML model, trains the ML
+    model, and saves the results.
+    """
     # Get the data
     ravdess_samples, ravdess_labels = ravdess.load_data()
-    ravdess_samples = ravdess.remove_first_sec(ravdess_samples)
+    print(ravdess_samples.shape, ravdess_labels.shape)
+    cremad_samples, cremad_labels = cremad.load_data()
+    print(cremad_samples.shape, cremad_labels.shape)
 
-    # Combine the datasets
-    samples = ravdess_samples
-    labels = ravdess_labels
+    # Cache it into spectrograms
 
-    # samples, labels = None, None
+    # Create the spectrogram generator to feed the neural network
 
-    # Preprocess the data
-    processed_samples = pp.load_preprocess_samples(samples)
-    print(processed_samples.shape)
-
-    # Test displaying and playing a waveform
-    file_num = 79
-    data = processed_samples[file_num][0]
-    data /= np.amax(data)
-    sd.play(data, processed_samples[file_num][1], blocking=True)
-    plt.figure()
-    librosa.display.waveplot(data, sr=processed_samples[file_num][1])
-    plt.show()
-
-    # processed_labels = pp.load_preprocess_labels(labels)
-    # print(processed_labels.shape)
+    # # Preprocess the data
+    # processed_samples = pp.load_preprocess_samples(samples)
+    # print(processed_samples.shape)
+    # # processed_labels = pp.load_preprocess_labels(labels)
+    # # print(processed_labels.shape)
 
     # Shuffle and create the train, validation, and testing sets
 
