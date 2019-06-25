@@ -1,11 +1,10 @@
 import os
 
-import librosa
-import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
+from common import load_wav
 from src import constants as c
 
 NUM_ACTORS = 24
@@ -143,11 +142,16 @@ def read_data():
             sample_path = os.path.join(actor_path, sample_filename)
 
             # Read the sample
-            audio_time_series, sampling_rate = librosa.load(sample_path, sr=None)
-            if sampling_rate != RAV_SR:
-                print("RAVDESS sampling rate mismatch.")
+            audio_ts = load_wav(sample_path)
+
+            # Remove samples that are too long
+            if audio_ts.shape[0] > SAMPLES_THRESHOLD:
                 continue
-            samples.append(audio_time_series)  # Discard sampling rate
+
+            # Remove the first and last second
+            audio_ts = audio_ts[RAV_SR:-RAV_SR]
+
+            samples.append(audio_ts)
 
             # Read the label
             labels.append(_interpret_label(sample_filename))
@@ -169,46 +173,6 @@ def _interpret_label(filename):
 
     # Return a new emotion ID that's standardized across databases.
     return c.EMOTION_MAP[emotion]
-
-
-def remove_first_last_sec(rav_db):
-    """
-    Removes the first and last second (the first and last 48,000 data points
-    because the audio is sampled at 48 kHz) from the Ravdess database. Most, if
-    not all, samples in the Ravdess database have empty/quiet first and last
-    seconds.
-
-    :param rav_db: Samples from the Ravdess database
-    :return: Tensor
-    """
-    processed_rav_db = []
-
-    for sample in rav_db:
-        # Slice the first and last second out of the data
-        sliced_data = sample[RAV_SR:-RAV_SR]
-        # Copy the sampling rate to the new database
-        processed_rav_db.append(sliced_data)
-
-    return np.array(processed_rav_db)
-
-
-def remove_outliers(rav_db):
-    """
-    Removes samples that have data points above a defined threshold. In audio
-    terms, removes samples that are too long (the top 6%).
-
-    :param rav_db: Samples from the Ravdess database
-    :return: Tensor
-    """
-    processed_rav_db = []
-
-    for sample in rav_db:
-        # If the sample is above the threshold, then skip it and don't add it.
-        if sample.shape[0] > SAMPLES_THRESHOLD:
-            continue
-        processed_rav_db.append(sample)
-
-    return np.array(processed_rav_db)
 
 
 def main():

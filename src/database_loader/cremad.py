@@ -1,14 +1,12 @@
 import os
 
-import librosa
-import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
+from common import load_wav
 from src import constants as c
 
-NUM_ACTORS = 24
 SAMPLES_THRESHOLD = 206000  # The max number of data points for a file
 CRE_EMO_INDEX = 2  # The index into the filename for the emotion label
 CRE_SR = 16000
@@ -29,12 +27,12 @@ def generate_stats():
     cremad_samples, cremad_labels = load_data()
     cremad_labels = [c.INVERT_EMOTION_MAP[label] for label in cremad_labels]
 
-    # Calculate the emotion class percentages. The neutral class has the most
-    # samples due to combining it with the calm class.
-    unique, counts = np.unique(cremad_labels, return_counts=True)
-    print(dict(zip(unique, counts)))
-    plt.pie(x=counts, labels=unique)
-    plt.show()
+    # # Calculate the emotion class percentages. The neutral class has the most
+    # # samples due to combining it with the calm class.
+    # unique, counts = np.unique(cremad_labels, return_counts=True)
+    # print(dict(zip(unique, counts)))
+    # plt.pie(x=counts, labels=unique)
+    # plt.show()
 
     # Calculate the distribution of tensor shapes for the samples
     time_series = [len(ts) for ts in cremad_samples]
@@ -44,6 +42,12 @@ def generate_stats():
     plt.ylabel("Number of Samples")
     plt.title("The Distribution of Samples with Certain Data Points")
     plt.show()
+
+    # Find the files with the min/max data points
+    min = unique[0]
+    max = unique[-1]
+    print(min, max)
+    print(time_series.index(min), time_series.index(max))
 
 
 def load_data():
@@ -93,14 +97,12 @@ def read_data():
     wave_folder = os.path.join(dbc.CRE_DB_PATH, "AudioWAV")
 
     for sample_filename in os.listdir(wave_folder):
+        print("Processing file:", sample_filename)
         sample_path = os.path.join(wave_folder, sample_filename)
 
         # Read the sample
-        audio_time_series, sampling_rate = librosa.load(sample_path, sr=None)
-        if sampling_rate != CRE_SR:
-            print("CREMA-D sampling rate mismatch.")
-            continue
-        samples.append(audio_time_series)  # Discard sampling rate
+        audio_ts = load_wav(sample_path)
+        samples.append(audio_ts)
 
         # Read the label
         labels.append(_interpret_label(sample_filename))
@@ -128,13 +130,14 @@ def main():
     """
     Local testing and cache creation.
     """
-    # cremad_samples, cremad_labels = load_data()
+    # cremad_samples, cremad_labels = read_data()
+    cremad_samples, cremad_labels = load_data()
     # print(cremad_samples.shape)
     # print(cremad_labels.shape)
     # print((cremad_samples[10], cremad_labels[10]))
     # for sample in cremad_samples[0:10]:
     #     print(sample.shape)
-    generate_stats()
+    # generate_stats()
 
 
 if __name__ == "__main__":
