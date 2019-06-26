@@ -4,12 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav
+from common import load_wav, calculate_bounds
 from src import constants as c
 
-SAMPLES_THRESHOLD = 206000  # The max number of data points for a file
+NUM_STD_CUTOFF = 3  # The number of standard deviations to include in the data
 CRE_EMO_INDEX = 2  # The index into the filename for the emotion label
-CRE_SR = 16000
+CRE_SR = 16000  # The sampling rate for all Crema-d audio samples
 CRE_EMOTION_MAP = {
     "ANG": c.ANG,
     "DIS": c.DIS,
@@ -35,19 +35,26 @@ def generate_stats():
     # plt.show()
 
     # Calculate the distribution of tensor shapes for the samples
-    time_series = [len(ts) for ts in cremad_samples]
-    unique, counts = np.unique(time_series, return_counts=True)
-    plt.bar(unique, counts, width=500)
+    audio_lengths = [len(ts) for ts in cremad_samples]
+
+    lower, upper = calculate_bounds(audio_lengths, NUM_STD_CUTOFF)
+    num_outliers = [length for length in audio_lengths
+                    if length < lower or length > upper]
+    print("Num outliers:", len(num_outliers))
+    audio_cropped_lengths = [length for length in audio_lengths
+                             if lower <= length <= upper]
+    print("Num included:", len(audio_cropped_lengths))
+    unique, counts = np.unique(audio_cropped_lengths, return_counts=True)
+
+    data_min = unique[0]
+    data_max = unique[-1]
+    print(cremad_samples.shape, data_min, data_max)
+
+    plt.bar(unique, counts, width=800)
     plt.xlabel("Number of Data Points")
     plt.ylabel("Number of Samples")
-    plt.title("The Distribution of Samples with Certain Data Points")
+    plt.title("The Distribution of Samples with Number of Data Points")
     plt.show()
-
-    # Find the files with the min/max data points
-    min = unique[0]
-    max = unique[-1]
-    print(min, max)
-    print(time_series.index(min), time_series.index(max))
 
 
 def load_data():
@@ -130,14 +137,13 @@ def main():
     """
     Local testing and cache creation.
     """
-    # cremad_samples, cremad_labels = read_data()
-    cremad_samples, cremad_labels = load_data()
+    # cremad_samples, cremad_labels = load_data()
     # print(cremad_samples.shape)
     # print(cremad_labels.shape)
     # print((cremad_samples[10], cremad_labels[10]))
     # for sample in cremad_samples[0:10]:
     #     print(sample.shape)
-    # generate_stats()
+    generate_stats()
 
 
 if __name__ == "__main__":

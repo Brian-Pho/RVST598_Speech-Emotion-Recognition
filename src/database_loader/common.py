@@ -24,3 +24,10 @@ def load_wav(wav_path):
         return None
 
     return audio_ts
+
+
+def calculate_bounds(data, num_std):
+    data_mean, data_std = np.mean(data), np.std(data)
+    cut_off = data_std * num_std
+    lower, upper = data_mean - cut_off, data_mean + cut_off
+    return lower, upper
