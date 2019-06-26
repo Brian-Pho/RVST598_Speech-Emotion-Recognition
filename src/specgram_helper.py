@@ -48,17 +48,14 @@ def wave_to_melspecgram(wave):
 
 def normalize_melspecgram(melspecgram):
     """
-    Normalizes a log-mel spectrogram to have zero mean and one variance.
+    Normalizes the amplitude of a log-mel spectrogram to have zero mean and
+    unit variance. Performs sample-level amplitude normalization.
 
     :param melspecgram: np.array
     :return: np.array
     """
-    # Subtract by mean to get zero mean
-    melspecgram -= np.mean(melspecgram)
-
-    # Divide by standard deviation to get unit variance
-    melspecgram /= np.std(melspecgram)
-
+    melspecgram -= np.mean(melspecgram)  # Set the mean to 0
+    melspecgram /= np.std(melspecgram)  # Set the variance to 1
     return melspecgram
 
 

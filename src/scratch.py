@@ -35,3 +35,25 @@
 # # log_mel_spectrograms /= np.abs(log_mel_spectrograms)
 # plt.pcolormesh(log_mel_spectrograms)
 # plt.show()
+
+# # Displaying multiple plots
+# i = 1
+# for sample_filename in os.listdir(actor_path)[:16]:
+#     sample_path = os.path.join(actor_path, sample_filename)
+#
+#     # Read the sample
+#     audio_ts = load_wav(sample_path)
+#
+#     # Remove the first and last second
+#     audio_ts = audio_ts[RAV_SR:-RAV_SR]
+#     duration_diff = 193794 - audio_ts.shape[0]
+#     audio_ts = np.pad(audio_ts, pad_width=(0, duration_diff),
+#                       mode='constant', constant_values=0)
+#     melspecgram = sgh.wave_to_melspecgram(audio_ts)
+#     print(sample_filename)
+#     melspecgram = sgh.scale_melspecgram(melspecgram)
+#     # print(np.amin(melspecgram), np.amax(melspecgram))
+#     # print(melspecgram.shape)
+#     plt.subplot(4, 4, i)
+#     plt.pcolormesh(melspecgram)
+#     i += 1
