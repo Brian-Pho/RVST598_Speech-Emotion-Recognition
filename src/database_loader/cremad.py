@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav, calculate_bounds
+from common import load_wav, calculate_bounds, process_wav
 from src import constants as c
 
 NUM_STD_CUTOFF = 3  # The number of standard deviations to include in the data
@@ -18,6 +18,7 @@ CRE_EMOTION_MAP = {
     "NEU": c.NEU,
     "SAD": c.SAD,
 }
+MEL_SPEC_FILENAME = "C_{id}_{emo_label}.npy"
 
 
 def generate_stats():
@@ -133,6 +134,36 @@ def _interpret_label(filename):
     return c.EMOTION_MAP[emotion]
 
 
+def read_to_melspecgram():
+    """
+    Reads the raw waveforms and converts them into log-mel spectrograms which
+    are stored. This is an alternative to read_data() and load_data() to prevent
+    using too much ram. Trades RAM for disk space.
+    """
+    id_counter = 0
+
+    wave_folder = os.path.join(dbc.CRE_DB_PATH, "AudioWAV")
+
+    for sample_filename in os.listdir(wave_folder):
+        sample_path = os.path.join(wave_folder, sample_filename)
+
+        # Read the sample
+        wav = load_wav(sample_path)
+
+        # Process the sample into a log-mel spectrogram
+        melspecgram = process_wav(wav)
+
+        # Read the label
+        label = _interpret_label(sample_filename)
+
+        # Save the log-mel spectrogram to use later
+        mel_spec_path = os.path.join(
+            dbc.PROCESS_DB_PATH, MEL_SPEC_FILENAME.format(
+                id=id_counter, emo_label=label))
+        np.save(mel_spec_path, melspecgram, allow_pickle=True)
+        id_counter += 1
+
+
 def main():
     """
     Local testing and cache creation.
@@ -140,10 +171,8 @@ def main():
     # cremad_samples, cremad_labels = load_data()
     # print(cremad_samples.shape)
     # print(cremad_labels.shape)
-    # print((cremad_samples[10], cremad_labels[10]))
-    # for sample in cremad_samples[0:10]:
-    #     print(sample.shape)
-    generate_stats()
+    # generate_stats()
+    read_to_melspecgram()
 
 
 if __name__ == "__main__":

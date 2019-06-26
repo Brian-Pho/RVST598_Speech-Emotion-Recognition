@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav, calculate_bounds
+from common import (
+    load_wav, remove_first_last_sec, calculate_bounds, process_wav)
 from src import constants as c
 
 NUM_ACTORS = 24
@@ -21,6 +22,7 @@ RAV_EMOTION_MAP = {
     "07": c.DIS,
     "08": c.SUR,
 }
+MEL_SPEC_FILENAME = "R_{id}_{emo_label}.npy"
 
 
 def generate_stats():
@@ -118,7 +120,7 @@ def read_data():
             audio_ts = load_wav(sample_path)
 
             # Remove the first and last second
-            audio_ts = audio_ts[RAV_SR:-RAV_SR]
+            audio_ts = remove_first_last_sec(audio_ts, RAV_SR)
 
             samples.append(audio_ts)
 
@@ -126,6 +128,42 @@ def read_data():
             labels.append(_interpret_label(sample_filename))
 
     return np.array(samples), np.array(labels)
+
+
+def read_to_melspecgram():
+    """
+    Reads the raw waveforms and converts them into log-mel spectrograms which
+    are stored. This is an alternative to read_data() and load_data() to prevent
+    using too much ram. Trades RAM for disk space.
+    """
+    id_counter = 0
+
+    for actor in range(1, NUM_ACTORS + 1):
+        actor_foldername = "Actor_{:02d}".format(actor)
+        actor_path = os.path.join(dbc.RAV_DB_PATH, actor_foldername)
+        print("Processing actor:", actor_foldername)
+
+        for sample_filename in os.listdir(actor_path):
+            sample_path = os.path.join(actor_path, sample_filename)
+
+            # Read the sample
+            wav = load_wav(sample_path)
+
+            # Remove the first and last second
+            wav = remove_first_last_sec(wav, RAV_SR)
+
+            # Process the sample into a log-mel spectrogram
+            melspecgram = process_wav(wav)
+
+            # Read the label
+            label = _interpret_label(sample_filename)
+
+            # Save the log-mel spectrogram to use later
+            mel_spec_path = os.path.join(
+                dbc.PROCESS_DB_PATH, MEL_SPEC_FILENAME.format(
+                    id=id_counter, emo_label=label))
+            np.save(mel_spec_path, melspecgram, allow_pickle=True)
+            id_counter += 1
 
 
 def _interpret_label(filename):
@@ -149,12 +187,10 @@ def main():
     Local testing and cache creation.
     """
     # ravdess_samples, ravdess_labels = load_data()
-    # print((ravdess_samples[10], ravdess_labels[10]))
     # print(ravdess_samples.shape)
-    # for sample in ravdess_samples[0:10]:
-    #     print(sample.shape)
     # print(ravdess_labels.shape)
     # generate_stats()
+    read_to_melspecgram()
 
 
 if __name__ == "__main__":
