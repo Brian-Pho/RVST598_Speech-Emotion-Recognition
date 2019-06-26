@@ -1,3 +1,8 @@
+"""
+This file holds general program constants such as which emotions are used and
+standards across all databases.
+"""
+
 # The list of seven emotions considered. Based on Ekman, 1999.
 NEU = "NEUTRAL"
 ANG = "ANGER"

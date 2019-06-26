@@ -1,3 +1,8 @@
+"""
+This file holds common functions across all database processing. Functions
+include loading and processing wav files.
+"""
+
 import librosa
 import numpy as np
 

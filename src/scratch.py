@@ -1,3 +1,8 @@
+"""
+This file holds useful functions to refer back to during programming. Functions
+in this file aren't runnable but should help debug or view data.
+"""
+
 # # Displaying and playing a waveform
 # file_num = 79
 # data = processed_samples[file_num][0]

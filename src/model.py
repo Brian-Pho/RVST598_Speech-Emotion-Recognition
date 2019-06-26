@@ -1,3 +1,7 @@
+"""
+This file builds the machine learning model.
+"""
+
 from keras import Input, layers, models
 
 

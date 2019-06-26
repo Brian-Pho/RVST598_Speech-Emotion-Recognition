@@ -1,6 +1,9 @@
-from src import preprocesser as pp
+"""
+This file holds the entry point into this program. This loads the data and
+trains the ML model.
+"""
+
 from src.database_loader import ravdess, cremad
-import numpy as np
 
 
 def main():

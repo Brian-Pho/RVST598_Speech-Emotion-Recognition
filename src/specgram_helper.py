@@ -1,3 +1,8 @@
+"""
+This file holds functions to help build audio spectrograms, specifically
+log-mel spectrograms.
+"""
+
 import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import minmax_scale

@@ -1,3 +1,8 @@
+"""
+This file holds database constants such as paths to the IEMOCAP, CREMA-D, and
+RAVDESS database.
+"""
+
 import os
 
 # GENERAL DB PATHS
