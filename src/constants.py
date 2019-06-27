@@ -3,6 +3,8 @@ This file holds general program constants such as which emotions are used and
 standards across all databases.
 """
 
+from src.database_loader import db_constants as dbc
+
 # The list of seven emotions considered. Based on Ekman, 1999.
 NEU = "NEUTRAL"
 ANG = "ANGER"
@@ -53,3 +55,7 @@ OVERLAP_SIZE = WIN_SIZE - STEP_SIZE
 MIN_HERTZ = 20.0
 MAX_HERTZ = 20000.0
 NUM_MEL_BINS = 200
+
+# Neural network parameters.
+BATCH_SIZE = 32
+MODEL_SAVE_PATH = dbc.DATA_PATH
