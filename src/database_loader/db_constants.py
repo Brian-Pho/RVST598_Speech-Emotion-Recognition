@@ -27,3 +27,6 @@ RAV_SAMPLES_CACHE_PATH = os.path.join(
     RAV_DB_PATH, "ravdess_samples_cache.npy")
 RAV_LABELS_CACHE_PATH = os.path.join(
     RAV_DB_PATH, "ravdess_labels_cache.npy")
+
+# MODEL SAVE PATH
+MODEL_SAVE_PATH = os.path.join(DATA_PATH, "model.h5")

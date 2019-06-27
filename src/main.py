@@ -2,43 +2,61 @@
 This file holds the entry point into this program. This loads the data and
 trains the ML model.
 """
+import numpy as np
 
-from src.database_loader import ravdess, cremad
+from src import constants as c
+from src import data_gen as dg
+from src import nn_model as nnm
+from src.database_loader import db_constants as dbc
 
 
 def main():
     """
-    The main entry point to this program. This gets the data, preprocesses it
-    for the machine learning model, submits it to the ML model, trains the ML
-    model, and saves the results.
+    The main entry point to this program.
     """
-    # Get the data
-    ravdess_samples, ravdess_labels = ravdess.load_data()
-    print(ravdess_samples.shape, ravdess_labels.shape)
-    cremad_samples, cremad_labels = cremad.load_data()
-    print(cremad_samples.shape, cremad_labels.shape)
-
-    # Cache it into spectrograms
-
-    # Create the spectrogram generator to feed the neural network
-
-    # # Preprocess the data
-    # processed_samples = pp.load_preprocess_samples(samples)
-    # print(processed_samples.shape)
-    # # processed_labels = pp.load_preprocess_labels(labels)
-    # # print(processed_labels.shape)
+    # Get the data filenames (log-mel spectrograms in the form of .npy files)
+    sample_fns = dg.get_sample_filenames()
+    np.random.shuffle(sample_fns)
+    # print(log_mel_samples.shape)
 
     # Shuffle and create the train, validation, and testing sets
+    num_total_samples = len(sample_fns)
+    num_test = int(num_total_samples * c.TEST_ALLOC)
+    num_valid = int(num_total_samples * c.VALID_ALLOC)
+    num_train = num_total_samples - (num_test + num_valid)
 
-    # Create the ML model
+    test_samples = sample_fns[:num_test]
+    valid_samples = sample_fns[num_test:num_test + num_valid]
+    train_samples = sample_fns[num_test + num_valid:]
 
-    # Training the model
+    # Create the batch generators to feed the neural network
+    test_gen = dg.batch_generator(test_samples, c.BATCH_SIZE)
+    train_gen = dg.batch_generator(train_samples, c.BATCH_SIZE)
+    valid_gen = dg.batch_generator(valid_samples, c.BATCH_SIZE)
+
+    # Calculate how many batches fit into each set. Used by Keras to know when
+    # an epoch is complete.
+    test_steps = np.ceil(num_test / c.BATCH_SIZE)
+    train_steps = np.ceil(num_train / c.BATCH_SIZE)
+    valid_steps = np.ceil(num_valid / c.BATCH_SIZE)
+
+    # Create and train the model
+    model = nnm.build_model()
+    history = model.fit_generator(
+        generator=train_gen, steps_per_epoch=train_steps, epochs=3, verbose=1,
+        validation_data=valid_gen, validation_steps=valid_steps, use_multiprocessing=False
+    )
 
     # Save the model and training history
+    model.save(dbc.MODEL_SAVE_PATH)
 
-    # Test the model
+    # Display the training history
+    nnm.display_history(history)
 
-    # Display results
+    # Test the model on the test set
+    test_loss, test_acc = model.evaluate_generator(
+        generator=test_gen, steps=test_steps)
+    print("Test loss:", test_loss, "Test acc:", test_acc)
 
 
 if __name__ == "__main__":

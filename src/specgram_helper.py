@@ -24,7 +24,6 @@ def wave_to_melspecgram(wave):
     stft = tf.signal.stft(wave, frame_length=c.WIN_SIZE,
                           frame_step=c.STEP_SIZE)
     spectrogram = tf.abs(stft)
-    # phase = tf.math.angle(stft)
 
     # Warp the linear scale spectrogram into the mel-scale
     num_specgram_bins = stft.shape[-1].value
