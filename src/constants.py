@@ -41,7 +41,7 @@ SR = 48000
 
 # Standard number of data points. Determined by the maximum data points in all
 # database (the longest file) after cutting off samples outside of three std.
-MAX_DATA_POINTS = 193794
+MAX_DATA_POINTS = 128224
 
 # Short Time Fourier Transform (STFT) parameters
 WIN_SIZE = 3072

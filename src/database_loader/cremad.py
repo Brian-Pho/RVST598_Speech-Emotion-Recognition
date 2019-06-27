@@ -17,10 +17,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav, calculate_bounds, process_wav
+from common import load_wav, calculate_bounds, process_wav, is_outlier
 from src import constants as c
 
-NUM_STD_CUTOFF = 3  # The number of standard deviations to include in the data
+NUM_STD_CUTOFF = 1  # The number of standard deviations to include in the data
+CRE_MIN_LEN, CRE_MAX_LEN = 60861, 193794
 CRE_EMO_INDEX = 2  # The index into the filename for the emotion label
 CRE_SR = 16000  # The sampling rate for all Crema-d audio samples
 CRE_EMOTION_MAP = {
@@ -131,22 +132,6 @@ def read_data():
     return np.array(samples), np.array(labels)
 
 
-def _interpret_label(filename):
-    """
-    Given a filename, it returns an integer representing the emotion label of
-    the file/sample.
-
-    :return: Integer
-    """
-    # Parse emotion ID from filename. It's the third string from the left
-    # according to https://github.com/CheyneyComputerScience/CREMA-D.
-    emotion_id = filename.split("_")[CRE_EMO_INDEX]
-    emotion = CRE_EMOTION_MAP[emotion_id]
-
-    # Return a new emotion ID that's standardized across databases.
-    return c.EMOTION_MAP[emotion]
-
-
 def read_to_melspecgram():
     """
     Reads the raw waveforms and converts them into log-mel spectrograms which
@@ -163,8 +148,18 @@ def read_to_melspecgram():
         # Read the sample
         wav = load_wav(sample_path)
 
+        # Check if it's an outlier
+        if is_outlier(wav, lower=CRE_MIN_LEN, upper=CRE_MAX_LEN):
+            continue
+
         # Process the sample into a log-mel spectrogram
         melspecgram = process_wav(wav)
+
+        # plt.pcolormesh(melspecgram)
+        # plt.show()
+        #
+        # print(np.amin(melspecgram), np.amax(melspecgram))
+        # print(melspecgram.shape)
 
         # Read the label
         label = _interpret_label(sample_filename)
@@ -175,6 +170,22 @@ def read_to_melspecgram():
                 id=id_counter, emo_label=label))
         np.save(mel_spec_path, melspecgram, allow_pickle=True)
         id_counter += 1
+
+
+def _interpret_label(filename):
+    """
+    Given a filename, it returns an integer representing the emotion label of
+    the file/sample.
+
+    :return: Integer
+    """
+    # Parse emotion ID from filename. It's the third string from the left
+    # according to https://github.com/CheyneyComputerScience/CREMA-D.
+    emotion_id = filename.split("_")[CRE_EMO_INDEX]
+    emotion = CRE_EMOTION_MAP[emotion_id]
+
+    # Return a new emotion ID that's standardized across databases.
+    return c.EMOTION_MAP[emotion]
 
 
 def main():

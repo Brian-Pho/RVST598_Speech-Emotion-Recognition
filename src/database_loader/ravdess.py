@@ -18,11 +18,12 @@ import numpy as np
 
 import db_constants as dbc
 from common import (
-    load_wav, remove_first_last_sec, calculate_bounds, process_wav)
+    load_wav, remove_first_last_sec, calculate_bounds, process_wav, is_outlier)
 from src import constants as c
 
 NUM_ACTORS = 24
 NUM_STD_CUTOFF = 3  # The number of standard deviations to include in the data
+RAV_MIN_LEN, RAV_MAX_LEN = 44941, 128224
 RAV_EMO_INDEX = 2  # The index into the filename for the emotion label
 RAV_SR = 48000  # The sampling rate for all Ravdess audio samples
 RAV_EMOTION_MAP = {
@@ -164,6 +165,10 @@ def read_to_melspecgram():
 
             # Remove the first and last second
             wav = remove_first_last_sec(wav, RAV_SR)
+
+            # Check if it's an outlier
+            if is_outlier(wav, lower=RAV_MIN_LEN, upper=RAV_MAX_LEN):
+                continue
 
             # Process the sample into a log-mel spectrogram
             melspecgram = process_wav(wav)

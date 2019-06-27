@@ -93,3 +93,15 @@ def calculate_bounds(data, num_std):
     cut_off = data_std * num_std
     lower, upper = data_mean - cut_off, data_mean + cut_off
     return lower, upper
+
+
+def is_outlier(audio_ts, lower, upper):
+    """
+    Checks if an audio sample is an outlier. Bounds are inclusive.
+
+    :param audio_ts: The audio time series data points
+    :param lower: The lower bound
+    :param upper: The upper bound
+    :return: Boolean
+    """
+    return False if lower <= len(audio_ts) <= upper else True
