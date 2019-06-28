@@ -2,6 +2,23 @@
 
 My summer research project on using machine learning to detect emotions in speech.
 
+## Plan
+
+My goal is to detect which emotions are present in speech. I consider these seven
+emotions:
+
+- Neutral
+- Anger
+- Disgust
+- Fear
+- Happy
+- Sad
+- Surprise
+
+And have found databases with speech files spoken in these emotion. The data flow looks like this:
+
+Raw waveform (time + amplitude) -> Spectrogram (time + frequency + ampltitude) -> Log-Mel Spectrogram (a spectrogram where frequency is converted into the mel scale) -> Convolutional Neural Network -> Output (one of the seven emotion)
+
 ## File structure
 
 ```bash
