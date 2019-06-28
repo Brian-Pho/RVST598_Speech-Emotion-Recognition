@@ -5,6 +5,8 @@ This file builds the machine learning model.
 import matplotlib.pyplot as plt
 from keras import layers, models
 from keras.utils import plot_model
+import numpy as np
+from keras import backend as k
 
 
 def build_model():
@@ -29,7 +31,7 @@ def build_model():
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy',
                   metrics=['accuracy'])
 
-    model.summary()
+    # model.summary()
     # plot_model(model, to_file="model.png")
 
     return model
@@ -60,4 +62,68 @@ def display_history(history):
     plt.title('Training and validation loss')
     plt.legend()
 
+    plt.show()
+
+
+def visualize_interm_activations(model, test_img):
+    """
+    Visualizes the intermediate activations of each convolution layer.
+
+    :param model: The ML model
+    :param test_img: The image to get activations on
+    """
+    # Extract the outputs of the top three conv layers
+    layer_names = [layer.name for layer in model.layers[0:5:2]]
+    layer_outputs = [layer.output for layer in model.layers[0:5:2]]
+    activation_model = models.Model(inputs=model.input, outputs=layer_outputs)
+    activations = activation_model.predict(test_img)
+
+    # # To visualize one channel for one activation layer
+    # first_layer_activation = activations[0]
+    # print(first_layer_activation.shape)
+    # plt.pcolormesh(first_layer_activation[0, :, :, 4])
+    # plt.show()
+
+    # To visualize all channels for one activation layer
+    for name, activation in zip(layer_names, activations):
+        for i, j in zip(range(1, 33), range(0, 32)):
+            plt.subplot(4, 8, i)
+            plt.pcolormesh(activation[0, :, :, j], cmap="magma")
+
+        # plt.title(name)
+        plt.show()
+
+
+def visualize_heatmap_activation(model, test_img):
+    """
+    Visualizes the heatmap activations of each convolution layer.
+
+    :param model: The ML model
+    :param test_img: The image to get activations on
+    """
+    preds = model.predict(test_img)
+
+    # Setting up the Grad-CAM algorithm
+    output = model.output[:, np.argmax(preds[0])]
+    last_conv_layer = model.get_layer('conv2d_3')
+    grads = k.gradients(output, last_conv_layer.output)[0]
+    pooled_grads = k.mean(grads, axis=(0, 1, 2))
+
+    iterate = k.function([model.input], [pooled_grads, last_conv_layer.output[0]])
+
+    pooled_grads_value, conv_layer_output_value = iterate([test_img])
+
+    for i in range(64):
+        conv_layer_output_value[:, :, i] *= pooled_grads_value[i]
+
+    heatmap = np.mean(conv_layer_output_value, axis=-1)
+
+    # Heatmap post-processing
+    heatmap = np.maximum(heatmap, 0)
+    heatmap /= np.max(heatmap)
+
+    # Display the test image alongside the heatmap
+    plt.pcolormesh(test_img[0, :, :, 0])
+    plt.figure()
+    plt.pcolormesh(heatmap, cmap="magma")
     plt.show()

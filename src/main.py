@@ -42,16 +42,22 @@ def main():
 
     # Create and train the model
     model = nnm.build_model()
-    history = model.fit_generator(
-        generator=train_gen, steps_per_epoch=train_steps, epochs=3, verbose=1,
-        validation_data=valid_gen, validation_steps=valid_steps, use_multiprocessing=False
-    )
+    model.load_weights(dbc.MODEL_SAVE_PATH)
+    # history = model.fit_generator(
+    #     generator=train_gen, steps_per_epoch=train_steps, epochs=1100, verbose=2,
+    #     validation_data=valid_gen, validation_steps=valid_steps, use_multiprocessing=False
+    # )
+    # print([layer.name for layer in model.layers])
+
+    for inputs, targets in train_gen:
+        print(targets[0:1])
+        nnm.visualize_heatmap_activation(model, inputs[0:1])
 
     # Save the model and training history
     model.save(dbc.MODEL_SAVE_PATH)
 
     # Display the training history
-    nnm.display_history(history)
+    # nnm.display_history(history)
 
     # Test the model on the test set
     test_loss, test_acc = model.evaluate_generator(
