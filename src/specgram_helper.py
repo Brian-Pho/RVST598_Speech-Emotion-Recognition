@@ -1,6 +1,6 @@
 """
-This file holds functions to help build audio spectrograms, specifically
-log-mel spectrograms.
+This file holds functions to build audio log-mel spectrograms and to process
+them.
 """
 
 import numpy as np
@@ -18,7 +18,7 @@ def wave_to_melspecgram(wave):
     https://www.tensorflow.org/api_docs/python/tf/signal/mfccs_from_log_mel_spectrograms
 
     :param wave: The time series of an audio clip
-    :return: NumPy array of complex numbers
+    :return: np.array (complex)
     """
     # Convert the wave into the frequency domain
     stft = tf.signal.stft(wave, frame_length=c.WIN_SIZE,
@@ -44,7 +44,7 @@ def wave_to_melspecgram(wave):
 
     sess = tf.compat.v1.Session()
     with sess.as_default():
-        # Convert the spectrogram from a tf.Tensor into a np.array
+        # Convert the spectrogram from a tf.Tensor to a np.array
         log_mel_specgram = log_mel_specgram.eval()
 
     return log_mel_specgram

@@ -155,6 +155,9 @@ def read_to_melspecgram():
         # Process the sample into a log-mel spectrogram
         melspecgram = process_wav(wav)
 
+        # plt.pcolormesh(melspecgram, cmap="magma")
+        # plt.show()
+
         # Read the label
         label = _interpret_label(sample_filename)
 

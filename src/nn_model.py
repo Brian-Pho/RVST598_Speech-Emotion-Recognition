@@ -3,17 +3,15 @@ This file builds the machine learning model.
 """
 
 import matplotlib.pyplot as plt
-from keras import layers, models
-from keras.utils import plot_model
 import numpy as np
-from keras import backend as k
+from keras import layers, models, backend
 
 
 def build_model():
     """
-    Build a CNN to classify emotions in speech using Keras.
+    Builds a CNN model to classify emotions in speech using Keras.
 
-    :return:
+    :return: keras.model
     """
     model = models.Sequential()
     # kernel_regularizer=regularizers.l2(0.001),
@@ -26,6 +24,7 @@ def build_model():
     model.add(layers.Dense(64, activation='relu'))
     # model.add(layers.Dropout(0.5))
     model.add(layers.Dense(32, activation='relu'))
+    # model.add(layers.Dropout(0.5))
     model.add(layers.Dense(7, activation='softmax'))
     # model.add(layers.Dropout(0.5))
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy',
@@ -104,16 +103,15 @@ def visualize_heatmap_activation(model, test_img):
     preds = model.predict(test_img)
 
     # Setting up the Grad-CAM algorithm
-    output = model.output[:, np.argmax(preds[0])]
+    img_output = model.output[:, np.argmax(preds[0])]
     last_conv_layer = model.get_layer('conv2d_3')
-    grads = k.gradients(output, last_conv_layer.output)[0]
-    pooled_grads = k.mean(grads, axis=(0, 1, 2))
+    grads = backend.gradients(img_output, last_conv_layer.output)[0]
+    pooled_grads = backend.mean(grads, axis=(0, 1, 2))
 
-    iterate = k.function([model.input], [pooled_grads, last_conv_layer.output[0]])
-
+    iterate = backend.function([model.input], [pooled_grads, last_conv_layer.output[0]])
     pooled_grads_value, conv_layer_output_value = iterate([test_img])
 
-    for i in range(64):
+    for i in range(len(pooled_grads_value)):
         conv_layer_output_value[:, :, i] *= pooled_grads_value[i]
 
     heatmap = np.mean(conv_layer_output_value, axis=-1)

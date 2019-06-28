@@ -19,26 +19,27 @@ def main():
     np.random.shuffle(sample_fns)
     # print(log_mel_samples.shape)
 
-    # Shuffle and create the train, validation, and testing sets
+    # Shuffle and create the train, validation, and test sets
     num_total_samples = len(sample_fns)
     num_test = int(num_total_samples * c.TEST_ALLOC)
     num_valid = int(num_total_samples * c.VALID_ALLOC)
-    num_train = num_total_samples - (num_test + num_valid)
+    num_not_train = num_test + num_valid
+    num_train = num_total_samples - num_not_train
 
     test_samples = sample_fns[:num_test]
-    valid_samples = sample_fns[num_test:num_test + num_valid]
-    train_samples = sample_fns[num_test + num_valid:]
+    valid_samples = sample_fns[num_test:num_not_train]
+    train_samples = sample_fns[num_not_train:]
 
     # Create the batch generators to feed the neural network
     test_gen = dg.batch_generator(test_samples, c.BATCH_SIZE)
-    train_gen = dg.batch_generator(train_samples, c.BATCH_SIZE)
     valid_gen = dg.batch_generator(valid_samples, c.BATCH_SIZE)
+    train_gen = dg.batch_generator(train_samples, c.BATCH_SIZE)
 
     # Calculate how many batches fit into each set. Used by Keras to know when
     # an epoch is complete.
     test_steps = np.ceil(num_test / c.BATCH_SIZE)
-    train_steps = np.ceil(num_train / c.BATCH_SIZE)
     valid_steps = np.ceil(num_valid / c.BATCH_SIZE)
+    train_steps = np.ceil(num_train / c.BATCH_SIZE)
 
     # Create and train the model
     model = nnm.build_model()
@@ -47,7 +48,6 @@ def main():
     #     generator=train_gen, steps_per_epoch=train_steps, epochs=1100, verbose=2,
     #     validation_data=valid_gen, validation_steps=valid_steps, use_multiprocessing=False
     # )
-    # print([layer.name for layer in model.layers])
 
     for inputs, targets in train_gen:
         print(targets[0:1])
