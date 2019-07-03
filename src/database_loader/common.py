@@ -21,7 +21,7 @@ def load_wav(wav_path):
     :param wav_path: Path to wav file
     :return: Tensor
     """
-    audio_ts, sr = librosa.load(
+    wav, sr = librosa.load(
         wav_path, sr=c.SR, dtype=np.dtype(TIME_SERIES_DATA_TYPE),
         res_type="kaiser_best")
 
@@ -29,7 +29,7 @@ def load_wav(wav_path):
         print("Sampling rate mismatch.")
         return None
 
-    return audio_ts
+    return wav
 
 
 def process_wav(wav):
@@ -51,33 +51,33 @@ def process_wav(wav):
     return scaled_melspecgram
 
 
-def remove_first_last_sec(audio_ts, sr):
+def remove_first_last_sec(wav, sr):
     """
     Removes the first and last second of an audio waveform.
 
-    :param audio_ts: The audio time series data points
+    :param wav: The audio time series data points
     :param sr: The sampling rate of the audio
     :return: Tensor
     """
-    return audio_ts[sr:-sr]
+    return wav[sr:-sr]
 
 
-def pad_wav(audio_ts, desired_length=c.MAX_DATA_POINTS):
+def pad_wav(wav, desired_length=c.MAX_DATA_POINTS):
     """
     Pads an audio waveform to the desired length by adding 0s to the right end.
 
-    :param audio_ts: The audio time series data points
+    :param wav: The audio time series data points
     :param desired_length: The desired length to pad to
     :return: Tensor
     """
-    length_diff = desired_length - audio_ts.shape[0]
-    audio_ts_padded = np.pad(audio_ts, pad_width=(0, length_diff),
+    length_diff = desired_length - wav.shape[0]
+    wav_padded = np.pad(wav, pad_width=(0, length_diff),
                              mode='constant', constant_values=0)
 
-    if len(audio_ts_padded) != desired_length:
+    if len(wav_padded) != desired_length:
         print("An error occurred during padding the waveform.")
 
-    return audio_ts_padded
+    return wav_padded
 
 
 def calculate_bounds(data, num_std):
@@ -95,13 +95,13 @@ def calculate_bounds(data, num_std):
     return lower, upper
 
 
-def is_outlier(audio_ts, lower, upper):
+def is_outlier(wav, lower, upper):
     """
     Checks if an audio sample is an outlier. Bounds are inclusive.
 
-    :param audio_ts: The audio time series data points
+    :param wav: The audio time series data points
     :param lower: The lower bound
     :param upper: The upper bound
     :return: Boolean
     """
-    return False if lower <= len(audio_ts) <= upper else True
+    return False if lower <= len(wav) <= upper else True

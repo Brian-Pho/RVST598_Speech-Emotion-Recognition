@@ -21,7 +21,7 @@ in this file aren't runnable but should help debug or view data.
 # # Create log-mel spectrogram from TensorFlow
 # sess = tf.compat.v1.Session()
 # with sess.as_default():
-#     stfts = tf.signal.stft(audio_ts, frame_length=c.WIN_SIZE,
+#     stfts = tf.signal.stft(wav, frame_length=c.WIN_SIZE,
 #                            frame_step=c.STEP_SIZE)
 #     spectrograms = tf.abs(stfts)
 #     num_spectrogram_bins = stfts.shape[-1].value
@@ -47,14 +47,14 @@ in this file aren't runnable but should help debug or view data.
 #     sample_path = os.path.join(actor_path, sample_filename)
 #
 #     # Read the sample
-#     audio_ts = load_wav(sample_path)
+#     wav = load_wav(sample_path)
 #
 #     # Remove the first and last second
-#     audio_ts = audio_ts[RAV_SR:-RAV_SR]
-#     duration_diff = 193794 - audio_ts.shape[0]
-#     audio_ts = np.pad(audio_ts, pad_width=(0, duration_diff),
+#     wav = wav[RAV_SR:-RAV_SR]
+#     duration_diff = 193794 - wav.shape[0]
+#     wav = np.pad(wav, pad_width=(0, duration_diff),
 #                       mode='constant', constant_values=0)
-#     melspecgram = sgh.wave_to_melspecgram(audio_ts)
+#     melspecgram = sgh.wave_to_melspecgram(wav)
 #     print(sample_filename)
 #     melspecgram = sgh.scale_melspecgram(melspecgram)
 #     # print(np.amin(melspecgram), np.amax(melspecgram))

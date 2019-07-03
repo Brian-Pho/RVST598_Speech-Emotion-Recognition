@@ -123,8 +123,8 @@ def read_data():
         sample_path = os.path.join(wave_folder, sample_filename)
 
         # Read the sample
-        audio_ts = load_wav(sample_path)
-        samples.append(audio_ts)
+        wav = load_wav(sample_path)
+        samples.append(wav)
 
         # Read the label
         labels.append(_interpret_label(sample_filename))

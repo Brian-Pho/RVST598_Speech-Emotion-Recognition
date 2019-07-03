@@ -131,12 +131,12 @@ def read_data():
             sample_path = os.path.join(actor_path, sample_filename)
 
             # Read the sample
-            audio_ts = load_wav(sample_path)
+            wav = load_wav(sample_path)
 
             # Remove the first and last second
-            audio_ts = remove_first_last_sec(audio_ts, RAV_SR)
+            wav = remove_first_last_sec(wav, RAV_SR)
 
-            samples.append(audio_ts)
+            samples.append(wav)
 
             # Read the label
             labels.append(_interpret_label(sample_filename))
