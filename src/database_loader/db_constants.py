@@ -32,5 +32,12 @@ RAV_SAMPLES_CACHE_PATH = os.path.join(
 RAV_LABELS_CACHE_PATH = os.path.join(
     RAV_DB_PATH, "ravdess_labels_cache.npy")
 
+# TESS DATABASE
+TES_DB_PATH = os.path.join(RAW_DB_PATH, "tess")
+TES_SAMPLES_CACHE_PATH = os.path.join(
+    TES_DB_PATH, "tess_samples_cache.npy")
+TES_LABELS_CACHE_PATH = os.path.join(
+    TES_DB_PATH, "tess_labels_cache.npy")
+
 # MODEL SAVE PATH
 MODEL_SAVE_PATH = os.path.join(DATA_PATH, "model.h5")
