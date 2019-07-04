@@ -59,3 +59,11 @@ A table comparing the different emotions in each dataset.
 | Emo-DB     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x:   | :x:   | :x: | :x: | :heavy_check_mark: 
 
 The databases were not uploaded to Github due to their size and copy restrictions.
+
+Database names
+
+- IEMOCAP: Interactive Emotional Dyadic Motion Capture
+- CREMA-D: Crowd-sourced Emotional Mutimodal Actors Dataset
+- TESS: Toronto Emotional Speech Set
+- RAVDESS: Ryerson Audio-Visual Database of Emotional Speech and Song
+- EmoV-DB: Emotional Voices Database

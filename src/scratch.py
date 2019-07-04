@@ -62,6 +62,7 @@ in this file aren't runnable but should help debug or view data.
 #     plt.subplot(4, 4, i)
 #     plt.pcolormesh(melspecgram)
 #     i += 1
+# plt.show()
 
 # # Change matplotlib colors
 # plt.pcolormesh(melspecgram, cmap=plt.get_cmap("YlGnBu"))

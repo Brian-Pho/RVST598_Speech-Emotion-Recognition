@@ -44,3 +44,8 @@
 - [ ] Calculate human baseline for emotion classification for IEMOCAP
 - [ ] Read in IEMOCAP
 - [ ] Update model to handle multi-label classification
+- [ ] Remove noise from Crema-d and Iemocap
+- [ ] Consider using EmoV-DB
+- [ ] Set the cutoff length for all database wav files
+- [ ] Calculate database statistics
+- [ ] Set new mel max hertz frequency cutoff as it's causing black bars on spectrograms
