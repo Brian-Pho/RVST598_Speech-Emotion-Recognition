@@ -5,11 +5,11 @@ include loading and processing wav files.
 
 import librosa
 import numpy as np
+import noisereduce as nr
+
 
 from src import constants as c
 from src import specgram_helper as sgh
-
-TIME_SERIES_DATA_TYPE = "float32"
 
 
 def load_wav(wav_path):
@@ -22,7 +22,7 @@ def load_wav(wav_path):
     :return: Tensor
     """
     wav, sr = librosa.load(
-        wav_path, sr=c.SR, dtype=np.dtype(TIME_SERIES_DATA_TYPE),
+        wav_path, sr=c.SR, dtype=np.dtype(c.WAV_DATA_TYPE),
         res_type="kaiser_best")
 
     if sr != c.SR:
@@ -42,13 +42,18 @@ def process_wav(wav):
     # Pad to the constant length
     padded_wav = pad_wav(wav)
 
+    noisy_part = padded_wav[0:24000]
+    denoised_wav = nr.reduce_noise(
+        audio_clip=padded_wav, noise_clip=noisy_part, verbose=False)
+
     # Convert to log-mel spectrogram
-    melspecgram = sgh.wave_to_melspecgram(padded_wav)
+    melspecgram = sgh.wave_to_melspecgram(denoised_wav)
 
     # Scale the spectrogram to be between -1 and 1
     scaled_melspecgram = sgh.scale_melspecgram(melspecgram)
 
     return scaled_melspecgram
+    # return melspecgram
 
 
 def remove_first_last_sec(wav, sr):
@@ -72,7 +77,7 @@ def pad_wav(wav, desired_length=c.MAX_DATA_POINTS):
     """
     length_diff = desired_length - wav.shape[0]
     wav_padded = np.pad(wav, pad_width=(0, length_diff),
-                             mode='constant', constant_values=0)
+                        mode='constant', constant_values=0)
 
     if len(wav_padded) != desired_length:
         print("An error occurred during padding the waveform.")

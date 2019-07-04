@@ -45,6 +45,9 @@ SR = 48000
 # database (the longest file) after cutting off samples outside of three std.
 MAX_DATA_POINTS = 193794
 
+# Standard data type for the time series / wav data
+WAV_DATA_TYPE = "float32"
+
 # Short Time Fourier Transform (STFT) parameters
 WIN_SIZE = 3072
 STEP_SIZE = int(WIN_SIZE * 0.25)
