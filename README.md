@@ -34,16 +34,16 @@ Raw waveform (time + amplitude) -> Spectrogram (time + frequency + ampltitude) -
 
 The following databases were used/considered.
 
-|            |       Using?       | File Types | Label Type | Label Level        | Sampling Rate (Hz) |
-|------------|:------------------:|:----------:|------------|--------------------|--------------------|
-| [IEMOCAP](https://sail.usc.edu/iemocap)                                          | :heavy_check_mark: | wav        | Multi      | Sentence + Phoneme | 16000              |
-| [MSP-IMPROV](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html) |         :x:        | ???        | ???        | ???                | ???                |
-| [CREMA-D](https://github.com/CheyneyComputerScience/CREMA-D)                      | :heavy_check_mark: | mp3 + wav  | Multi      | Sentence           | 16000              |
-| [TESS](https://tspace.library.utoronto.ca/handle/1807/24487)                   | :heavy_check_mark: | wav        | Single     | Sentence           | 24414              |
-| [RAVDESS](https://smartlaboratory.org/ravdess)                                    | :heavy_check_mark: | wav        | Single     | Sentence           | 48000              |
-| [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Database.html)                     |         :x:        | wav        | Single     | Phoneme            | 44100              |
-| [EmoV-DB](https://github.com/numediart/EmoV-DB)                                   |         :x:        | wav        | Single     | Sentence           | 44100              |
-| [Emo-DB](http://emodb.bilderbar.info/index-1280.html)                            |         :x:        | wav        | Single     | Sentence           | 16000              |
+| Database                                                                             |       Using?       | File Type | Number of Files | Sampling Rate (Hz) | Label Type | Label Level        |
+|--------------------------------------------------------------------------------------|:------------------:|:---------:|-----------------|--------------------|------------|--------------------|
+| [IEMOCAP](https://sail.usc.edu/iemocap)                                              | :heavy_check_mark: |    wav    | 10043           | 16000              | Multi      | Sentence + Phoneme |
+| [MSP-IMPROV](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html) |         :x:        |    ???    | ???             | ???                | ???        | ???                |
+| [CREMA-D](https://github.com/CheyneyComputerScience/CREMA-D)                         | :heavy_check_mark: | mp3 + wav | 7442            | 16000              | Multi      | Sentence           |
+| [TESS](https://tspace.library.utoronto.ca/handle/1807/24487)                         | :heavy_check_mark: |    wav    | 2800            | 24414              | Single     | Sentence           |
+| [RAVDESS](https://smartlaboratory.org/ravdess)                                       | :heavy_check_mark: |    wav    | 1440            | 48000              | Single     | Sentence           |
+| [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Database.html)                          |         :x:        |    wav    | 480             | 44100              | Single     | Phoneme            |
+| [EmoV-DB](https://github.com/numediart/EmoV-DB)                                      |         :x:        |    wav    | 6599            | 44100              | Single     | Sentence           |
+| [Emo-DB](http://emodb.bilderbar.info/index-1280.html)                                |         :x:        |    wav    | 535             | 16000              | Single     | Sentence           |
 
 A table comparing the different emotions in each dataset.
 
