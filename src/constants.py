@@ -53,11 +53,11 @@ WIN_SIZE = 3072
 STEP_SIZE = int(WIN_SIZE * 0.25)
 OVERLAP_SIZE = WIN_SIZE - STEP_SIZE
 
-# Mel scale parameters. Determined by the human hearing range and what made the
+# Mel scale parameters. Determined by the human hearing range and what makes the
 # spectrogram look good.
 MIN_HERTZ = 20.0
-MAX_HERTZ = 20000.0
-NUM_MEL_BINS = 200
+MAX_HERTZ = 12000.0
+NUM_MEL_BINS = 200  # Controls the y-axis resolution
 
 # Neural network parameters.
 BATCH_SIZE = 32

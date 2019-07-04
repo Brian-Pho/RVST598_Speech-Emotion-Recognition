@@ -4,9 +4,8 @@ include loading and processing wav files.
 """
 
 import librosa
-import numpy as np
 import noisereduce as nr
-
+import numpy as np
 
 from src import constants as c
 from src import specgram_helper as sgh
@@ -15,7 +14,7 @@ from src import specgram_helper as sgh
 def load_wav(wav_path):
     """
     Loads a wav file as a numpy array. Wraps the Librosa load function to keep
-    the parameters consistent. Drops the sampling rate data because all wav's
+    the parameters consistent. Drops the file's sampling rate because all wav's
     will be resampled to the sampling rate defined in constants.py.
 
     :param wav_path: Path to wav file
@@ -32,28 +31,29 @@ def load_wav(wav_path):
     return wav
 
 
-def process_wav(wav):
+def process_wav(wav, noisy=False):
     """
     Processes a wav sample into a constant length, scaled, log-mel spectrogram.
 
     :param wav: The audio time series
+    :param noisy: Used if the data is known to be noisy
     :return: np.array
     """
     # Pad to the constant length
     padded_wav = pad_wav(wav)
 
-    noisy_part = padded_wav[0:24000]
-    denoised_wav = nr.reduce_noise(
-        audio_clip=padded_wav, noise_clip=noisy_part, verbose=False)
+    if noisy:
+        noisy_part = padded_wav[:c.SR * 0.5]  # Assume the first 0.5s is noise
+        padded_wav = nr.reduce_noise(
+            audio_clip=padded_wav, noise_clip=noisy_part, verbose=False)
 
     # Convert to log-mel spectrogram
-    melspecgram = sgh.wave_to_melspecgram(denoised_wav)
+    melspecgram = sgh.wave_to_melspecgram(padded_wav)
 
     # Scale the spectrogram to be between -1 and 1
     scaled_melspecgram = sgh.scale_melspecgram(melspecgram)
 
     return scaled_melspecgram
-    # return melspecgram
 
 
 def remove_first_last_sec(wav, sr):
@@ -76,11 +76,17 @@ def pad_wav(wav, desired_length=c.MAX_DATA_POINTS):
     :return: Tensor
     """
     length_diff = desired_length - wav.shape[0]
+
+    if length_diff < 0:
+        print("The waveform is longer than the desired length.")
+        return None
+
     wav_padded = np.pad(wav, pad_width=(0, length_diff),
                         mode='constant', constant_values=0)
 
     if len(wav_padded) != desired_length:
         print("An error occurred during padding the waveform.")
+        return None
 
     return wav_padded
 
@@ -97,6 +103,7 @@ def calculate_bounds(data, num_std):
     data_mean, data_std = np.mean(data), np.std(data)
     cut_off = data_std * num_std
     lower, upper = data_mean - cut_off, data_mean + cut_off
+
     return lower, upper
 
 

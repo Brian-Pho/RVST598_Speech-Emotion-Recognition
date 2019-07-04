@@ -77,16 +77,16 @@ def read_data():
         sess_foldername = "S{}".format(num_sess)
         print("Processing session:", sess_foldername)
 
-        sess_path = os.path.join(data_path, sess_foldername)
+        sess_data_path = os.path.join(data_path, sess_foldername)
 
-        for perform in os.listdir(sess_path):
-            perform_path = os.path.join(sess_path, perform)
+        for perform in os.listdir(sess_data_path):
+            perform_path = os.path.join(sess_data_path, perform)
             print("Processing performance:", perform)
 
-            for utterance in os.listdir(perform_path):
-                utterance_path = os.path.join(perform_path, utterance)
+            for sample_filename in os.listdir(perform_path):
+                sample_path = os.path.join(perform_path, sample_filename)
 
-                wav = load_wav(utterance_path)
+                wav = load_wav(sample_path)
                 melspecgram = process_wav(wav)
                 # melspecgram = librosa.feature.melspectrogram(wav)
                 plt.pcolormesh(melspecgram)
@@ -94,6 +94,9 @@ def read_data():
                 plt.show()
 
         sess_label_path = os.path.join(labels_path, sess_foldername)
+
+        for perform in os.listdir(sess_label_path):
+            perform_path = os.path.join(sess_label_path, perform)
 
 
 def read_to_melspecgram():

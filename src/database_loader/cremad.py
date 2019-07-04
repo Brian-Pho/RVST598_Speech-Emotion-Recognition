@@ -116,15 +116,14 @@ def read_data():
     """
     samples = []
     labels = []
-    wave_folder = os.path.join(dbc.CRE_DB_PATH, "AudioWAV")
+    wav_folder = os.path.join(dbc.CRE_DB_PATH, "AudioWAV")
 
-    for sample_filename in os.listdir(wave_folder):
+    for sample_filename in os.listdir(wav_folder):
         print("Processing file:", sample_filename)
-        sample_path = os.path.join(wave_folder, sample_filename)
+        sample_path = os.path.join(wav_folder, sample_filename)
 
         # Read the sample
-        wav = load_wav(sample_path)
-        samples.append(wav)
+        samples.append(load_wav(sample_path))
 
         # Read the label
         labels.append(_interpret_label(sample_filename))
@@ -140,10 +139,10 @@ def read_to_melspecgram():
     """
     id_counter = 0
 
-    wave_folder = os.path.join(dbc.CRE_DB_PATH, "AudioWAV")
+    wav_folder = os.path.join(dbc.CRE_DB_PATH, "AudioWAV")
 
-    for sample_filename in os.listdir(wave_folder):
-        sample_path = os.path.join(wave_folder, sample_filename)
+    for sample_filename in os.listdir(wav_folder):
+        sample_path = os.path.join(wav_folder, sample_filename)
 
         # Read the sample
         wav = load_wav(sample_path)
@@ -155,8 +154,8 @@ def read_to_melspecgram():
         # Process the sample into a log-mel spectrogram
         melspecgram = process_wav(wav)
 
-        # plt.pcolormesh(melspecgram, cmap="magma")
-        # plt.show()
+        plt.pcolormesh(melspecgram, cmap="magma")
+        plt.show()
 
         # Read the label
         label = _interpret_label(sample_filename)
