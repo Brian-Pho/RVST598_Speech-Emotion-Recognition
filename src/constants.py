@@ -45,6 +45,9 @@ SR = 48000
 # database (the longest file) after cutting off samples outside of three std.
 MAX_DATA_POINTS = 193794
 
+# The number of standard deviations to include in the data
+NUM_STD_CUTOFF = 3
+
 # Standard data type for the time series / wav data
 WAV_DATA_TYPE = "float32"
 

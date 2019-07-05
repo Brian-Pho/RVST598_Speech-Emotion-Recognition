@@ -13,16 +13,14 @@ you plan on using a data generator to feed a neural network the samples.
 
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
 from common import (
-    load_wav, remove_first_last_sec, calculate_bounds, process_wav, is_outlier)
+    load_wav, remove_first_last_sec, generate_db_stats, process_wav, is_outlier)
 from src import constants as c
 
 NUM_ACTORS = 24
-NUM_STD_CUTOFF = 3  # The number of standard deviations to include in the data
 RAV_MIN_LEN, RAV_MAX_LEN = 44941, 128224
 RAV_EMO_INDEX = 2  # The index into the filename for the emotion label
 RAV_SR = 48000  # The sampling rate for all Ravdess audio samples
@@ -37,44 +35,6 @@ RAV_EMOTION_MAP = {
     "08": c.SUR,
 }
 MEL_SPEC_FILENAME = "R_{id}_{emo_label}.npy"
-
-
-def generate_stats():
-    """
-    Generates statistics about the RAVDESS database.
-    """
-    # Convert each label back into an emotion.
-    ravdess_samples, ravdess_labels = load_data()
-    ravdess_labels = [c.INVERT_EMOTION_MAP[label] for label in ravdess_labels]
-
-    # # Calculate the emotion class percentages. The neutral class has the most
-    # # samples due to combining it with the calm class.
-    # unique, counts = np.unique(ravdess_labels, return_counts=True)
-    # print(dict(zip(unique, counts)))
-    # plt.pie(x=counts, labels=unique)
-    # plt.show()
-
-    # Calculate the distribution of tensor shapes for the samples
-    audio_lengths = [len(ts) for ts in ravdess_samples]
-
-    lower, upper = calculate_bounds(audio_lengths, NUM_STD_CUTOFF)
-    num_outliers = [length for length in audio_lengths
-                    if length < lower or length > upper]
-    print("Num outliers:", len(num_outliers))
-    audio_cropped_lengths = [length for length in audio_lengths
-                             if lower <= length <= upper]
-    print("Num included:", len(audio_cropped_lengths))
-    unique, counts = np.unique(audio_cropped_lengths, return_counts=True)
-
-    data_min = unique[0]
-    data_max = unique[-1]
-    print(ravdess_samples.shape, data_min, data_max)
-
-    plt.bar(unique, counts, width=800)
-    plt.xlabel("Number of Data Points")
-    plt.ylabel("Number of Samples")
-    plt.title("The Distribution of Samples with Number of Data Points")
-    plt.show()
 
 
 def load_data():
@@ -204,11 +164,11 @@ def main():
     """
     Local testing and cache creation.
     """
-    # ravdess_samples, ravdess_labels = load_data()
+    ravdess_samples, ravdess_labels = load_data()
     # print(ravdess_samples.shape)
     # print(ravdess_labels.shape)
-    # generate_stats()
-    read_to_melspecgram()
+    generate_db_stats(ravdess_samples, ravdess_labels)
+    # read_to_melspecgram()
 
 
 if __name__ == "__main__":

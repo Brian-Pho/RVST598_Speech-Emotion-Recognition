@@ -19,11 +19,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav, process_wav, calculate_bounds
+from common import load_wav, process_wav, generate_db_stats
 from src import constants as c
 
 TES_BASE_URL = "https://tspace.library.utoronto.ca"
-NUM_STD_CUTOFF = 3
 TES_MIN_LEN, TES_MAX_LEN = None, None
 TES_EMO_INDEX = 2
 TES_SR = 24414
@@ -37,44 +36,6 @@ TES_EMOTION_MAP = {
     "ps": c.SUR,  # Map pleasant surprise to surprise
 }
 MEL_SPEC_FILENAME = "T_{id}_{emo_label}.npy"
-
-
-def generate_stats():
-    """
-    Generates statistics about the TESS database.
-    """
-    # Convert each label back into an emotion.
-    tess_samples, tess_labels = load_data()
-    tess_labels = [c.INVERT_EMOTION_MAP[label] for label in tess_labels]
-
-    # # Calculate the emotion class percentages. The neutral class has the most
-    # # samples due to combining it with the calm class.
-    # unique, counts = np.unique(tess_labels, return_counts=True)
-    # print(dict(zip(unique, counts)))
-    # plt.pie(x=counts, labels=unique)
-    # plt.show()
-
-    # Calculate the distribution of tensor shapes for the samples
-    audio_lengths = [len(ts) for ts in tess_samples]
-
-    lower, upper = calculate_bounds(audio_lengths, NUM_STD_CUTOFF)
-    outliers = [length for length in audio_lengths
-                if length < lower or length > upper]
-    print("Num outliers:", len(outliers))
-    audio_cropped_lengths = [length for length in audio_lengths
-                             if lower <= length <= upper]
-    print("Num included:", len(audio_cropped_lengths))
-    unique, counts = np.unique(audio_cropped_lengths, return_counts=True)
-
-    data_min = unique[0]
-    data_max = unique[-1]
-    print(tess_samples.shape, data_min, data_max)
-
-    plt.bar(unique, counts, width=50)
-    plt.xlabel("Number of Data Points")
-    plt.ylabel("Number of Samples")
-    plt.title("The Distribution of Samples with Number of Data Points")
-    plt.show()
 
 
 def load_data():
@@ -263,12 +224,12 @@ def main():
     """
     Local testing and cache creation.
     """
-    # tess_samples, tess_labels = load_data()
+    tess_samples, tess_labels = load_data()
     # print(tess_samples.shape)
     # print(tess_labels.shape)
-    # generate_stats()
+    generate_db_stats(tess_samples, tess_labels)
     # download_data()
-    read_to_melspecgram()
+    # read_to_melspecgram()
 
 
 if __name__ == "__main__":

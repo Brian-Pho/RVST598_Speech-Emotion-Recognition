@@ -17,10 +17,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav, calculate_bounds, process_wav, is_outlier
+from common import load_wav, generate_db_stats, process_wav, is_outlier
 from src import constants as c
 
-NUM_STD_CUTOFF = 1  # The number of standard deviations to include in the data
 CRE_MIN_LEN, CRE_MAX_LEN = 60861, 193794
 CRE_EMO_INDEX = 2  # The index into the filename for the emotion label
 CRE_SR = 16000  # The sampling rate for all Crema-d audio samples
@@ -33,43 +32,6 @@ CRE_EMOTION_MAP = {
     "SAD": c.SAD,
 }
 MEL_SPEC_FILENAME = "C_{id}_{emo_label}.npy"
-
-
-def generate_stats():
-    """
-    Generates statistics about the CREMA-D database.
-    """
-    cremad_samples, cremad_labels = load_data()
-    cremad_labels = [c.INVERT_EMOTION_MAP[label] for label in cremad_labels]
-
-    # # Calculate the emotion class percentages. The neutral class has the most
-    # # samples due to combining it with the calm class.
-    # unique, counts = np.unique(cremad_labels, return_counts=True)
-    # print(dict(zip(unique, counts)))
-    # plt.pie(x=counts, labels=unique)
-    # plt.show()
-
-    # Calculate the distribution of tensor shapes for the samples
-    audio_lengths = [len(ts) for ts in cremad_samples]
-
-    lower, upper = calculate_bounds(audio_lengths, NUM_STD_CUTOFF)
-    num_outliers = [length for length in audio_lengths
-                    if length < lower or length > upper]
-    print("Num outliers:", len(num_outliers))
-    audio_cropped_lengths = [length for length in audio_lengths
-                             if lower <= length <= upper]
-    print("Num included:", len(audio_cropped_lengths))
-    unique, counts = np.unique(audio_cropped_lengths, return_counts=True)
-
-    data_min = unique[0]
-    data_max = unique[-1]
-    print(cremad_samples.shape, data_min, data_max)
-
-    plt.bar(unique, counts, width=800)
-    plt.xlabel("Number of Data Points")
-    plt.ylabel("Number of Samples")
-    plt.title("The Distribution of Samples with Number of Data Points")
-    plt.show()
 
 
 def load_data():
@@ -188,11 +150,11 @@ def main():
     """
     Local testing and cache creation.
     """
-    # cremad_samples, cremad_labels = load_data()
+    cremad_samples, cremad_labels = load_data()
     # print(cremad_samples.shape)
     # print(cremad_labels.shape)
-    # generate_stats()
-    read_to_melspecgram()
+    generate_db_stats(cremad_samples, cremad_labels)
+    # read_to_melspecgram()
 
 
 if __name__ == "__main__":

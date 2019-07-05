@@ -4,6 +4,7 @@ include loading and processing wav files.
 """
 
 import librosa
+import matplotlib.pyplot as plt
 import noisereduce as nr
 import numpy as np
 
@@ -117,3 +118,45 @@ def is_outlier(wav, lower, upper):
     :return: Boolean
     """
     return False if lower <= len(wav) <= upper else True
+
+
+def generate_db_stats(samples, labels):
+    """
+    Generates statistics from the given samples and labels.
+
+    :param samples: Samples from the database
+    :param labels: Labels from the database
+    """
+    # # Calculate the emotion class percentages. The neutral class has the most
+    # # samples due to combining it with the calm class.
+    # emo_labels = [c.INVERT_EMOTION_MAP[label] for label in labels]
+    # unique, counts = np.unique(emo_labels, return_counts=True)
+    # print(dict(zip(unique, counts)))
+    # plt.pie(x=counts, labels=unique)
+    # plt.show()
+
+    # Calculate the distribution of tensor shapes for the samples
+    audio_lengths = [len(ts) for ts in samples]
+    print("Shortest:", min(audio_lengths), "Longest:", max(audio_lengths))
+
+    lower, upper = calculate_bounds(audio_lengths, c.NUM_STD_CUTOFF)
+    print("Lower bound:", lower, "Upper bound:", upper)
+
+    num_outliers = [length for length in audio_lengths
+                    if length < lower or length > upper]
+    print("Num outliers:", len(num_outliers))
+
+    audio_cropped_lengths = [length for length in audio_lengths
+                             if lower <= length <= upper]
+    print("Num included:", len(audio_cropped_lengths))
+
+    unique, counts = np.unique(audio_cropped_lengths, return_counts=True)
+    data_min = unique[0]
+    data_max = unique[-1]
+    print(samples.shape, data_min, data_max)
+
+    plt.bar(unique, counts, width=700)
+    plt.xlabel("Number of Data Points")
+    plt.ylabel("Number of Samples")
+    plt.title("The Distribution of Samples with Number of Data Points")
+    plt.show()
