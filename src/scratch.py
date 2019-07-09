@@ -1,6 +1,6 @@
 """
 This file holds useful functions to refer back to during programming. Functions
-in this file aren't runnable but should help debug or view data.
+in this file aren't runnable but should help debugging or viewing data.
 """
 
 # # Displaying and playing a waveform

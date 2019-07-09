@@ -17,19 +17,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav, generate_db_stats, process_wav, is_outlier
-from src import constants as c
+from db_common import generate_db_stats, is_outlier
+from src import em_constants as emc
+from src.audio_processor.wav import load_wav, process_wav
 
 CRE_MIN_LEN, CRE_MAX_LEN = 60861, 193794
 CRE_EMO_INDEX = 2  # The index into the filename for the emotion label
 CRE_SR = 16000  # The sampling rate for all Crema-d audio samples
 CRE_EMOTION_MAP = {
-    "ANG": c.ANG,
-    "DIS": c.DIS,
-    "FEA": c.FEA,
-    "HAP": c.HAP,
-    "NEU": c.NEU,
-    "SAD": c.SAD,
+    "ANG": emc.ANG,
+    "DIS": emc.DIS,
+    "FEA": emc.FEA,
+    "HAP": emc.HAP,
+    "NEU": emc.NEU,
+    "SAD": emc.SAD,
 }
 MEL_SPEC_FILENAME = "C_{id}_{emo_label}.npy"
 
@@ -143,7 +144,7 @@ def _interpret_label(filename):
     emotion = CRE_EMOTION_MAP[emotion_id]
 
     # Return a new emotion ID that's standardized across databases.
-    return c.EMOTION_MAP[emotion]
+    return emc.EMOTION_MAP[emotion]
 
 
 def main():

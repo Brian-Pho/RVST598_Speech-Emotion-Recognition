@@ -7,9 +7,9 @@ import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import minmax_scale
 
-from src import constants as c
+import au_constants as auc
 
-EPS = 1.0e-6  # Epsilon, a small value to avoid the log(0) problem.
+EPS = 1.0e-6  # Epsilon, a small value to avoid the log(0) problem
 
 
 def wave_to_melspecgram(wave):
@@ -21,15 +21,15 @@ def wave_to_melspecgram(wave):
     :return: np.array (complex)
     """
     # Convert the wave into the frequency domain
-    stft = tf.signal.stft(wave, frame_length=c.WIN_SIZE,
-                          frame_step=c.STEP_SIZE)
+    stft = tf.signal.stft(wave, frame_length=auc.WIN_SIZE,
+                          frame_step=auc.STEP_SIZE)
     spectrogram = tf.abs(stft)
 
     # Warp the linear scale spectrogram into the mel-scale
     num_specgram_bins = stft.shape[-1].value
     linear_to_mel_weight_matrix = tf.signal.linear_to_mel_weight_matrix(
-        c.NUM_MEL_BINS, num_specgram_bins, c.SR, c.MIN_HERTZ,
-        c.MAX_HERTZ)
+        auc.NUM_MEL_BINS, num_specgram_bins, auc.SR, auc.MIN_HERTZ,
+        auc.MAX_HERTZ)
     mel_specgram = tf.tensordot(
         spectrogram, linear_to_mel_weight_matrix, 1)
     mel_specgram.set_shape(spectrogram.shape[:-1].concatenate(

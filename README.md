@@ -67,3 +67,13 @@ Database names
 - TESS: Toronto Emotional Speech Set
 - RAVDESS: Ryerson Audio-Visual Database of Emotional Speech and Song
 - EmoV-DB: Emotional Voices Database
+
+
+## Random Notes
+
+- Multiclass, multilabel problem
+- Sentence-level emotion labeling
+- Vocal emotion recognition, speech emotion recognition, emotion perception
+- CREMA-D baseline 68.77 agreement
+- Confusion matrix
+- 

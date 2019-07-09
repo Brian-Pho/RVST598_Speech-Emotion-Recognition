@@ -16,23 +16,23 @@ import os
 import numpy as np
 
 import db_constants as dbc
-from common import (
-    load_wav, remove_first_last_sec, generate_db_stats, process_wav, is_outlier)
-from src import constants as c
+from db_common import generate_db_stats, is_outlier
+from src import em_constants as emc
+from src.audio_processor.wav import load_wav, process_wav, remove_first_last_sec
 
 NUM_ACTORS = 24
 RAV_MIN_LEN, RAV_MAX_LEN = 44941, 128224
 RAV_EMO_INDEX = 2  # The index into the filename for the emotion label
 RAV_SR = 48000  # The sampling rate for all Ravdess audio samples
 RAV_EMOTION_MAP = {
-    "01": c.NEU,
-    "02": c.NEU,  # Map calm to neutral
-    "03": c.HAP,
-    "04": c.SAD,
-    "05": c.ANG,
-    "06": c.FEA,
-    "07": c.DIS,
-    "08": c.SUR,
+    "01": emc.NEU,
+    "02": emc.NEU,  # Map calm to neutral
+    "03": emc.HAP,
+    "04": emc.SAD,
+    "05": emc.ANG,
+    "06": emc.FEA,
+    "07": emc.DIS,
+    "08": emc.SUR,
 }
 MEL_SPEC_FILENAME = "R_{id}_{emo_label}.npy"
 
@@ -157,7 +157,7 @@ def _interpret_label(filename):
     emotion = RAV_EMOTION_MAP[emotion_id]
 
     # Return a new emotion ID that's standardized across databases.
-    return c.EMOTION_MAP[emotion]
+    return emc.EMOTION_MAP[emotion]
 
 
 def main():

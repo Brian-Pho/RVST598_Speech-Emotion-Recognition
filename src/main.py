@@ -2,17 +2,16 @@
 This file holds the entry point into this program. This loads the data and
 trains the ML model.
 """
+
 import numpy as np
 
-from src import constants as c
-from src import data_gen as dg
-from src import nn_model as nnm
-from src.database_loader import db_constants as dbc
+from src.neural_network import (
+    nn_constants as nnc, nn_model as nnm, data_gen as dg)
 
 
 def main():
     """
-    The main entry point to this program.
+    The main entry point of this program.
     """
     # Get the data filenames (log-mel spectrograms in the form of .npy files)
     sample_fns = dg.get_sample_filenames()
@@ -21,8 +20,8 @@ def main():
 
     # Shuffle and create the train, validation, and test sets
     num_total_samples = len(sample_fns)
-    num_test = int(num_total_samples * c.TEST_ALLOC)
-    num_valid = int(num_total_samples * c.VALID_ALLOC)
+    num_test = int(num_total_samples * nnc.TEST_ALLOC)
+    num_valid = int(num_total_samples * nnc.VALID_ALLOC)
     num_not_train = num_test + num_valid
     num_train = num_total_samples - num_not_train
 
@@ -31,22 +30,23 @@ def main():
     train_samples = sample_fns[num_not_train:]
 
     # Create the batch generators to feed the neural network
-    test_gen = dg.batch_generator(test_samples, c.BATCH_SIZE)
-    valid_gen = dg.batch_generator(valid_samples, c.BATCH_SIZE)
-    train_gen = dg.batch_generator(train_samples, c.BATCH_SIZE)
+    test_gen = dg.batch_generator(test_samples, nnc.BATCH_SIZE)
+    valid_gen = dg.batch_generator(valid_samples, nnc.BATCH_SIZE)
+    train_gen = dg.batch_generator(train_samples, nnc.BATCH_SIZE)
 
     # Calculate how many batches fit into each set. Used by Keras to know when
     # an epoch is complete.
-    test_steps = np.ceil(num_test / c.BATCH_SIZE)
-    valid_steps = np.ceil(num_valid / c.BATCH_SIZE)
-    train_steps = np.ceil(num_train / c.BATCH_SIZE)
+    test_steps = np.ceil(num_test / nnc.BATCH_SIZE)
+    valid_steps = np.ceil(num_valid / nnc.BATCH_SIZE)
+    train_steps = np.ceil(num_train / nnc.BATCH_SIZE)
 
     # Create and train the model
     model = nnm.build_model()
-    # model.load_weights(dbc.MODEL_SAVE_PATH)
+    model.load_weights(nnc.MODEL_SAVE_PATH)
     history = model.fit_generator(
-        generator=train_gen, steps_per_epoch=train_steps, epochs=1100, verbose=2,
-        validation_data=valid_gen, validation_steps=valid_steps, use_multiprocessing=False
+        generator=train_gen, steps_per_epoch=train_steps, epochs=nnc.NUM_EPOCHS,
+        verbose=nnc.VERBOSE_LVL, validation_data=valid_gen,
+        validation_steps=valid_steps, use_multiprocessing=False
     )
 
     # for inputs, targets in train_gen:
@@ -54,7 +54,7 @@ def main():
     #     nnm.visualize_heatmap_activation(model, inputs[0:1])
 
     # Save the model and training history
-    model.save(dbc.MODEL_SAVE_PATH)
+    model.save(nnc.MODEL_SAVE_PATH)
 
     # Display the training history
     nnm.display_history(history)

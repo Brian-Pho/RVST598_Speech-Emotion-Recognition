@@ -16,21 +16,22 @@ import os
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav, process_wav, generate_db_stats
-from src import constants as c
+from db_common import generate_db_stats
+from src import em_constants as emc
+from src.audio_processor.wav import load_wav, process_wav
 
 IEM_MIN_LEN, IEM_MAX_LEN = None, None
 IEM_SR = 16000  # The sampling rate for all Ravdess audio samples
 IEM_EMOTION_MAP = {
-    "Neutral": c.NEU,
-    "Happiness": c.HAP,
-    "Excited": c.HAP,  # Map excited to happy
-    "Sadness": c.SAD,
-    "Anger": c.ANG,
-    "Frustration": c.ANG,  # Map frustration to anger
-    "Fear": c.FEA,
-    "Disgust": c.DIS,
-    "Surprise": c.SUR,
+    "Neutral": emc.NEU,
+    "Happiness": emc.HAP,
+    "Excited": emc.HAP,  # Map excited to happy
+    "Sadness": emc.SAD,
+    "Anger": emc.ANG,
+    "Frustration": emc.ANG,  # Map frustration to anger
+    "Fear": emc.FEA,
+    "Disgust": emc.DIS,
+    "Surprise": emc.SUR,
 }
 MEL_SPEC_FILENAME = "I_{id}_{emo_label}.npy"
 
@@ -232,12 +233,12 @@ def _interpret_label(labels):
     labels = [label for label in labels if label != "Other"]
     # Convert the emotions into the standard emotion numbers in constants
     standard_emotions = [
-        c.EMOTION_MAP[IEM_EMOTION_MAP[label]] for label in labels]
+        emc.EMOTION_MAP[IEM_EMOTION_MAP[label]] for label in labels]
 
     # Convert the emotion numbers into an array where the index is the emotion
     # and the value is the number of votes for that emotion
     unique, counts = np.unique(standard_emotions, return_counts=True)
-    one_hot_emotions = np.zeros(c.NUM_EMOTIONS)
+    one_hot_emotions = np.zeros(emc.NUM_EMOTIONS)
     for emo_index, emo_count in zip(unique, counts):
         one_hot_emotions[emo_index] = emo_count
 
@@ -255,8 +256,8 @@ def _interpret_label(labels):
 
 
 def main():
-    # iemocap_samples, iemocap_labels = load_data()
-    # generate_db_stats(iemocap_samples, iemocap_samples)
+    iemocap_samples, iemocap_labels = load_data()
+    generate_db_stats(iemocap_samples, iemocap_samples)
     read_to_melspecgram()
 
 

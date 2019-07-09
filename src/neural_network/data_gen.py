@@ -1,18 +1,20 @@
 """
 This file holds functions to generate data for a machine learning model.
 """
+
 import os
 
 import numpy as np
 from keras.utils import to_categorical
 
-from src import constants as c
-from src.database_loader import db_constants as dbc
+import nn_constants as nnc
+from src import em_constants as emc
+from src.database_processor import db_constants as dbc
 
 EMO_INDEX = 2
 
 
-def batch_generator(sample_fns, batch_size):
+def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
     """
     Generates a batch for training a neural network. Run indefinitely.
 
@@ -44,7 +46,8 @@ def batch_generator(sample_fns, batch_size):
             batch_targets.append(label)
 
         batch_inputs = np.expand_dims(np.array(batch_inputs), axis=3)
-        batch_targets = to_categorical(batch_targets, num_classes=c.NUM_EMOTIONS)
+        batch_targets = to_categorical(
+            batch_targets, num_classes=emc.NUM_EMOTIONS)
         # print(batch_inputs.shape, batch_targets.shape)
         yield (batch_inputs, batch_targets)
 
@@ -90,7 +93,7 @@ def main():
     samples = get_sample_filenames()
     print(len(samples))
 
-    for inputs, targets in batch_generator(samples[0:34], c.BATCH_SIZE):
+    for inputs, targets in batch_generator(samples[0:34], nnc.BATCH_SIZE):
         print(inputs.shape, targets.shape)
 
 

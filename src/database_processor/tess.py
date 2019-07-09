@@ -19,21 +19,22 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from common import load_wav, process_wav, generate_db_stats
-from src import constants as c
+from db_common import generate_db_stats
+from src import em_constants as emc
+from src.audio_processor.wav import load_wav, process_wav
 
 TES_BASE_URL = "https://tspace.library.utoronto.ca"
 TES_MIN_LEN, TES_MAX_LEN = None, None
 TES_EMO_INDEX = 2
 TES_SR = 24414
 TES_EMOTION_MAP = {
-    "neutral": c.NEU,
-    "angry": c.ANG,
-    "disgust": c.DIS,
-    "fear": c.FEA,
-    "happy": c.HAP,
-    "sad": c.SAD,
-    "ps": c.SUR,  # Map pleasant surprise to surprise
+    "neutral": emc.NEU,
+    "angry": emc.ANG,
+    "disgust": emc.DIS,
+    "fear": emc.FEA,
+    "happy": emc.HAP,
+    "sad": emc.SAD,
+    "ps": emc.SUR,  # Map pleasant surprise to surprise
 }
 MEL_SPEC_FILENAME = "T_{id}_{emo_label}.npy"
 
@@ -144,7 +145,7 @@ def _interpret_label(filename):
     emotion = TES_EMOTION_MAP[emotion_id]
 
     # Return a new emotion ID that's standardized across databases.
-    return c.EMOTION_MAP[emotion]
+    return emc.EMOTION_MAP[emotion]
 
 
 class TessHtmlParser(HTMLParser):
@@ -186,7 +187,7 @@ class TessHtmlParser(HTMLParser):
 def download_data():
     """
     Downloads the TESS database from the internet. This function automates the
-    download process by automatically grabbing all of the wavs and saving
+    download process by automatically grabbing all of the wav files and saving
     them to the disk.
     """
     # 24488 to 24502 are numbers that are appended to the end of the url

@@ -39,5 +39,5 @@ TES_SAMPLES_CACHE_PATH = os.path.join(
 TES_LABELS_CACHE_PATH = os.path.join(
     TES_DB_PATH, "tess_labels_cache.npy")
 
-# MODEL SAVE PATH
-MODEL_SAVE_PATH = os.path.join(DATA_PATH, "model.h5")
+# The number of standard deviations to include in the data
+NUM_STD_CUTOFF = 3
