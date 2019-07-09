@@ -136,7 +136,7 @@ def generate_db_stats(samples, labels):
     # plt.show()
 
     # Calculate the distribution of tensor shapes for the samples
-    audio_lengths = [len(ts) for ts in samples]
+    audio_lengths = [len(sample) for sample in samples]
     print("Shortest:", min(audio_lengths), "Longest:", max(audio_lengths))
 
     lower, upper = calculate_bounds(audio_lengths, c.NUM_STD_CUTOFF)

@@ -146,9 +146,9 @@ def read_to_melspecgram():
 
 def _interpret_label(filename):
     """
-    Given a filename, it returns an integer representing the emotion label of
-    the file/sample.
+    Interprets the emotion from the filename to the standard format.
 
+    :param filename: the file's name
     :return: Integer
     """
     # Parse emotion ID from filename. It's the third number from the left
