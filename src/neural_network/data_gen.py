@@ -23,6 +23,11 @@ def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
     :return: A batch in the form of a tuple (inputs, targets)
     """
     num_samples = len(sample_fns)
+
+    if num_samples < nnc.MIN_NUM_SAMPLES:
+        print("Not enough samples to satisfy the threshold for training.",
+              "Current number:", num_samples, "Threshold:", nnc.MIN_NUM_SAMPLES)
+
     batch_start = 0
     # If the number of files is less than a batch, then use all of the files
     batch_end = batch_size if num_samples > batch_size else num_samples

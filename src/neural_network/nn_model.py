@@ -32,7 +32,7 @@ def build_model():
     model.add(layers.Dropout(0.5))
     model.add(layers.Dense(16, activation='relu'))
     model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(7, activation='softmax'))
+    model.add(layers.Dense(7, activation='sigmoid'))
     model.add(layers.Dropout(0.5))
     model.compile(optimizer=nnc.OPTIMIZER, loss=nnc.LOSS,
                   metrics=nnc.METRICS)
