@@ -10,6 +10,22 @@ import db_constants as dbc
 from src import em_constants as emc
 
 
+def get_label(filename, delimiter, index, db_emo_map):
+    """
+    Gets the label from a sample's filename.
+
+    :param filename: The sample's filename
+    :param delimiter: The delimiter used in the filename
+    :param index: Where in the filename the label/emotion is located
+    :param db_emo_map: The database-specific emotion mapping
+    :return: The label k-hot encoded to this program's standard emotion map
+    """
+    label = filename.split(delimiter)[index]
+    standard_emotion = db_emo_map[label]
+    emotion_id = emc.EMOTION_MAP[standard_emotion]
+    return k_hot_encode_label(list(emotion_id))
+
+
 def calculate_bounds(data, num_std):
     """
     Calculates the lower and upper bound given a distribution and standard
@@ -78,3 +94,57 @@ def generate_db_stats(samples, labels):
     plt.ylabel("Number of Samples")
     plt.title("The Distribution of Samples with Number of Data Points")
     plt.show()
+
+
+def k_hot_encode_label(label):
+    """
+    K-hot encodes a label. Takes a list of emotion IDs and returns a list
+    encoding the most voted for emotion.
+
+    Sample input:
+        [0, 1, 2, 0, 6, 2]
+
+    Sample output:
+        [1, 0, 1, 0, 0, 0, 0]
+
+    :param label: List of labels to encode
+    :return: List of k-hot encoded labels or False if the label is unused
+    """
+    #  If there's only one label/vote, then use the quicker method of encoding
+    if len(label) == 1:
+        return _one_hot_encode_label(label)
+
+    # Convert the emotion numbers into an array where the index is the emotion
+    # and the value is the number of votes for that emotion
+    unique, counts = np.unique(label, return_counts=True)
+    k_hot_label = np.zeros(emc.NUM_EMOTIONS)
+    for emo_index, emo_count in zip(unique, counts):
+        k_hot_label[emo_index] = emo_count
+
+    # Only count the emotions with the highest amount of votes
+    k_hot_label = k_hot_label / np.max(k_hot_label)
+    k_hot_label = np.floor(k_hot_label).astype(int)
+
+    # If they're all zero, then this sample doesn't fit with the set of labels
+    # that we're considering so drop it
+    if not np.any(k_hot_label):
+        print("No usable label.")
+        return False
+
+
+def _one_hot_encode_label(label):
+    """
+    One hot encodes a label. Private function to quickly one-hot encode a label.
+
+    Sample input:
+        [4]
+
+    Sample output:
+        [0, 0, 0, 0, 1, 0, 0]
+
+    :param label: A list with one label (length is one)
+    :return: One-hot encoding of the label
+    """
+    one_hot_label = np.zeros(emc.NUM_EMOTIONS)
+    one_hot_label[label[0]] = 1
+    return one_hot_label

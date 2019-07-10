@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from db_common import generate_db_stats
+from db_common import generate_db_stats, get_label
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
@@ -93,7 +93,8 @@ def read_data():
         samples.append(load_wav(sample_path))
 
         # Read the label
-        labels.append(_interpret_label(sample_filename))
+        labels.append(
+            get_label(sample_filename, "_", TES_EMO_INDEX, TES_EMOTION_MAP))
 
     return np.array(samples), np.array(labels)
 
@@ -123,7 +124,7 @@ def read_to_melspecgram():
         plt.show()
 
         # Read the label
-        label = _interpret_label(sample_filename)
+        label = get_label(sample_filename, "_", TES_EMO_INDEX, TES_EMOTION_MAP)
 
         # Save the log-mel spectrogram to use later
         mel_spec_path = os.path.join(
@@ -131,21 +132,6 @@ def read_to_melspecgram():
                 id=id_counter, emo_label=label))
         np.save(mel_spec_path, melspecgram, allow_pickle=True)
         id_counter += 1
-
-
-def _interpret_label(filename):
-    """
-    Given a filename, it returns an integer representing the emotion label of
-    the file/sample.
-
-    :return: Integer
-    """
-    filename = str(os.path.splitext(filename)[0])
-    emotion_id = filename.split("_")[TES_EMO_INDEX]
-    emotion = TES_EMOTION_MAP[emotion_id]
-
-    # Return a new emotion ID that's standardized across databases.
-    return emc.EMOTION_MAP[emotion]
 
 
 class TessHtmlParser(HTMLParser):

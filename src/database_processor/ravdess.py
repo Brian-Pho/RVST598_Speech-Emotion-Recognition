@@ -16,7 +16,7 @@ import os
 import numpy as np
 
 import db_constants as dbc
-from db_common import generate_db_stats, is_outlier
+from db_common import generate_db_stats, is_outlier, get_label
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav, remove_first_last_sec
 
@@ -99,7 +99,8 @@ def read_data():
             samples.append(wav)
 
             # Read the label
-            labels.append(_interpret_label(sample_filename))
+            labels.append(
+                get_label(sample_filename, "-", RAV_EMO_INDEX, RAV_EMOTION_MAP))
 
     return np.array(samples), np.array(labels)
 
@@ -134,7 +135,8 @@ def read_to_melspecgram():
             melspecgram = process_wav(wav)
 
             # Read the label
-            label = _interpret_label(sample_filename)
+            label = get_label(
+                sample_filename, "-", RAV_EMO_INDEX, RAV_EMOTION_MAP)
 
             # Save the log-mel spectrogram to use later
             mel_spec_path = os.path.join(
@@ -142,22 +144,6 @@ def read_to_melspecgram():
                     id=id_counter, emo_label=label))
             np.save(mel_spec_path, melspecgram, allow_pickle=True)
             id_counter += 1
-
-
-def _interpret_label(filename):
-    """
-    Interprets the emotion from the filename to the standard format.
-
-    :param filename: the file's name
-    :return: Integer
-    """
-    # Parse emotion ID from filename. It's the third number from the left
-    # according to https://zenodo.org/record/1188976.
-    emotion_id = filename.split("-")[RAV_EMO_INDEX]
-    emotion = RAV_EMOTION_MAP[emotion_id]
-
-    # Return a new emotion ID that's standardized across databases.
-    return emc.EMOTION_MAP[emotion]
 
 
 def main():
