@@ -23,7 +23,8 @@ def get_label(filename, delimiter, index, db_emo_map):
     label = filename.split(delimiter)[index]
     standard_emotion = db_emo_map[label]
     emotion_id = emc.EMOTION_MAP[standard_emotion]
-    return k_hot_encode_label(list(emotion_id))
+    a = k_hot_encode_label([emotion_id])
+    return a
 
 
 def calculate_bounds(data, num_std):
@@ -61,10 +62,11 @@ def generate_db_stats(samples, labels):
     :param samples: Samples from the database
     :param labels: Labels from the database
     """
-    # Calculate the emotion class percentages. The neutral class has the most
-    # samples due to combining it with the calm class.
-    emo_labels = [emc.INVERT_EMOTION_MAP[label] for label in labels]
+    emo_labels = [inverse_k_hot_encode_label(label) for label in labels]
+
     unique, counts = np.unique(emo_labels, return_counts=True)
+    unique = [emc.INVERT_EMOTION_MAP[label] for label in unique]
+
     print(dict(zip(unique, counts)))
     plt.pie(x=counts, labels=unique)
     plt.show()
@@ -148,3 +150,19 @@ def _one_hot_encode_label(label):
     one_hot_label = np.zeros(emc.NUM_EMOTIONS)
     one_hot_label[label[0]] = 1
     return one_hot_label
+
+
+def inverse_k_hot_encode_label(k_hot_label):
+    """
+    Inverse a k-hot encoded label back to emotion ids.
+
+    Sample input:
+        [1, 0, 0, 0, 1, 0, 0]
+
+    Sample output:
+        [0, 4]
+
+    :param k_hot_label: A list of the k-hot encoded label
+    :return: A list of the emotion ids in the label
+    """
+    return np.where(k_hot_label == 1)
