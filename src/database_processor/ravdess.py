@@ -16,7 +16,8 @@ import os
 import numpy as np
 
 import db_constants as dbc
-from db_common import generate_db_stats, is_outlier, get_label
+from db_common import get_label
+from db_stats import generate_db_stats, is_outlier
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav, remove_first_last_sec
 

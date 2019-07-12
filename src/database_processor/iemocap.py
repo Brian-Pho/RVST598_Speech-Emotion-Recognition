@@ -16,10 +16,11 @@ import os
 import numpy as np
 
 import db_constants as dbc
-from db_common import generate_db_stats, k_hot_encode_label
+from db_common import k_hot_encode_label
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
+NUM_SESS = 5
 IEM_MIN_LEN, IEM_MAX_LEN = None, None
 IEM_SR = 16000  # The sampling rate for all Ravdess audio samples
 IEM_EMOTION_MAP = {
@@ -83,7 +84,7 @@ def read_data():
     data_path = os.path.join(dbc.IEM_DB_PATH, "data")
     labels_path = os.path.join(dbc.IEM_DB_PATH, "labels")
 
-    for num_sess in range(1, 2):
+    for num_sess in range(1, NUM_SESS + 1):
         sess_foldername = "S{}".format(num_sess)
         print("Processing session:", sess_foldername)
 
@@ -165,7 +166,7 @@ def read_to_melspecgram():
                 id_counter += 1
 
 
-def get_label_map(labels_path):
+def get_label_map(labels_path, encode=True):
     """
     Gets the label map for every sample in a performance.
 
@@ -178,6 +179,7 @@ def get_label_map(labels_path):
         }
 
     :param labels_path: Path to Ses##M/F_impro##.txt
+    :param encode: Bool to k-hot encode the label or not
     :return: Dict
     """
     sample_emo_map = {}
@@ -201,7 +203,8 @@ def get_label_map(labels_path):
 
             # Stop parsing when the line starts with "A"
             if line.startswith("A"):
-                sample_emotions = encode_label(sample_emotions)
+                if encode:
+                    sample_emotions = encode_label(sample_emotions)
                 sample_emo_map[sample_name] = sample_emotions
                 parse_emotion_flag = False
                 continue
@@ -241,7 +244,6 @@ def main():
     iemocap_samples, iemocap_labels = load_data()
     print(iemocap_samples.shape)
     print(iemocap_labels.shape)
-    generate_db_stats(iemocap_samples, iemocap_labels)
     # read_to_melspecgram()
 
 
