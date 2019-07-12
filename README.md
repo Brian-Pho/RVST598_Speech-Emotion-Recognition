@@ -40,7 +40,7 @@ The following databases were used/considered.
 | [CREMA-D](https://github.com/CheyneyComputerScience/CREMA-D)                         | 2014 | :heavy_check_mark: | mp3 + wav |       7442      |        16000       |    Multi   |      Sentence      |
 | [TESS](https://tspace.library.utoronto.ca/handle/1807/24487)                         | 2010 | :heavy_check_mark: |    wav    |       2800      |        24414       |   Single   |      Sentence      |
 | [RAVDESS](https://smartlaboratory.org/ravdess)                                       | 2018 | :heavy_check_mark: |    wav    |       1440      |        48000       |   Single   |      Sentence      |
-| [MSP-IMPROV](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html) | 2017 |         :x:        |    ???    |       ???       |         ???        |     ???    |         ???        |
+| [MSP-IMPROV](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html) | 2016 |         :x:        |    ???    |       ???       |         ???        |     ???    |         ???        |
 | [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Database.html)                          | 2011 |         :x:        |    wav    |       480       |        44100       |   Single   | Sentence + Phoneme |
 | [Emo-DB](http://emodb.bilderbar.info/index-1280.html)                                | 2005 |         :x:        |    wav    |       535       |        16000       |   Single   |      Sentence      |
 | [EmoV-DB](https://github.com/numediart/EmoV-DB)                                      | 2018 |         :x:        |    wav    |       6599      |        44100       |   Single   |      Sentence      |
@@ -76,4 +76,4 @@ Database names
 - Vocal emotion recognition, speech emotion recognition, emotion perception
 - CREMA-D baseline 68.77 agreement
 - Confusion matrix
-- 
+- The words "emotion" and "label" are used interchangably because they both represent the same idea

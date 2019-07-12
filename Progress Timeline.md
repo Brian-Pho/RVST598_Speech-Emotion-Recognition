@@ -27,13 +27,25 @@
 
 ## Future work / Improvements
 
-- Emotion style transfer using cycle-GANs
-- Make emotion labeling not mutually exclusive
+### Internal Improvements
+
+- Improving accuracy, runtime, data efficiency, training efficiency, network efficiency
+- More data, more data variety (actual conversations, movies, music), less noisy data
+- Better multi-labels that output probabilities
 - Use phase data from STFT
-- Fuse spectrograms with raw waveform using 1D CNN
-- Combine with some RNN
+- Fuse spectrograms with raw waveforms using 1D CNN
+- Combine with some RNN/LSTM
 - Use MFCC
 - Use neuroscience based approach
+
+### External Improvements
+
+- Use this system as a component of a larger system
+- Emotion style transfer using cycle-GANs
+- Emotion generation using WavSynth/GAN/VAE
+- Analyzing the neural network for more details on how it gets to its decision
+- Use network for deaf people in a device
+- Real-time emotion recognition
 
 ## TODO
 
@@ -41,9 +53,9 @@
 - [x] Convert from normal frequency domain into mel-scaled
 - [x] Save normalized, mel-scaled, freq domain samples
 - [x] Split samples into train/valid/test
-- [ ] Calculate human baseline for emotion classification for IEMOCAP
-- [ ] Read in IEMOCAP
-- [ ] Update model to handle multi-label classification
+- [x] Calculate human baseline for emotion classification for IEMOCAP
+- [x] Read in IEMOCAP
+- [x] Update model to handle multi-label classification
 - [ ] Remove noise from Crema-d and Iemocap
 - [ ] Consider using EmoV-DB
 - [ ] Set the cutoff length for all database wav files
