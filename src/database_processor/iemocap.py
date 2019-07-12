@@ -16,7 +16,7 @@ import os
 import numpy as np
 
 import db_constants as dbc
-from db_common import generate_db_stats
+from db_common import generate_db_stats, k_hot_encode_label
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
@@ -83,7 +83,7 @@ def read_data():
     data_path = os.path.join(dbc.IEM_DB_PATH, "data")
     labels_path = os.path.join(dbc.IEM_DB_PATH, "labels")
 
-    for num_sess in range(1, 6):
+    for num_sess in range(1, 2):
         sess_foldername = "S{}".format(num_sess)
         print("Processing session:", sess_foldername)
 
@@ -97,21 +97,20 @@ def read_data():
             print("Processing performance:", perform)
 
             perform_label_map = get_label_map(perform_labels_path)
-            # print(perform_label_map)
 
             for sample_filename in os.listdir(perform_data_path):
-                # # If the label is empty, then drop the sample
-                # label = perform_label_map[sample_filename]
-                # if not label:
-                #     continue
+                # Read the label and if it's empty, then drop the sample
+                sample_name = os.path.splitext(sample_filename)[0]
+                label = perform_label_map[sample_name]
+                if not label:
+                    print("Not using sample:", sample_filename)
+                    continue
 
                 # Read the sample
                 sample_path = os.path.join(perform_data_path, sample_filename)
                 samples.append(load_wav(sample_path))
 
-                # Remove the file extension and get and read the label
-                sample_filename = os.path.splitext(sample_filename)[0]
-                labels.append(perform_label_map[sample_filename])
+                labels.append(label)
 
     return np.array(samples), np.array(labels)
 
@@ -178,7 +177,7 @@ def get_label_map(labels_path):
                 array([1., 0., 0., 0., 0., 0., 0.]), ...
         }
 
-    :param labels_path: Path to the labels txt
+    :param labels_path: Path to Ses##M/F_impro##.txt
     :return: Dict
     """
     sample_emo_map = {}
@@ -202,7 +201,7 @@ def get_label_map(labels_path):
 
             # Stop parsing when the line starts with "A"
             if line.startswith("A"):
-                sample_emotions = _interpret_label(sample_emotions)
+                sample_emotions = encode_label(sample_emotions)
                 sample_emo_map[sample_name] = sample_emotions
                 parse_emotion_flag = False
                 continue
@@ -215,50 +214,35 @@ def get_label_map(labels_path):
             line = line.split("(")[0]
             emotions = line.split(";")
             # Remove the blank string that is created when splitting
-            emotions.remove("")
+            emotions = list(filter(None, emotions))
 
             sample_emotions += emotions
 
     return sample_emo_map
 
 
-def _interpret_label(labels):
+def encode_label(labels):
     """
-    Interprets the emotion(s) from the list of labels to the standard format.
+    Encodes a label into a k-hot encoded label.
 
     :param labels: the list of emotions for a sample
     :return: List
     """
-    # Not considering the "Other" emotion labels
-    labels = [label for label in labels if label != "Other"]
-    # Convert the emotions into the standard emotion numbers in constants
-    standard_emotions = [
+    # Not considering emotions outside of our defined list
+    labels = [label for label in labels if label in IEM_EMOTION_MAP.keys()]
+    # Convert the emotions into the standard emotion ids
+    standard_emo_ids = [
         emc.EMOTION_MAP[IEM_EMOTION_MAP[label]] for label in labels]
 
-    # Convert the emotion numbers into an array where the index is the emotion
-    # and the value is the number of votes for that emotion
-    unique, counts = np.unique(standard_emotions, return_counts=True)
-    one_hot_emotions = np.zeros(emc.NUM_EMOTIONS)
-    for emo_index, emo_count in zip(unique, counts):
-        one_hot_emotions[emo_index] = emo_count
-
-    # Only count the emotions with the highest amount of votes
-    scaled_emotions = one_hot_emotions / np.max(one_hot_emotions)
-    most_voted_emotions = np.floor(scaled_emotions).astype(int)
-
-    # If they're all zero, then this sample doesn't fit with the set of emotion
-    # that we're considering so drop it
-    if not np.any(most_voted_emotions):
-        print("Sample unused")
-        return False
-
-    return most_voted_emotions
+    return k_hot_encode_label(standard_emo_ids)
 
 
 def main():
     iemocap_samples, iemocap_labels = load_data()
-    generate_db_stats(iemocap_samples, iemocap_samples)
-    read_to_melspecgram()
+    print(iemocap_samples.shape)
+    print(iemocap_labels.shape)
+    generate_db_stats(iemocap_samples, iemocap_labels)
+    # read_to_melspecgram()
 
 
 if __name__ == "__main__":

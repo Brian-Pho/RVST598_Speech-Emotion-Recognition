@@ -87,14 +87,18 @@ def read_data():
 
     for sample_filename in os.listdir(wav_folder):
         print("Processing file:", sample_filename)
-        sample_path = os.path.join(wav_folder, sample_filename)
+
+        # Read the label and if it's empty, then drop the sample
+        label = get_label(sample_filename, "_", TES_EMO_INDEX, TES_EMOTION_MAP)
+        if not label:
+            print("Not using sample:", sample_filename)
+            continue
 
         # Read the sample
+        sample_path = os.path.join(wav_folder, sample_filename)
         samples.append(load_wav(sample_path))
 
-        # Read the label
-        labels.append(
-            get_label(sample_filename, "_", TES_EMO_INDEX, TES_EMOTION_MAP))
+        labels.append(label)
 
     return np.array(samples), np.array(labels)
 

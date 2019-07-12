@@ -18,16 +18,16 @@ def get_label(filename, delimiter, index, db_emo_map):
     :param delimiter: The delimiter used in the filename
     :param index: Where in the filename the label/emotion is located
     :param db_emo_map: The database-specific emotion mapping
-    :return: The label k-hot encoded to this program's standard emotion map
+    :return: The label k-hot encoded to this program's standard emotion map or
+             False if the label doesn't map to the standard emotions
     """
     label = filename.split(delimiter)[index]
     standard_emotion = db_emo_map[label]
-    emotion_id = emc.EMOTION_MAP[standard_emotion]
-    a = k_hot_encode_label([emotion_id])
-    return a
+    emotion_id = [emc.EMOTION_MAP[standard_emotion]]
+    return k_hot_encode_label(emotion_id)
 
 
-def calculate_bounds(data, num_std):
+def calculate_bounds(data, num_std=dbc.NUM_STD_CUTOFF):
     """
     Calculates the lower and upper bound given a distribution and standard
     deviation.
@@ -39,7 +39,6 @@ def calculate_bounds(data, num_std):
     data_mean, data_std = np.mean(data), np.std(data)
     cut_off = data_std * num_std
     lower, upper = data_mean - cut_off, data_mean + cut_off
-
     return lower, upper
 
 
@@ -62,7 +61,10 @@ def generate_db_stats(samples, labels):
     :param samples: Samples from the database
     :param labels: Labels from the database
     """
-    emo_labels = [inverse_k_hot_encode_label(label) for label in labels]
+    emo_labels = []
+    for label in labels:
+        label = inverse_k_hot_encode_label(label)
+        emo_labels = np.concatenate([emo_labels, label])
 
     unique, counts = np.unique(emo_labels, return_counts=True)
     unique = [emc.INVERT_EMOTION_MAP[label] for label in unique]
@@ -133,6 +135,8 @@ def k_hot_encode_label(label):
         print("No usable label.")
         return False
 
+    return k_hot_label
+
 
 def _one_hot_encode_label(label):
     """
@@ -165,4 +169,4 @@ def inverse_k_hot_encode_label(k_hot_label):
     :param k_hot_label: A list of the k-hot encoded label
     :return: A list of the emotion ids in the label
     """
-    return np.where(k_hot_label == 1)
+    return np.where(k_hot_label == 1)[0]

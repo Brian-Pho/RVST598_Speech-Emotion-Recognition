@@ -88,19 +88,19 @@ def read_data():
         print("Processing actor:", actor_foldername)
 
         for sample_filename in os.listdir(actor_path):
+            # Read the label and if it's empty, then drop the sample
+            label = get_label(
+                sample_filename, "-", RAV_EMO_INDEX, RAV_EMOTION_MAP)
+            if not label:
+                print("Not using sample:", sample_filename)
+                continue
+
+            # Read the sample and remove the first and last second
             sample_path = os.path.join(actor_path, sample_filename)
-
-            # Read the sample
             wav = load_wav(sample_path)
+            samples.append(remove_first_last_sec(wav, RAV_SR))
 
-            # Remove the first and last second
-            wav = remove_first_last_sec(wav, RAV_SR)
-
-            samples.append(wav)
-
-            # Read the label
-            labels.append(
-                get_label(sample_filename, "-", RAV_EMO_INDEX, RAV_EMOTION_MAP))
+            labels.append(label)
 
     return np.array(samples), np.array(labels)
 

@@ -51,8 +51,8 @@ def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
             batch_targets.append(label)
 
         batch_inputs = np.expand_dims(np.array(batch_inputs), axis=3)
-        batch_targets = to_categorical(
-            batch_targets, num_classes=emc.NUM_EMOTIONS)
+        # batch_targets = to_categorical(
+        #     batch_targets, num_classes=emc.NUM_EMOTIONS)
         # print(batch_inputs.shape, batch_targets.shape)
         yield (batch_inputs, batch_targets)
 
