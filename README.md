@@ -34,16 +34,16 @@ Raw waveform (time + amplitude) -> Spectrogram (time + frequency + ampltitude) -
 
 The following databases were used/considered.
 
-| Database                                                                             |       Using?       | File Type | Number of Files | Sampling Rate (Hz) | Label Type | Label Level        |
-|--------------------------------------------------------------------------------------|:------------------:|:---------:|-----------------|--------------------|------------|--------------------|
-| [IEMOCAP](https://sail.usc.edu/iemocap)                                              | :heavy_check_mark: |    wav    | 10039           | 16000              | Multi      | Sentence + Phoneme |
-| [MSP-IMPROV](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html) |         :x:        |    ???    | ???             | ???                | ???        | ???                |
-| [CREMA-D](https://github.com/CheyneyComputerScience/CREMA-D)                         | :heavy_check_mark: | mp3 + wav | 7442            | 16000              | Multi      | Sentence           |
-| [TESS](https://tspace.library.utoronto.ca/handle/1807/24487)                         | :heavy_check_mark: |    wav    | 2800            | 24414              | Single     | Sentence           |
-| [RAVDESS](https://smartlaboratory.org/ravdess)                                       | :heavy_check_mark: |    wav    | 1440            | 48000              | Single     | Sentence           |
-| [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Database.html)                          |         :x:        |    wav    | 480             | 44100              | Single     | Sentence + Phoneme |
-| [EmoV-DB](https://github.com/numediart/EmoV-DB)                                      |         :x:        |    wav    | 6599            | 44100              | Single     | Sentence           |
-| [Emo-DB](http://emodb.bilderbar.info/index-1280.html)                                |         :x:        |    wav    | 535             | 16000              | Single     | Sentence           |
+| Database                                                                             | Year |       Using?       | File Type | Number of Files | Sampling Rate (Hz) | Label Type |     Label Level    |
+|--------------------------------------------------------------------------------------|:----:|:------------------:|:---------:|:---------------:|:------------------:|:----------:|:------------------:|
+| [IEMOCAP](https://sail.usc.edu/iemocap)                                              | 2008 | :heavy_check_mark: |    wav    |      10043      |        16000       |    Multi   | Sentence + Phoneme |
+| [CREMA-D](https://github.com/CheyneyComputerScience/CREMA-D)                         | 2014 | :heavy_check_mark: | mp3 + wav |       7442      |        16000       |    Multi   |      Sentence      |
+| [TESS](https://tspace.library.utoronto.ca/handle/1807/24487)                         | 2010 | :heavy_check_mark: |    wav    |       2800      |        24414       |   Single   |      Sentence      |
+| [RAVDESS](https://smartlaboratory.org/ravdess)                                       | 2018 | :heavy_check_mark: |    wav    |       1440      |        48000       |   Single   |      Sentence      |
+| [MSP-IMPROV](https://ecs.utdallas.edu/research/researchlabs/msp-lab/MSP-Improv.html) | 2017 |         :x:        |    ???    |       ???       |         ???        |     ???    |         ???        |
+| [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Database.html)                          | 2011 |         :x:        |    wav    |       480       |        44100       |   Single   | Sentence + Phoneme |
+| [Emo-DB](http://emodb.bilderbar.info/index-1280.html)                                | 2005 |         :x:        |    wav    |       535       |        16000       |   Single   |      Sentence      |
+| [EmoV-DB](https://github.com/numediart/EmoV-DB)                                      | 2018 |         :x:        |    wav    |       6599      |        44100       |   Single   |      Sentence      |
 
 A table comparing the different emotions in each dataset.
 
