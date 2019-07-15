@@ -19,8 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from db_common import get_label
-from db_stats import generate_db_stats
+from db_common import get_label, repr_label
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
@@ -37,7 +36,6 @@ TES_EMOTION_MAP = {
     "sad": emc.SAD,
     "ps": emc.SUR,  # Map pleasant surprise to surprise
 }
-MEL_SPEC_FILENAME = "T_{id}_{emo_label}.npy"
 
 
 def load_data():
@@ -115,25 +113,29 @@ def read_to_melspecgram():
     wav_folder = os.path.join(dbc.TES_DB_PATH, "data")
 
     for sample_filename in os.listdir(wav_folder):
+        print("Processing file:", sample_filename)
         sample_path = os.path.join(wav_folder, sample_filename)
 
         # Read the sample
         wav = load_wav(sample_path)
 
         # No outlier check because all samples are within 3 stds
-
         # Process the sample into a log-mel spectrogram
         melspecgram = process_wav(wav)
 
-        plt.pcolormesh(melspecgram, cmap="magma")
+        # Display the spectrogram
+        plt.pcolormesh(melspecgram)
+        plt.colorbar()
         plt.show()
 
         # Read the label
+        sample_filename = os.path.splitext(sample_filename)[0]
         label = get_label(sample_filename, "_", TES_EMO_INDEX, TES_EMOTION_MAP)
+        label = repr_label(label)
 
         # Save the log-mel spectrogram to use later
         mel_spec_path = os.path.join(
-            dbc.PROCESS_DB_PATH, MEL_SPEC_FILENAME.format(
+            dbc.PROCESS_DB_PATH, dbc.TES_MEL_SPEC_FN.format(
                 id=id_counter, emo_label=label))
         np.save(mel_spec_path, melspecgram, allow_pickle=True)
         id_counter += 1
@@ -216,12 +218,12 @@ def main():
     """
     Local testing and cache creation.
     """
-    tess_samples, tess_labels = load_data()
+    # tess_samples, tess_labels = load_data()
     # print(tess_samples.shape)
     # print(tess_labels.shape)
-    generate_db_stats(tess_samples, tess_labels)
+    # generate_db_stats(tess_samples, tess_labels)
     # download_data()
-    # read_to_melspecgram()
+    read_to_melspecgram()
 
 
 if __name__ == "__main__":

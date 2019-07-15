@@ -16,13 +16,12 @@ import os
 import numpy as np
 
 import db_constants as dbc
-from db_common import k_hot_encode_label
+from db_common import k_hot_encode_label, repr_label
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
 NUM_SESS = 5
-IEM_MIN_LEN, IEM_MAX_LEN = None, None
-IEM_SR = 16000  # The sampling rate for all Ravdess audio samples
+IEM_SR = 16000  # The sampling rate for all Iemocap audio samples
 IEM_EMOTION_MAP = {
     "Neutral": emc.NEU,
     "Happiness": emc.HAP,
@@ -34,7 +33,6 @@ IEM_EMOTION_MAP = {
     "Disgust": emc.DIS,
     "Surprise": emc.SUR,
 }
-MEL_SPEC_FILENAME = "I_{id}_{emo_label}.npy"
 
 
 def load_data():
@@ -155,12 +153,11 @@ def read_to_melspecgram():
 
                 # Get the label
                 sample_filename = os.path.splitext(sample_filename)[0]
-                label = "_".join(
-                    str(emo) for emo in perform_label_map[sample_filename])
+                label = repr_label(perform_label_map[sample_filename])
 
                 # Save the log-mel spectrogram to use later
                 mel_spec_path = os.path.join(
-                    dbc.PROCESS_DB_PATH, MEL_SPEC_FILENAME.format(
+                    dbc.PROCESS_DB_PATH, dbc.IEM_MEL_SPEC_FN.format(
                         id=id_counter, emo_label=label))
                 np.save(mel_spec_path, melspecgram, allow_pickle=True)
                 id_counter += 1

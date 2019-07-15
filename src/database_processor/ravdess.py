@@ -13,16 +13,15 @@ you plan on using a data generator to feed a neural network the samples.
 
 import os
 
+import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from db_common import get_label, is_outlier
-from db_stats import generate_db_stats
+from db_common import get_label, repr_label
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav, remove_first_last_sec
 
 NUM_ACTORS = 24
-RAV_MIN_LEN, RAV_MAX_LEN = 44941, 128224
 RAV_EMO_INDEX = 2  # The index into the filename for the emotion label
 RAV_SR = 48000  # The sampling rate for all Ravdess audio samples
 RAV_EMOTION_MAP = {
@@ -35,7 +34,6 @@ RAV_EMOTION_MAP = {
     "07": emc.DIS,
     "08": emc.SUR,
 }
-MEL_SPEC_FILENAME = "R_{id}_{emo_label}.npy"
 
 
 def load_data():
@@ -89,18 +87,14 @@ def read_data():
         print("Processing actor:", actor_foldername)
 
         for sample_filename in os.listdir(actor_path):
-            # Read the label and if it's empty, then drop the sample
-            label = get_label(
-                sample_filename, "-", RAV_EMO_INDEX, RAV_EMOTION_MAP)
-            if not label:
-                print("Not using sample:", sample_filename)
-                continue
-
             # Read the sample and remove the first and last second
             sample_path = os.path.join(actor_path, sample_filename)
             wav = load_wav(sample_path)
             samples.append(remove_first_last_sec(wav, RAV_SR))
 
+            # Read the label
+            label = get_label(
+                sample_filename, "-", RAV_EMO_INDEX, RAV_EMOTION_MAP)
             labels.append(label)
 
     return np.array(samples), np.array(labels)
@@ -120,30 +114,28 @@ def read_to_melspecgram():
         print("Processing actor:", actor_foldername)
 
         for sample_filename in os.listdir(actor_path):
+            # Read the sample and remove the first and last second
             sample_path = os.path.join(actor_path, sample_filename)
-
-            # Read the sample
-            wav = load_wav(sample_path)
-
-            # Remove the first and last second
-            wav = remove_first_last_sec(wav, RAV_SR)
-
-            # Check if it's an outlier
-            if is_outlier(wav, lower=RAV_MIN_LEN, upper=RAV_MAX_LEN):
-                continue
+            wav = remove_first_last_sec(load_wav(sample_path), RAV_SR)
 
             # Process the sample into a log-mel spectrogram
             melspecgram = process_wav(wav)
 
+            # Display the spectrogram
+            plt.pcolormesh(melspecgram)
+            plt.colorbar()
+            plt.show()
+
             # Read the label
             label = get_label(
                 sample_filename, "-", RAV_EMO_INDEX, RAV_EMOTION_MAP)
+            label = repr_label(label)
 
             # Save the log-mel spectrogram to use later
             mel_spec_path = os.path.join(
-                dbc.PROCESS_DB_PATH, MEL_SPEC_FILENAME.format(
+                dbc.PROCESS_DB_PATH, dbc.RAV_MEL_SPEC_FN.format(
                     id=id_counter, emo_label=label))
-            np.save(mel_spec_path, melspecgram, allow_pickle=True)
+            np.save(mel_spec_path, melspecgram)
             id_counter += 1
 
 
@@ -151,11 +143,10 @@ def main():
     """
     Local testing and cache creation.
     """
-    ravdess_samples, ravdess_labels = load_data()
+    # ravdess_samples, ravdess_labels = load_data()
     # print(ravdess_samples.shape)
     # print(ravdess_labels.shape)
-    generate_db_stats(ravdess_samples, ravdess_labels)
-    # read_to_melspecgram()
+    read_to_melspecgram()
 
 
 if __name__ == "__main__":

@@ -18,11 +18,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from db_common import get_label, k_hot_encode_label, is_outlier
+from db_common import get_label, k_hot_encode_label, repr_label
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
-CRE_MIN_LEN, CRE_MAX_LEN = 60861, 193794
 CRE_EMO_INDEX = 2  # The index into the filename for the emotion label
 CRE_SR = 16000  # The sampling rate for all Crema-d audio samples
 CRE_EMOTION_MAP = {
@@ -33,7 +32,6 @@ CRE_EMOTION_MAP = {
     "N": emc.NEU,
     "S": emc.SAD,
 }
-MEL_SPEC_FILENAME = "C_{id}_{emo_label}.npy"
 
 
 def load_data():
@@ -82,23 +80,18 @@ def read_data():
     labels = []
     wav_folder = os.path.join(dbc.CRE_DB_PATH, "AudioWAV")
     labels_path = os.path.join(dbc.CRE_DB_PATH, "tabulatedVotes.csv")
-
     label_map = get_label_map(labels_path)
 
     for sample_filename in os.listdir(wav_folder):
         print("Processing file:", sample_filename)
 
-        # Read the label and if it's empty, then drop the sample
-        sample_name = os.path.splitext(sample_filename)[0]
-        label = label_map[sample_name]
-        if not label:
-            print("Not using sample:", sample_filename)
-            continue
-
         # Read the sample
         sample_path = os.path.join(wav_folder, sample_filename)
         samples.append(load_wav(sample_path))
 
+        # Read the label
+        sample_name = os.path.splitext(sample_filename)[0]
+        label = label_map[sample_name]
         labels.append(label)
 
     return np.array(samples), np.array(labels)
@@ -113,31 +106,32 @@ def read_to_melspecgram():
     id_counter = 0
 
     wav_folder = os.path.join(dbc.CRE_DB_PATH, "AudioWAV")
+    labels_path = os.path.join(dbc.CRE_DB_PATH, "tabulatedVotes.csv")
+    label_map = get_label_map(labels_path)
 
     for sample_filename in os.listdir(wav_folder):
-        sample_path = os.path.join(wav_folder, sample_filename)
-
         # Read the sample
+        sample_path = os.path.join(wav_folder, sample_filename)
         wav = load_wav(sample_path)
 
-        # Check if it's an outlier
-        if is_outlier(wav, lower=CRE_MIN_LEN, upper=CRE_MAX_LEN):
-            continue
-
         # Process the sample into a log-mel spectrogram
-        melspecgram = process_wav(wav)
+        melspecgram = process_wav(wav, noisy=True)
 
-        plt.pcolormesh(melspecgram, cmap="magma")
+        # Display the spectrogram
+        plt.pcolormesh(melspecgram)
+        plt.colorbar()
         plt.show()
 
         # Read the label
-        label = get_label(sample_filename, "_", CRE_EMO_INDEX, CRE_EMOTION_MAP)
+        sample_name = os.path.splitext(sample_filename)[0]
+        label = label_map[sample_name]
+        label = repr_label(label)
 
         # Save the log-mel spectrogram to use later
         mel_spec_path = os.path.join(
-            dbc.PROCESS_DB_PATH, MEL_SPEC_FILENAME.format(
+            dbc.PROCESS_DB_PATH, dbc.CRE_MEL_SPEC_FN.format(
                 id=id_counter, emo_label=label))
-        np.save(mel_spec_path, melspecgram, allow_pickle=True)
+        np.save(mel_spec_path, melspecgram)
         id_counter += 1
 
 
@@ -194,10 +188,10 @@ def main():
     """
     Local testing and cache creation.
     """
-    cremad_samples, cremad_labels = load_data()
-    print(cremad_samples.shape)
-    print(cremad_labels.shape)
-    # read_to_melspecgram()
+    # cremad_samples, cremad_labels = load_data()
+    # print(cremad_samples.shape)
+    # print(cremad_labels.shape)
+    read_to_melspecgram()
 
 
 if __name__ == "__main__":

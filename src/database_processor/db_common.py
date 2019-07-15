@@ -37,6 +37,23 @@ def get_label(filename, delimiter, index, db_emo_map):
     return k_hot_encode_label(emotion_id)
 
 
+def repr_label(label):
+    """
+    Represents a label in a filename-friendly format. Mostly used for the
+    "read_to_melspecgram()" function to write out labels in the filename.
+
+    Sample input:
+        [1. 0. 0. 0. 0. 0. 0.]
+
+    Sample output:
+        "1_0_0_0_0_0_0"
+
+    :param label: Numpy array representing the k-hot encoded label
+    :return: String representation of the label
+    """
+    return "_".join(str(emo) for emo in label)
+
+
 def k_hot_encode_label(label):
     """
     K-hot encodes a label. Takes a list of emotion IDs and returns a list
@@ -88,7 +105,7 @@ def _one_hot_encode_label(label):
     :param label: A list with one label (length is one)
     :return: One-hot encoding of the label
     """
-    one_hot_label = np.zeros(emc.NUM_EMOTIONS)
+    one_hot_label = np.zeros(emc.NUM_EMOTIONS, dtype=int)
     one_hot_label[label[0]] = 1
     return one_hot_label
 
