@@ -9,9 +9,10 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
+import cremad
 import db_constants as dbc
+import iemocap
 from db_common import inverse_k_hot_encode_label
-from iemocap import get_label_map, NUM_SESS
 from src import em_constants as emc
 
 
@@ -88,6 +89,49 @@ def generate_db_stats(samples, labels):
     plt.show()
 
 
+def calculate_cremad_accuracy():
+    """
+    Calculates the accuracy of the CREMA-D databse. Accuracy is defined as the
+    percent agreement between the intended emotion and the perceived emotion
+    of the samples.
+
+    Example:
+        Suppose a sample was spoken with the intention of conveying the emotion
+        of "Anger" but listeners voted the sample as ["Anger", "Anger",
+        "Disgust", "Fear"]. Then the accuracy for this sample is 50% because
+        only 50% of the voters got the "right" answer.
+
+    Expected output:
+        "The CREMA-D database has an emotion accuracy percent of: 61.89%."
+    """
+    labels_path = os.path.join(dbc.CRE_DB_PATH, "tabulatedVotes.csv")
+    label_map = cremad.get_label_map(labels_path, encode=False)
+    sample_accs = 0  # List of sample accuracies
+
+    for sample_name, sample_emotions in label_map.items():
+        # Get the intended emotion from the sample's filename
+        intended_emotion = sample_name.split("_")[2][0]
+
+        # Get the perceived emotions and their respective votes
+        perceived_emotions, emotion_votes = np.unique(
+            sample_emotions, return_counts=True)
+
+        # If there isn't a match, then assume this sample has an accuracy of
+        # zero.
+        if intended_emotion not in perceived_emotions:
+            continue
+
+        # If there is a match, calculate how strong the match is by getting the
+        # votes for the accurate emotion divided by the total votes
+        perceived_emo_index = np.where(intended_emotion == perceived_emotions)
+        sample_acc = emotion_votes[perceived_emo_index] / len(sample_emotions)
+        sample_accs += sample_acc
+
+    cremad_acc = np.sum(sample_accs) / len(label_map)
+    print("The CREMA-D database has an emotion accuracy percent of: "
+          "{0:.2f}%.".format(cremad_acc * 100))
+
+
 def calculate_iemocap_agreement():
     """
     Calculates the emotion agreement percentage of the IEMOCAP database.
@@ -98,7 +142,7 @@ def calculate_iemocap_agreement():
     db_agreement = {}
     labels_path = os.path.join(dbc.IEM_DB_PATH, "labels")
 
-    for num_sess in range(1, NUM_SESS + 1):
+    for num_sess in range(1, iemocap.NUM_SESS + 1):
         sess_foldername = "S{}".format(num_sess)
         print("Processing session:", sess_foldername)
 
@@ -108,8 +152,9 @@ def calculate_iemocap_agreement():
             perform_labels_path = os.path.join(sess_labels_path, perform)
 
             # Get the agreement percents for each sample in this performance
-            perform_label_map = get_label_map(perform_labels_path, encode=False)
-            perform_agreement = _calculate_iem_perform_agree(perform_label_map)
+            perform_label_map = iemocap.get_label_map(
+                perform_labels_path, encode=False)
+            perform_agreement = _calc_iem_perform_agree(perform_label_map)
             db_agreement.update(perform_agreement)
 
     # Get the database agreement by averaging the agreement over all samples
@@ -118,7 +163,7 @@ def calculate_iemocap_agreement():
           "{0:.2f}%.".format(db_avg * 100))
 
 
-def _calculate_iem_perform_agree(perform_label_map):
+def _calc_iem_perform_agree(perform_label_map):
     """
     Calculates the label/emotion agreement within an IEMOCAP performance.
 
@@ -137,12 +182,12 @@ def _calculate_iem_perform_agree(perform_label_map):
         # Discard which emotion was most voted for because we only care about
         # how many of the votes were convergent/divergent on an emotion
         _, emo_count = np.unique(sample_emotions, return_counts=True)
-        perform_agreement[sample_name] = _calculate_iem_sample_agree(emo_count)
+        perform_agreement[sample_name] = _calc_iem_sample_agree(emo_count)
 
     return perform_agreement
 
 
-def _calculate_iem_sample_agree(sample_emotions):
+def _calc_iem_sample_agree(sample_emotions):
     """
     Calculates the label/emotion agreement within an IEMOCAP sample.
 
@@ -163,7 +208,7 @@ def _calculate_iem_sample_agree(sample_emotions):
 
 
 def main():
-    calculate_iemocap_agreement()
+    calculate_cremad_accuracy()
 
 
 if __name__ == "__main__":

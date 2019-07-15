@@ -142,11 +142,12 @@ def read_to_melspecgram():
         id_counter += 1
 
 
-def get_label_map(labels_path):
+def get_label_map(labels_path, encode=True):
     """
     Gets the label map for every sample in the CREMA-D database.
 
     :param labels_path: Path to tabulatedVotes.csv
+    :param encode: Bool to k-hot encode the label or not
     :return: Dict
     """
     sample_emo_map = {}
@@ -167,8 +168,9 @@ def get_label_map(labels_path):
                 sample_emo_map[sample_name] += sample_emotions
 
     # K-hot encode the emotions
-    for sample, emo in sample_emo_map.items():
-        sample_emo_map[sample] = encode_label(emo)
+    if encode:
+        for sample, emo in sample_emo_map.items():
+            sample_emo_map[sample] = encode_label(emo)
 
     return sample_emo_map
 
