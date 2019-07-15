@@ -18,8 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
-from db_common import get_label, k_hot_encode_label
-from db_stats import generate_db_stats, is_outlier
+from db_common import get_label, k_hot_encode_label, is_outlier
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
@@ -198,7 +197,6 @@ def main():
     cremad_samples, cremad_labels = load_data()
     print(cremad_samples.shape)
     print(cremad_labels.shape)
-    generate_db_stats(cremad_samples, cremad_labels)
     # read_to_melspecgram()
 
 

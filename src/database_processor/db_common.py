@@ -8,6 +8,18 @@ import numpy as np
 from src import em_constants as emc
 
 
+def is_outlier(wav, lower, upper):
+    """
+    Checks if an audio sample is an outlier. Bounds are inclusive.
+
+    :param wav: The audio time series data points
+    :param lower: The lower bound
+    :param upper: The upper bound
+    :return: Boolean
+    """
+    return False if lower <= len(wav) <= upper else True
+
+
 def get_label(filename, delimiter, index, db_emo_map):
     """
     Gets the label from a sample's filename.

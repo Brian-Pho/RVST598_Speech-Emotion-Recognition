@@ -31,18 +31,6 @@ def calculate_bounds(data, num_std=dbc.NUM_STD_CUTOFF):
     return lower, upper
 
 
-def is_outlier(wav, lower, upper):
-    """
-    Checks if an audio sample is an outlier. Bounds are inclusive.
-
-    :param wav: The audio time series data points
-    :param lower: The lower bound
-    :param upper: The upper bound
-    :return: Boolean
-    """
-    return False if lower <= len(wav) <= upper else True
-
-
 def generate_db_stats(samples, labels):
     """
     Generates statistics from the given samples and labels.
