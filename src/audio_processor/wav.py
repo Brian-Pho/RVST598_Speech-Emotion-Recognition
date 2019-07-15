@@ -40,17 +40,20 @@ def process_wav(wav, noisy=False):
     :param noisy: Used if the data is known to be noisy
     :return: np.array
     """
-    # Pad to the constant length
-    padded_wav = pad_wav(wav)
+    # Reshape to a constant length. Slice if too long, pad if too short
+    if auc.MAX_DATA_POINTS < len(wav):
+        wav = wav[:auc.MAX_DATA_POINTS]
+    else:
+        wav = pad_wav(wav)
 
     if noisy:
-        noisy_part = padded_wav[:auc.SR * 0.5]  # Assume the first 0.5s is noise
+        noisy_part = wav[:auc.NOISY_DURATION]
         # noinspection PyTypeChecker
-        padded_wav = nr.reduce_noise(
-            audio_clip=padded_wav, noise_clip=noisy_part, verbose=False)
+        wav = nr.reduce_noise(
+            audio_clip=wav, noise_clip=noisy_part, verbose=False)
 
     # Convert to log-mel spectrogram
-    melspecgram = sgh.wave_to_melspecgram(padded_wav)
+    melspecgram = sgh.wave_to_melspecgram(wav)
 
     # Scale the spectrogram to be between -1 and 1
     scaled_melspecgram = sgh.scale_melspecgram(melspecgram)

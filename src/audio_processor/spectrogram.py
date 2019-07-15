@@ -21,9 +21,10 @@ def wave_to_melspecgram(wave):
     :return: np.array (complex)
     """
     # Convert the wave into the frequency domain
-    stft = tf.signal.stft(wave, frame_length=auc.WIN_SIZE,
-                          frame_step=auc.STEP_SIZE)
+    stft = tf.signal.stft(
+        wave, frame_length=auc.WIN_SIZE, frame_step=auc.STEP_SIZE)
     spectrogram = tf.abs(stft)
+    # phase = tf.angle(stft)
 
     # Warp the linear scale spectrogram into the mel-scale
     num_specgram_bins = stft.shape[-1].value
@@ -35,8 +36,8 @@ def wave_to_melspecgram(wave):
     mel_specgram.set_shape(spectrogram.shape[:-1].concatenate(
         linear_to_mel_weight_matrix.shape[-1:]))
 
-    # Flip the rows and columns so that the mel bins are on the y-axis and
-    # time on the x-axis.
+    # Flip the rows and columns so that the mel bins is on the y-axis and
+    # time is on the x-axis.
     mel_specgram = tf.transpose(mel_specgram)
 
     # Compute a stabilized log to get log-magnitude mel-scale spectrogram
@@ -63,7 +64,7 @@ def normalize_melspecgram(melspecgram):
     return melspecgram
 
 
-def scale_melspecgram(melspecgram, amp_range=(-1, 1)):
+def scale_melspecgram(melspecgram, amp_range=auc.AMP_RANGE):
     """
     Scales a log-mel spectrogram to have an amplitude range of [-1, 1]. Don't
     use both normalization and scaling.
