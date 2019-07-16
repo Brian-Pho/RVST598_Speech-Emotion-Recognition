@@ -19,7 +19,7 @@ def wave_to_melspecgram(wave):
     https://www.tensorflow.org/api_docs/python/tf/signal/mfccs_from_log_mel_spectrograms
 
     :param wave: The time series of an audio clip
-    :return: np.array (complex)
+    :return: np.array
     """
     # Convert the wave into the frequency domain
     stft = tf.signal.stft(
@@ -34,8 +34,9 @@ def wave_to_melspecgram(wave):
         auc.MAX_HERTZ)
     mel_specgram = tf.tensordot(
         spectrogram, linear_to_mel_weight_matrix, 1)
-    mel_specgram.set_shape(spectrogram.shape[:-1].concatenate(
-        linear_to_mel_weight_matrix.shape[-1:]))
+    mel_specgram.set_shape(
+        spectrogram.shape[:-1].concatenate(
+            linear_to_mel_weight_matrix.shape[-1:]))
 
     # Flip the rows and columns so that the mel bins is on the y-axis and
     # time is on the x-axis.
@@ -55,7 +56,7 @@ def wave_to_melspecgram(wave):
 def normalize_melspecgram(melspecgram):
     """
     Normalizes the amplitude of a log-mel spectrogram to have zero mean and
-    unit variance. Performs sample-level amplitude normalization.
+    unit variance. Performs sample-level amplitude normalization. Unused.
 
     :param melspecgram: np.array
     :return: np.array
@@ -79,9 +80,9 @@ def scale_melspecgram(melspecgram, amp_range=auc.AMP_RANGE):
 
 def display_melspecgram(melspecgram):
     """
-    Displays a log-mel spectrogram using matplotlib.pyplot.
+    Displays a log-mel spectrogram using matplotlib.
 
-    :param melspecgram: The spectrogram data in the form of a 2D array.
+    :param melspecgram: The spectrogram data in the form of a 2D np.array.
     """
     plt.pcolormesh(melspecgram)
     plt.title("Log-Mel Magnitude Spectrogram")

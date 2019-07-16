@@ -9,7 +9,7 @@ import noisereduce as nr
 import numpy as np
 
 import au_constants as auc
-import spectrogram as sgh
+import spectrogram as sg
 
 
 def load_wav(wav_path):
@@ -19,11 +19,11 @@ def load_wav(wav_path):
     files will be resampled to the sampling rate defined in constants.py.
 
     :param wav_path: Path to wav file
-    :return: Tensor
+    :return: np.array
     """
     wav, sr = librosa.load(
         wav_path, sr=auc.SR, dtype=np.dtype(auc.WAV_DATA_TYPE),
-        res_type="kaiser_best")
+        res_type=auc.RES_ALGOR)
 
     if sr != auc.SR:
         print("Sampling rate mismatch.")
@@ -53,21 +53,21 @@ def process_wav(wav, noisy=False):
             audio_clip=wav, noise_clip=noisy_part, verbose=False)
 
     # Convert to log-mel spectrogram
-    melspecgram = sgh.wave_to_melspecgram(wav)
+    melspecgram = sg.wave_to_melspecgram(wav)
 
     # Scale the spectrogram to be between -1 and 1
-    scaled_melspecgram = sgh.scale_melspecgram(melspecgram)
+    scaled_melspecgram = sg.scale_melspecgram(melspecgram)
 
     return scaled_melspecgram
 
 
 def remove_first_last_sec(wav, sr):
     """
-    Removes the first and last second of an audio waveform.
+    Removes the first and last second of an audio clip.
 
     :param wav: The audio time series data points
     :param sr: The sampling rate of the audio
-    :return: Tensor
+    :return: np.array
     """
     return wav[sr:-sr]
 
@@ -78,7 +78,7 @@ def pad_wav(wav, desired_length=auc.MAX_DATA_POINTS):
 
     :param wav: The audio time series data points
     :param desired_length: The desired length to pad to
-    :return: Tensor
+    :return: np.array
     """
     length_diff = desired_length - wav.shape[0]
 
@@ -86,8 +86,8 @@ def pad_wav(wav, desired_length=auc.MAX_DATA_POINTS):
         print("The waveform is longer than the desired length.")
         return None
 
-    wav_padded = np.pad(wav, pad_width=(0, length_diff),
-                        mode='constant', constant_values=0)
+    wav_padded = np.pad(
+        wav, pad_width=(0, length_diff), mode='constant', constant_values=0)
 
     if len(wav_padded) != desired_length:
         print("An error occurred during padding the waveform.")
