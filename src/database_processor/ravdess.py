@@ -13,11 +13,11 @@ you plan on using a data generator to feed a neural network the samples.
 
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
 from db_common import get_label, repr_label
+from spectrogram import display_melspecgram
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav, remove_first_last_sec
 
@@ -122,9 +122,7 @@ def read_to_melspecgram():
             melspecgram = process_wav(wav)
 
             # Display the spectrogram
-            plt.pcolormesh(melspecgram)
-            plt.colorbar()
-            plt.show()
+            display_melspecgram(melspecgram)
 
             # Read the label
             label = get_label(

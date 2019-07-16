@@ -3,6 +3,7 @@ This file holds functions to build audio log-mel spectrograms and to process
 them.
 """
 
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from sklearn.preprocessing import minmax_scale
@@ -74,3 +75,17 @@ def scale_melspecgram(melspecgram, amp_range=auc.AMP_RANGE):
     :return: np.array
     """
     return minmax_scale(melspecgram, amp_range)
+
+
+def display_melspecgram(melspecgram):
+    """
+    Displays a log-mel spectrogram using matplotlib.pyplot.
+
+    :param melspecgram: The spectrogram data in the form of a 2D array.
+    """
+    plt.pcolormesh(melspecgram)
+    plt.title("Log-Mel Magnitude Spectrogram")
+    plt.ylabel("Log-Mel Bins (mel)")
+    plt.xlabel("Time (sample)")
+    plt.colorbar()
+    plt.show()

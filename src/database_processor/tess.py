@@ -15,11 +15,11 @@ import os
 from html.parser import HTMLParser
 from urllib.request import urlopen, urlretrieve
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 import db_constants as dbc
 from db_common import get_label, repr_label
+from spectrogram import display_melspecgram
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
@@ -124,9 +124,7 @@ def read_to_melspecgram():
         melspecgram = process_wav(wav)
 
         # Display the spectrogram
-        plt.pcolormesh(melspecgram)
-        plt.colorbar()
-        plt.show()
+        display_melspecgram(melspecgram)
 
         # Read the label
         sample_filename = os.path.splitext(sample_filename)[0]

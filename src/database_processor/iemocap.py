@@ -17,6 +17,7 @@ import numpy as np
 
 import db_constants as dbc
 from db_common import k_hot_encode_label, repr_label
+from spectrogram import display_melspecgram
 from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
@@ -145,11 +146,10 @@ def read_to_melspecgram():
                 wav = load_wav(sample_path)
 
                 # Process the sample into a log-mel spectrogram
-                melspecgram = process_wav(wav)
+                melspecgram = process_wav(wav, noisy=True)
 
-                # plt.pcolormesh(melspecgram)
-                # plt.colorbar()
-                # plt.show()
+                # Display the spectrogram
+                display_melspecgram(melspecgram)
 
                 # Get the label
                 sample_filename = os.path.splitext(sample_filename)[0]
@@ -238,10 +238,10 @@ def encode_label(labels):
 
 
 def main():
-    iemocap_samples, iemocap_labels = load_data()
-    print(iemocap_samples.shape)
-    print(iemocap_labels.shape)
-    # read_to_melspecgram()
+    # iemocap_samples, iemocap_labels = load_data()
+    # print(iemocap_samples.shape)
+    # print(iemocap_labels.shape)
+    read_to_melspecgram()
 
 
 if __name__ == "__main__":
