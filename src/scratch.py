@@ -54,9 +54,9 @@ in this file aren't runnable but should help debugging or viewing data.
 #     duration_diff = 193794 - wav.shape[0]
 #     wav = np.pad(wav, pad_width=(0, duration_diff),
 #                       mode='constant', constant_values=0)
-#     melspecgram = sgh.wave_to_melspecgram(wav)
+#     melspecgram = sg.wave_to_melspecgram(wav)
 #     print(sample_filename)
-#     melspecgram = sgh.scale_melspecgram(melspecgram)
+#     melspecgram = sg.scale_melspecgram(melspecgram)
 #     # print(np.amin(melspecgram), np.amax(melspecgram))
 #     # print(melspecgram.shape)
 #     plt.subplot(4, 4, i)

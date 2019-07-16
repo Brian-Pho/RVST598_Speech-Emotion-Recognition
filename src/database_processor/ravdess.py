@@ -48,16 +48,16 @@ def load_data():
 
     try:
         # Attempt to read the cache
-        ravdess_samples = np.load(dbc.RAV_SAMPLES_CACHE_PATH, allow_pickle=True)
-        ravdess_labels = np.load(dbc.RAV_LABELS_CACHE_PATH, allow_pickle=True)
+        ravdess_samples = np.load(dbc.RAV_SAMPLES_CACHE_PATH)
+        ravdess_labels = np.load(dbc.RAV_LABELS_CACHE_PATH)
         print("Successfully loaded the RAVDESS cache.")
 
     except IOError as e:
         # Since the cache doesn't exist, create it.
         print(str(e))
         ravdess_samples, ravdess_labels = read_data()
-        np.save(dbc.RAV_SAMPLES_CACHE_PATH, ravdess_samples, allow_pickle=True)
-        np.save(dbc.RAV_LABELS_CACHE_PATH, ravdess_labels, allow_pickle=True)
+        np.save(dbc.RAV_SAMPLES_CACHE_PATH, ravdess_samples)
+        np.save(dbc.RAV_LABELS_CACHE_PATH, ravdess_labels)
         print("Successfully cached the RAVDESS database.")
 
     finally:
@@ -68,15 +68,14 @@ def load_data():
 
 def read_data():
     """
-    Reads the RAVDESS database into tensors.
+    Reads the RAVDESS database into np.array.
 
     Sample output:
         (array([ 3.0517578e-05,  3.0517578e-05,  3.0517578e-05, ...,
         0.0000000e+00, -3.0517578e-05,  0.0000000e+00], dtype=float32), 0)
 
-    :return: Tuple of (samples, labels) where the samples are a tensor of
-             varying shape due to varying audio lengths, and the labels are an
-             array of integers. The shape is (1440,) from 1440 audio files.
+    :return: Tuple of (samples, labels) where the samples are a np.array and the
+    labels are an array of integers.
     """
     samples = []
     labels = []
@@ -130,9 +129,9 @@ def read_to_melspecgram():
             label = repr_label(label)
 
             # Save the log-mel spectrogram to use later
-            mel_spec_path = os.path.join(
-                dbc.PROCESS_DB_PATH, dbc.RAV_MEL_SPEC_FN.format(
-                    id=id_counter, emo_label=label))
+            mel_spec_filename = dbc.RAV_MEL_SPEC_FN.format(
+                id=id_counter, emo_label=label)
+            mel_spec_path = os.path.join(dbc.PROCESS_DB_PATH, mel_spec_filename)
             np.save(mel_spec_path, melspecgram)
             id_counter += 1
 

@@ -1,6 +1,6 @@
 """
-This file holds database constants such as paths to the IEMOCAP, CREMA-D, and
-RAVDESS database.
+This file holds database constants such as paths to the IEMOCAP, CREMA-D,
+RAVDESS, and TESS databases.
 """
 
 import os

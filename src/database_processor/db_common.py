@@ -22,7 +22,7 @@ def is_outlier(wav, lower, upper):
 
 def get_label(filename, delimiter, index, db_emo_map):
     """
-    Gets the label from a sample's filename.
+    Gets the k-hot encoded label from a sample's filename.
 
     :param filename: The sample's filename
     :param delimiter: The delimiter used in the filename
@@ -39,7 +39,7 @@ def get_label(filename, delimiter, index, db_emo_map):
 
 def repr_label(label):
     """
-    Represents a label in a filename-friendly format. Mostly used for the
+    Represents a label in a filename-friendly format. Mostly used in the
     "read_to_melspecgram()" function to write out labels in the filename.
 
     Sample input:
@@ -112,7 +112,7 @@ def _one_hot_encode_label(label):
 
 def inverse_k_hot_encode_label(k_hot_label):
     """
-    Inverse a k-hot encoded label back to emotion ids.
+    Inverses a k-hot encoded label back into emotion ids.
 
     Sample input:
         [1, 0, 0, 0, 1, 0, 0]

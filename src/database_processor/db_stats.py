@@ -23,7 +23,7 @@ def calculate_bounds(data, num_std=dbc.NUM_STD_CUTOFF):
 
     :param data: The dataset/distribution
     :param num_std: The number of standard deviations to set the bounds
-    :return: Tuple, of the lower and upper bound
+    :return: Tuple of the lower and upper bound
     """
     data_mean, data_std = np.mean(data), np.std(data)
     cut_off = data_std * num_std
@@ -38,11 +38,13 @@ def generate_db_stats(samples, labels):
     :param samples: Samples from the database
     :param labels: Labels from the database
     """
+    # Convert from k-hot encoded labels to emotion ID labels
     emo_labels = []
     for label in labels:
         label = inverse_k_hot_encode_label(label)
         emo_labels = np.concatenate([emo_labels, label])
 
+    # Convert from emotion ID labels into the actual emotion
     unique, counts = np.unique(emo_labels, return_counts=True)
     unique = [emc.INVERT_EMOTION_MAP[label] for label in unique]
 
@@ -50,7 +52,7 @@ def generate_db_stats(samples, labels):
     plt.pie(x=counts, labels=unique)
     plt.show()
 
-    # Calculate the distribution of tensor shapes for the samples
+    # Calculate the distribution of np.array shapes for the samples
     audio_lengths = [len(sample) for sample in samples]
     print("Shortest:", min(audio_lengths), "Longest:", max(audio_lengths))
 
@@ -71,22 +73,21 @@ def generate_db_stats(samples, labels):
     print(samples.shape, data_min, data_max)
 
     plt.bar(unique, counts, width=700)
+    plt.title("The Distribution of Samples with Number of Data Points")
     plt.xlabel("Number of Data Points")
     plt.ylabel("Number of Samples")
-    plt.title("The Distribution of Samples with Number of Data Points")
     plt.show()
 
 
 def calculate_cremad_accuracy():
     """
     Calculates the accuracy of the CREMA-D databse. Accuracy is defined as the
-    percent agreement between the intended emotion and the perceived emotion
-    of the samples.
+    percent agreement between the intended emotion and the perceived emotion.
 
     Example:
-        Suppose a sample was spoken with the intention of conveying the emotion
-        of "Anger" but listeners voted the sample as ["Anger", "Anger",
-        "Disgust", "Fear"]. Then the accuracy for this sample is 50% because
+        Suppose a sample was spoken with the intent of conveying the emotion
+        "Anger" but listeners voted the sample as ["Anger", "Anger", "Disgust",
+        "Fear"]. Then the accuracy for this sample is 50% because
         only 50% of the voters got the "right" answer.
 
     Expected output:
@@ -197,6 +198,7 @@ def _calc_iem_sample_agree(sample_emotions):
 
 def main():
     calculate_cremad_accuracy()
+    calculate_iemocap_agreement()
 
 
 if __name__ == "__main__":

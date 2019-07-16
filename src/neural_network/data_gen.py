@@ -5,10 +5,8 @@ This file holds functions to generate data for a machine learning model.
 import os
 
 import numpy as np
-from keras.utils import to_categorical
 
 import nn_constants as nnc
-from src import em_constants as emc
 from src.database_processor import db_constants as dbc
 
 EMO_INDEX = 2

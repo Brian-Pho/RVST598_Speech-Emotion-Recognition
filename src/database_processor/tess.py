@@ -24,9 +24,8 @@ from src import em_constants as emc
 from src.audio_processor.wav import load_wav, process_wav
 
 TES_BASE_URL = "https://tspace.library.utoronto.ca"
-TES_MIN_LEN, TES_MAX_LEN = None, None
 TES_EMO_INDEX = 2
-TES_SR = 24414
+TES_SR = 24414  # The sampling rate for all Tess audio samples
 TES_EMOTION_MAP = {
     "neutral": emc.NEU,
     "angry": emc.ANG,
@@ -50,16 +49,16 @@ def load_data():
 
     try:
         # Attempt to read the cache
-        tess_samples = np.load(dbc.TES_SAMPLES_CACHE_PATH, allow_pickle=True)
-        tess_labels = np.load(dbc.TES_LABELS_CACHE_PATH, allow_pickle=True)
+        tess_samples = np.load(dbc.TES_SAMPLES_CACHE_PATH)
+        tess_labels = np.load(dbc.TES_LABELS_CACHE_PATH)
         print("Successfully loaded the TESS cache.")
 
     except IOError as e:
         # Since the cache doesn't exist, create it.
         print(str(e))
         tess_samples, tess_labels = read_data()
-        np.save(dbc.TES_SAMPLES_CACHE_PATH, tess_samples, allow_pickle=True)
-        np.save(dbc.TES_LABELS_CACHE_PATH, tess_labels, allow_pickle=True)
+        np.save(dbc.TES_SAMPLES_CACHE_PATH, tess_samples)
+        np.save(dbc.TES_LABELS_CACHE_PATH, tess_labels)
         print("Successfully cached the TESS database.")
 
     finally:
@@ -132,10 +131,10 @@ def read_to_melspecgram():
         label = repr_label(label)
 
         # Save the log-mel spectrogram to use later
-        mel_spec_path = os.path.join(
-            dbc.PROCESS_DB_PATH, dbc.TES_MEL_SPEC_FN.format(
-                id=id_counter, emo_label=label))
-        np.save(mel_spec_path, melspecgram, allow_pickle=True)
+        mel_spec_filename = dbc.TES_MEL_SPEC_FN.format(
+            id=id_counter, emo_label=label)
+        mel_spec_path = os.path.join(dbc.PROCESS_DB_PATH, mel_spec_filename)
+        np.save(mel_spec_path, melspecgram)
         id_counter += 1
 
 
@@ -154,7 +153,7 @@ class TessHtmlParser(HTMLParser):
 
     def __init__(self):
         """
-        Class initializer.
+        Object initializer.
         """
         HTMLParser.__init__(self)
         # E.g. ['/bitstream/1807/24488/1/OAF_youth_neutral.wav', ...]

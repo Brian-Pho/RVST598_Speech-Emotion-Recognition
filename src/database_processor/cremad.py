@@ -46,16 +46,16 @@ def load_data():
 
     try:
         # Attempt to read the cache
-        cremad_samples = np.load(dbc.CRE_SAMPLES_CACHE_PATH, allow_pickle=True)
-        cremad_labels = np.load(dbc.CRE_LABELS_CACHE_PATH, allow_pickle=True)
+        cremad_samples = np.load(dbc.CRE_SAMPLES_CACHE_PATH)
+        cremad_labels = np.load(dbc.CRE_LABELS_CACHE_PATH)
         print("Successfully loaded the CREMA-D cache.")
 
     except IOError as e:
         # Since the cache doesn't exist, create it.
         print(str(e))
         cremad_samples, cremad_labels = read_data()
-        np.save(dbc.CRE_SAMPLES_CACHE_PATH, cremad_samples, allow_pickle=True)
-        np.save(dbc.CRE_LABELS_CACHE_PATH, cremad_labels, allow_pickle=True)
+        np.save(dbc.CRE_SAMPLES_CACHE_PATH, cremad_samples)
+        np.save(dbc.CRE_LABELS_CACHE_PATH, cremad_labels)
         print("Successfully cached the CREMA-D database.")
 
     finally:
@@ -66,15 +66,14 @@ def load_data():
 
 def read_data():
     """
-    Reads the CREMA-D database into tensors.
+    Reads the CREMA-D database into np.array.
 
     Sample output:
         (array([-0.00228882, -0.00204468, -0.00180054, ...,  0.        ,
         0.        ,  0.        ], dtype=float32), 2)
 
-    :return: Tuple of (samples, labels) where the samples are a tensor of
-             varying shape due to varying audio lengths, and the labels are an
-             array of integers. The shape is (1440,) from 1440 audio files.
+    :return: Tuple of (samples, labels) where the samples are a np.array and the
+    labels are an array of integers.
     """
     samples = []
     labels = []
@@ -126,9 +125,9 @@ def read_to_melspecgram():
         label = repr_label(label)
 
         # Save the log-mel spectrogram to use later
-        mel_spec_path = os.path.join(
-            dbc.PROCESS_DB_PATH, dbc.CRE_MEL_SPEC_FN.format(
-                id=id_counter, emo_label=label))
+        mel_spec_filename = dbc.CRE_MEL_SPEC_FN.format(
+            id=id_counter, emo_label=label)
+        mel_spec_path = os.path.join(dbc.PROCESS_DB_PATH, mel_spec_filename)
         np.save(mel_spec_path, melspecgram)
         id_counter += 1
 

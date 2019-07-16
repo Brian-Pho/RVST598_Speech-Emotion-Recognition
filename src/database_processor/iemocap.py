@@ -48,16 +48,16 @@ def load_data():
 
     try:
         # Attempt to read the cache
-        iemocap_samples = np.load(dbc.IEM_SAMPLES_CACHE_PATH, allow_pickle=True)
-        iemocap_labels = np.load(dbc.IEM_LABELS_CACHE_PATH, allow_pickle=True)
+        iemocap_samples = np.load(dbc.IEM_SAMPLES_CACHE_PATH)
+        iemocap_labels = np.load(dbc.IEM_LABELS_CACHE_PATH)
         print("Successfully loaded the IEMOCAP cache.")
 
     except IOError as e:
         # Since the cache doesn't exist, create it.
         print(str(e))
         iemocap_samples, iemocap_labels = read_data()
-        np.save(dbc.IEM_SAMPLES_CACHE_PATH, iemocap_samples, allow_pickle=True)
-        np.save(dbc.IEM_LABELS_CACHE_PATH, iemocap_labels, allow_pickle=True)
+        np.save(dbc.IEM_SAMPLES_CACHE_PATH, iemocap_samples)
+        np.save(dbc.IEM_LABELS_CACHE_PATH, iemocap_labels)
         print("Successfully cached the IEMOCAP database.")
 
     finally:
@@ -68,15 +68,14 @@ def load_data():
 
 def read_data():
     """
-    Reads the IEMOCAP database into tensors.
+    Reads the IEMOCAP database into np.array.
 
     Sample output:
         (array([ 3.0517578e-05,  3.0517578e-05,  3.0517578e-05, ...,
         0.0000000e+00, -3.0517578e-05,  0.0000000e+00], dtype=float32), 0)
 
-    :return: Tuple of (samples, labels) where the samples are a tensor of
-             varying shape due to varying audio lengths, and the labels are an
-             array of integers.
+    :return: Tuple of (samples, labels) where the samples are a np.array and the
+    labels are an array of integers.
     """
     samples = []
     labels = []
@@ -125,7 +124,7 @@ def read_to_melspecgram():
     data_path = os.path.join(dbc.IEM_DB_PATH, "data")
     labels_path = os.path.join(dbc.IEM_DB_PATH, "labels")
 
-    for num_sess in range(1, 6):
+    for num_sess in range(1, NUM_SESS + 1):
         sess_foldername = "S{}".format(num_sess)
         print("Processing session:", sess_foldername)
 
@@ -156,10 +155,11 @@ def read_to_melspecgram():
                 label = repr_label(perform_label_map[sample_filename])
 
                 # Save the log-mel spectrogram to use later
+                mel_spec_filename = dbc.IEM_MEL_SPEC_FN.format(
+                    id=id_counter, emo_label=label)
                 mel_spec_path = os.path.join(
-                    dbc.PROCESS_DB_PATH, dbc.IEM_MEL_SPEC_FN.format(
-                        id=id_counter, emo_label=label))
-                np.save(mel_spec_path, melspecgram, allow_pickle=True)
+                    dbc.PROCESS_DB_PATH, mel_spec_filename)
+                np.save(mel_spec_path, melspecgram)
                 id_counter += 1
 
 
