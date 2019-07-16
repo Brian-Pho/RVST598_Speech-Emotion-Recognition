@@ -11,7 +11,7 @@
 
 ## Main Work
 
-- [ ] Read in data from each database
+- [x] Read in data from each database
 - [x] Combine the different databases
 - [x] Preprocess the data
 - [x] Create the ML model
