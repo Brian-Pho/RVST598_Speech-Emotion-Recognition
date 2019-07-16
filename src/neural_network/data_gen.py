@@ -14,9 +14,9 @@ EMO_INDEX = 2
 
 def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
     """
-    Generates a batch for training a neural network. Run indefinitely.
+    Generates a batch used in training a neural network. Runs indefinitely.
 
-    :param sample_fns: A list of filenames of samples
+    :param sample_fns: A list of sample filenames
     :param batch_size: The batch size
     :return: A batch in the form of a tuple (inputs, targets)
     """
@@ -25,6 +25,7 @@ def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
     if num_samples < nnc.MIN_NUM_SAMPLES:
         print("Not enough samples to satisfy the threshold for training.",
               "Current number:", num_samples, "Threshold:", nnc.MIN_NUM_SAMPLES)
+        yield (None, None)
 
     batch_start = 0
     # If the number of files is less than a batch, then use all of the files
@@ -36,22 +37,23 @@ def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
         batch_targets = []
 
         # Construct a batch
-        # print(num_samples, "BS:", batch_start, "BE:", batch_end)
         for sample_fn in sample_fns[batch_start:batch_end]:
             # Load a sample
             sample_path = os.path.join(dbc.PROCESS_DB_PATH, sample_fn)
             sample = np.load(sample_path, allow_pickle=False)
 
             # Load a label
-            label = _interpret_label(sample_fn)
+            label = read_label(sample_fn)
 
             batch_inputs.append(sample)
             batch_targets.append(label)
 
-        batch_inputs = np.expand_dims(np.array(batch_inputs), axis=3)
-        # batch_targets = to_categorical(
-        #     batch_targets, num_classes=emc.NUM_EMOTIONS)
-        # print(batch_inputs.shape, batch_targets.shape)
+        batch_inputs = np.array(batch_inputs)
+        batch_targets = np.array(batch_targets)
+        # Add a dimension because images must be 3D where the last dimension
+        # is the number of channels. In this case there's only one channel.
+        batch_inputs = np.expand_dims(batch_inputs, axis=3)
+
         yield (batch_inputs, batch_targets)
 
         # Shift the start and end for the next batch
@@ -70,7 +72,7 @@ def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
 
 def get_sample_filenames():
     """
-    Gets the filenames of the samples in the processed data folder. Doesn't
+    Gets the sample filenames in the processed data folder. Doesn't
     append the path to save memory.
 
     :return: List
@@ -78,25 +80,34 @@ def get_sample_filenames():
     return os.listdir(dbc.PROCESS_DB_PATH)
 
 
-def _interpret_label(filename):
+def read_label(filename):
     """
     Given a filename, it returns an integer representing the emotion label of
     the file/sample.
 
-    :return: Integer
+    Sample input:
+        "CRE_0-0_1_0_0_0_0_0.npy"
+
+    Sample output:
+        [0., 1., 0., 0., 0., 0., 0.]
+
+    :return: np.array
     """
-    filename = os.path.splitext(filename)[0]  # Removes the file extension
-    return int(filename.split("_")[EMO_INDEX])
+    # Remove the file extension
+    filename = os.path.splitext(filename)[0]
+    # Parse the label
+    k_hot_encoded_label = filename.split("-")[1].split("_")
+    # Convert into a numpy array
+    k_hot_encoded_label = np.array(k_hot_encoded_label).astype(int)
+
+    return k_hot_encoded_label
 
 
 def main():
-    """
-    Local testing.
-    """
     samples = get_sample_filenames()
     print(len(samples))
 
-    for inputs, targets in batch_generator(samples[0:34], nnc.BATCH_SIZE):
+    for inputs, targets in batch_generator(samples):
         print(inputs.shape, targets.shape)
 
 
