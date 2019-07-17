@@ -76,3 +76,5 @@ Database names
 - CREMA-D baseline 68.77 agreement
 - Confusion matrix
 - The words "emotion" and "label" are used interchangably because they both represent the same idea
+- The words "time series" and "wav" are used interchangably
+- The words "amplitude" and "magnitude" are used interchangably when discussing spectrograms

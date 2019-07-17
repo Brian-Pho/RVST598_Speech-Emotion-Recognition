@@ -13,5 +13,5 @@
 Number of samples
 Number of samples per emotion
 Number of samples per database
-Sample shape
+Sample shape: (200, 278, 1)
 Add title and axis labels for pictures

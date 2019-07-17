@@ -61,3 +61,4 @@
 - [ ] Set the cutoff length for all database wav files
 - [ ] Calculate database statistics
 - [ ] Set new mel max hertz frequency cutoff as it's causing black bars on spectrograms
+- [ ] Update file_tree.txt
