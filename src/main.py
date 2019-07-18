@@ -57,7 +57,7 @@ def main():
     model.save(nnc.MODEL_SAVE_PATH)
 
     # Display the training history
-    nnm.display_history(history)
+    nnm.visualize_train_history(history)
 
     # Test the model on the test set
     test_loss, test_acc = model.evaluate_generator(

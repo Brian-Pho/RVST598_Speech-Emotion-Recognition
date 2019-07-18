@@ -92,7 +92,7 @@ def read_data():
         for perform in os.listdir(sess_data_path):
             perform_data_path = os.path.join(sess_data_path, perform)
             perform_labels_path = os.path.join(
-                sess_labels_path, perform + ".txt")
+                sess_labels_path, "{filename}.txt".format(filename=perform))
             print("Processing performance:", perform)
 
             perform_label_map = get_label_map(perform_labels_path)
@@ -134,7 +134,7 @@ def read_to_melspecgram():
         for perform in os.listdir(sess_data_path):
             perform_data_path = os.path.join(sess_data_path, perform)
             perform_labels_path = os.path.join(
-                sess_labels_path, perform + ".txt")
+                sess_labels_path, "{filename}.txt".format(filename=perform))
             print("Processing performance:", perform)
 
             perform_label_map = get_label_map(perform_labels_path)

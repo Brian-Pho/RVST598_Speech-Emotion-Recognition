@@ -84,9 +84,10 @@ def display_melspecgram(melspecgram):
 
     :param melspecgram: The spectrogram data in the form of a 2D np.array.
     """
-    plt.pcolormesh(melspecgram)
-    plt.title("Log-Mel Magnitude Spectrogram")
-    plt.ylabel("Log-Mel Bins (mel)")
-    plt.xlabel("Time (sample)")
-    plt.colorbar()
-    plt.show()
+    # plt.pcolormesh(melspecgram)
+    # plt.title("Log-Mel Magnitude Spectrogram")
+    # plt.ylabel("Log-Mel Bins (mel)")
+    # plt.xlabel("Time (sample)")
+    # plt.colorbar()
+    # plt.show()
+    pass

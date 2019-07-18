@@ -1,5 +1,5 @@
 """
-This file holds general program constants such as the set of emotions used.
+This file holds the set of emotions considered.
 """
 
 # The list of seven emotions considered. Based on Ekman, 1999.
@@ -13,8 +13,7 @@ SUR = "SURPRISE"
 
 # The standard index for each emotion. This is how we keep the encoding of
 # emotion consistent across databases. We do this because it'll help the
-# neural network learn which tensor maps to which emotion. This will be useful
-# in Keras's "to_categorical()" function.
+# neural network learn which tensor maps to which emotion.
 # E.g. Anger maps to 1 and surprise maps to 6.
 EMOTION_MAP = {
     NEU: 0,

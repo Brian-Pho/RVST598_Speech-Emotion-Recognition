@@ -4,7 +4,7 @@ This file builds the machine learning model.
 
 import matplotlib.pyplot as plt
 import numpy as np
-from keras import layers, models, backend
+from keras import layers, models, backend, utils
 
 import nn_constants as nnc
 
@@ -37,15 +37,15 @@ def build_model():
     model.compile(optimizer=nnc.OPTIMIZER, loss=nnc.LOSS,
                   metrics=nnc.METRICS)
 
-    # model.summary()
-    # plot_model(model, to_file="model.png")
+    model.summary()
+    utils.plot_model(model, to_file="model.png")
 
     return model
 
 
-def display_history(history):
+def visualize_train_history(history):
     """
-    Displays a neural network's training history.
+    Visualizes a neural network's training history.
 
     :param history: Dictionary from training a neural network
     """
