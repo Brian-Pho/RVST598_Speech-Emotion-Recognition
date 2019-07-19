@@ -86,11 +86,11 @@ def pad_wav(wav, desired_length=auc.MAX_DATA_POINTS):
         print("The waveform is longer than the desired length.")
         return None
 
-    wav_padded = np.pad(
+    padded_wav = np.pad(
         wav, pad_width=(0, length_diff), mode='constant', constant_values=0)
 
-    if len(wav_padded) != desired_length:
+    if len(padded_wav) != desired_length:
         print("An error occurred during padding the waveform.")
         return None
 
-    return wav_padded
+    return padded_wav

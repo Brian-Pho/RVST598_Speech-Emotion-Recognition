@@ -42,7 +42,7 @@
 
 - Use this system as a component of a larger system
 - Emotion style transfer using cycle-GANs
-- Emotion generation using WavSynth/GAN/VAE
+- Emotion generation using WavSynth/GAN/VAE/GANSynth
 - Analyzing the neural network for more details on how it gets to its decision
 - Use network for deaf people in a device
 - Real-time emotion recognition

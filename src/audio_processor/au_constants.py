@@ -33,3 +33,7 @@ AMP_RANGE = (-1, 1)
 
 # The length of the noisy part of a sample
 NOISY_DURATION = int(SR * 0.5)
+
+# The final mel-spectrogram shape. The first value is the same as the number of
+# Mel bins specified above.
+MEL_SPECGRAM_SHAPE = (200, 278)  # 200 rows with 278 columns.
