@@ -40,7 +40,7 @@ def get_label(filename, delimiter, index, db_emo_map):
 def repr_label(label):
     """
     Represents a label in a filename-friendly format. Mostly used in the
-    "read_to_hdf5()" function to write out labels in the filename.
+    "read_to_melspecgram()" function to write out labels in the filename.
 
     Sample input:
         [1. 0. 0. 0. 0. 0. 0.]
