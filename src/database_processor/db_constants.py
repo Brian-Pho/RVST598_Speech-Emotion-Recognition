@@ -44,5 +44,11 @@ TES_LABELS_CACHE_PATH = os.path.join(
     TES_DB_PATH, "tess_labels_cache.npy")
 TES_MEL_SPEC_FN = "TES{template}".format(template=MEL_SPEC_FN)
 
-# The number of standard deviations to include in the data
+# HDF5 DATABASE
+HDF5_DB_PATH = os.path.join(PROCESS_DB_PATH, "final_data.hdf5")
+HDF5_NUM_SAMPLES = (IEM_NUM_SAMPLES + CRE_NUM_SAMPLES + RAV_NUM_SAMPLES +
+                    TES_NUM_SAMPLES)
+HDF5_SAMPLES_DSET = "samples"
+HDF5_LABELS_DSET = "labels"
+
 NUM_STD_CUTOFF = 3

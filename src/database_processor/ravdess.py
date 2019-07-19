@@ -99,14 +99,16 @@ def read_data():
     return np.array(samples), np.array(labels)
 
 
-def read_to_melspecgram():
+def read_to_hdf5(samples_dset, labels_dset, master_index):
     """
-    Reads the raw waveforms and converts them into log-mel spectrograms which
-    are stored. This is an alternative to read_data() and load_data() to prevent
-    using too much ram. Trades RAM for disk space.
-    """
-    id_counter = 0
+    Reads raw waveforms into log-mel spectrograms and stores them in an HDF5
+    file.
 
+    :param samples_dset: The samples dataset of the HDF5 file
+    :param labels_dset: The labels dataset of the HDF5 file
+    :param master_index: Where to index the data
+    :return: Int, the master index updated to the next storable index
+    """
     for actor in range(1, NUM_ACTORS + 1):
         actor_foldername = "Actor_{:02d}".format(actor)
         actor_path = os.path.join(dbc.RAV_DB_PATH, actor_foldername)
@@ -120,20 +122,23 @@ def read_to_melspecgram():
             # Process the sample into a log-mel spectrogram
             melspecgram = process_wav(wav)
 
-            # Display the spectrogram
-            display_melspecgram(melspecgram)
+            # Save the sample
+            samples_dset[master_index] = melspecgram
+
+            # # Display the spectrogram
+            # display_melspecgram(melspecgram)
 
             # Read the label
             label = get_label(
                 sample_filename, "-", RAV_EMO_INDEX, RAV_EMOTION_MAP)
-            label = repr_label(label)
+            # label = repr_label(label)
 
-            # Save the log-mel spectrogram to use later
-            mel_spec_filename = dbc.RAV_MEL_SPEC_FN.format(
-                id=id_counter, emo_label=label)
-            mel_spec_path = os.path.join(dbc.PROCESS_DB_PATH, mel_spec_filename)
-            np.save(mel_spec_path, melspecgram)
-            id_counter += 1
+            # Save the label
+            labels_dset[master_index] = label
+
+            master_index += 1
+
+    return master_index
 
 
 def main():
@@ -143,7 +148,7 @@ def main():
     # ravdess_samples, ravdess_labels = load_data()
     # print(ravdess_samples.shape)
     # print(ravdess_labels.shape)
-    read_to_melspecgram()
+    # read_to_hdf5()
 
 
 if __name__ == "__main__":
