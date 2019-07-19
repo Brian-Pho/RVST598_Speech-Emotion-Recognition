@@ -5,22 +5,25 @@ shape.
 
 import os
 
+from keras.metrics import categorical_accuracy
+
 from src.database_processor import db_constants as dbc
 
 # MODEL SAVE PATH
 MODEL_SAVE_PATH = os.path.join(dbc.DATA_PATH, "model.h5")
+MODEL_PLOT_PATH = os.path.join(dbc.DATA_PATH, "model.png")
 
 # MODEL CONFIGURATION
 INPUT_SHAPE = (200, 278, 1)
-OPTIMIZER = "adam"
+OPTIMIZER = "rmsprop"
 LOSS = "binary_crossentropy"
-METRICS = ['binary_accuracy', 'categorical_accuracy']
+METRICS = [categorical_accuracy]
 
 # TRAINING CONFIGURATION
-NUM_EPOCHS = 100
+NUM_EPOCHS = 10
 BATCH_SIZE = 32
 VERBOSE_LVL = 2
-MIN_NUM_SAMPLES = 0
+MIN_NUM_SAMPLES = 500
 
 TRAIN_ALLOC = 0.8
 VALID_ALLOC = 0.1

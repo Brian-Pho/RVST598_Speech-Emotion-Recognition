@@ -16,7 +16,6 @@ def main():
     # Get the data filenames (log-mel spectrograms in the form of .npy files)
     sample_fns = dg.get_sample_filenames()
     np.random.shuffle(sample_fns)
-    # print(log_mel_samples.shape)
 
     # Shuffle and create the train, validation, and test sets
     num_total_samples = len(sample_fns)
@@ -24,6 +23,8 @@ def main():
     num_valid = int(num_total_samples * nnc.VALID_ALLOC)
     num_not_train = num_test + num_valid
     num_train = num_total_samples - num_not_train
+    print("The total number of samples to be used for training:",
+          num_total_samples)
 
     test_samples = sample_fns[:num_test]
     valid_samples = sample_fns[num_test:num_not_train]
@@ -42,11 +43,11 @@ def main():
 
     # Create and train the model
     model = nnm.build_model()
-    model.load_weights(nnc.MODEL_SAVE_PATH)
+    # model.load_weights(nnc.MODEL_SAVE_PATH)
     history = model.fit_generator(
         generator=train_gen, steps_per_epoch=train_steps, epochs=nnc.NUM_EPOCHS,
         verbose=nnc.VERBOSE_LVL, validation_data=valid_gen,
-        validation_steps=valid_steps, use_multiprocessing=False
+        validation_steps=valid_steps
     )
 
     # for inputs, targets in train_gen:

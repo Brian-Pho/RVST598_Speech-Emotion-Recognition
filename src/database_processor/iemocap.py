@@ -124,8 +124,8 @@ def read_to_melspecgram():
     data_path = os.path.join(dbc.IEM_DB_PATH, "data")
     labels_path = os.path.join(dbc.IEM_DB_PATH, "labels")
 
-    for num_sess in range(1, NUM_SESS + 1):
-        sess_foldername = "S{}".format(num_sess)
+    for sess_num in range(1, NUM_SESS + 1):
+        sess_foldername = "S{}".format(sess_num)
         print("Processing session:", sess_foldername)
 
         sess_data_path = os.path.join(data_path, sess_foldername)
