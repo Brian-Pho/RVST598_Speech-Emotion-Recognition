@@ -1,5 +1,5 @@
 """
-This file holds functions to calculate database statistics such as how many
+This file holds functions to calculate raw database statistics such as how many
 outliers are outside a certain number of standard deviations and voter
 agreement.
 """
