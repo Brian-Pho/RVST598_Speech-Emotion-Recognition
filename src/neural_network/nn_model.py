@@ -21,7 +21,7 @@ def build_model():
     """
     model = models.Sequential()
     # kernel_regularizer=regularizers.l2(0.001),
-    model.add(layers.Conv2D(128, (5, 5), activation='relu',
+    model.add(layers.Conv2D(128, (3, 3), activation='relu',
                             input_shape=nnc.INPUT_SHAPE))
     model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu'))
