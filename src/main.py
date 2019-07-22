@@ -15,39 +15,30 @@ def main():
     """
     # Get the data filenames (log-mel spectrograms in the form of .npy files)
     sample_fns = dg.get_sample_filenames()
-    np.random.shuffle(sample_fns)
+    np.random.shuffle(sample_fns)  # Shuffle the dataset
 
-    # Shuffle and create the train, validation, and test sets
+    # Calculate the number of samples per set (train, valid, test)
     num_total_samples = len(sample_fns)
     num_test = int(num_total_samples * nnc.TEST_ALLOC)
     num_valid = int(num_total_samples * nnc.VALID_ALLOC)
     num_not_train = num_test + num_valid
-    num_train = num_total_samples - num_not_train
-    print("The total number of samples to be used for training:",
-          num_total_samples)
 
+    # Split the dataset into the train, valid, and test sets
     test_samples = sample_fns[:num_test]
     valid_samples = sample_fns[num_test:num_not_train]
     train_samples = sample_fns[num_not_train:]
 
     # Create the batch generators to feed the neural network
-    test_gen = dg.batch_generator(test_samples, nnc.BATCH_SIZE)
-    valid_gen = dg.batch_generator(valid_samples, nnc.BATCH_SIZE)
-    train_gen = dg.batch_generator(train_samples, nnc.BATCH_SIZE)
-
-    # Calculate how many batches fit into each set. Used by Keras to know when
-    # an epoch is complete.
-    test_steps = np.ceil(num_test / nnc.BATCH_SIZE)
-    valid_steps = np.ceil(num_valid / nnc.BATCH_SIZE)
-    train_steps = np.ceil(num_train / nnc.BATCH_SIZE)
+    test_gen = dg.BatchGenerator(test_samples)
+    valid_gen = dg.BatchGenerator(valid_samples)
+    train_gen = dg.BatchGenerator(train_samples)
 
     # Create and train the model
     model = nnm.build_model()
     # model.load_weights(nnc.MODEL_SAVE_PATH)
     history = model.fit_generator(
-        generator=train_gen, steps_per_epoch=train_steps, epochs=nnc.NUM_EPOCHS,
-        verbose=nnc.VERBOSE_LVL, validation_data=valid_gen,
-        validation_steps=valid_steps
+        generator=train_gen, epochs=nnc.NUM_EPOCHS, verbose=nnc.VERBOSE_LVL,
+        validation_data=valid_gen, use_multiprocessing=True, workers=6
     )
 
     # for inputs, targets in train_gen:
@@ -61,8 +52,7 @@ def main():
     nnm.visualize_train_history(history)
 
     # Test the model on the test set
-    test_loss, test_acc = model.evaluate_generator(
-        generator=test_gen, steps=test_steps)
+    test_loss, test_acc = model.evaluate_generator(generator=test_gen)
     print("Test loss:", test_loss, "Test acc:", test_acc)
 
 

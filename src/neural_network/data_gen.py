@@ -5,39 +5,84 @@ This file holds functions to generate data for a machine learning model.
 import os
 
 import numpy as np
+from keras.utils import Sequence
 
-import nn_constants as nnc
+from src import em_constants as emc
 from src.database_processor import db_constants as dbc
+from src.neural_network import nn_constants as nnc
 
 EMO_INDEX = 2
 
 
-def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
+class BatchGenerator(Sequence):
     """
-    Generates a batch used in training a neural network. Runs indefinitely.
-
-    :param sample_fns: A list of sample filenames
-    :param batch_size: The batch size
-    :return: A batch in the form of a tuple (inputs, targets)
+    Generates a batch used for neural network training.
     """
-    num_samples = len(sample_fns)
 
-    if num_samples < nnc.MIN_NUM_SAMPLES:
-        print("Not enough samples to satisfy the threshold for training.",
-              "Current number:", num_samples, "Threshold:", nnc.MIN_NUM_SAMPLES)
-        yield (None, None)
+    def __init__(self, sample_fns, batch_size=nnc.BATCH_SIZE,
+                 dim=nnc.INPUT_SHAPE, n_channels=1,
+                 n_classes=emc.NUM_EMOTIONS, shuffle=True):
+        """
+        Class initializer.
 
-    batch_start = 0
-    # If the number of files is less than a batch, then use all of the files
-    batch_end = batch_size if num_samples > batch_size else num_samples
+        :param sample_fns: The list of sample filenames to train on
+        :param batch_size: The size of a batch
+        :param dim: The dimensions of the input data
+        :param n_channels: The number of channels in the input data
+        :param n_classes: The number of classes in the target data
+        :param shuffle: Whether to shuffle the list of sample filenames after
+                        each epoch
+        """
+        self.sample_fns = sample_fns
+        self.batch_size = batch_size
+        self.dim = dim
+        self.n_channels = n_channels
+        self.n_classes = n_classes
+        self.shuffle = shuffle
+        self.on_epoch_end()
 
-    # Run indefinitely as required by Keras. Will wrap around the samples.
-    while True:
-        batch_inputs = []
-        batch_targets = []
+    def __getitem__(self, index):
+        """
+        Gets a batch for neural network training.
 
-        # Construct a batch
-        for sample_fn in sample_fns[batch_start:batch_end]:
+        :param index: The index of a batch
+        :return: Tuple, consisting of inputs and targets
+        """
+        batch_start = index * self.batch_size
+        batch_end = (index + 1) * self.batch_size
+
+        batch_sample_fns = self.sample_fns[batch_start:batch_end]
+        batch_inputs, batch_targets = self._create_batch(batch_sample_fns)
+
+        return batch_inputs, batch_targets
+
+    def __len__(self):
+        """
+        Gets the numbers of batches per epoch.
+
+        :return: Int, representing how many batches fit into one epoch
+        """
+        return int(np.ceil(len(self.sample_fns) / self.batch_size))
+
+    def on_epoch_end(self):
+        """
+        At the end of an epoch, shuffle the data to prevent batches from being
+        the same across epochs.
+        """
+        if self.shuffle:
+            np.random.shuffle(self.sample_fns)
+
+    def _create_batch(self, batch_fns):
+        """
+        Creates a batch given a list of sample filenames.
+
+        :param batch_fns: A list of sample filenames
+        :return: Tuple consisting of inputs and targets
+        """
+        batch_inputs = np.empty((self.batch_size, *self.dim, self.n_channels))
+        batch_targets = np.empty(self.batch_size, dtype=int)
+
+        for index, sample_fn in enumerate(batch_fns):
             # Load a sample
             sample_path = os.path.join(dbc.PROCESS_DB_PATH, sample_fn)
             sample = np.load(sample_path, allow_pickle=False)
@@ -45,29 +90,10 @@ def batch_generator(sample_fns, batch_size=nnc.BATCH_SIZE):
             # Load a label
             label = read_label(sample_fn)
 
-            batch_inputs.append(sample)
-            batch_targets.append(label)
+            batch_inputs[index] = sample
+            batch_targets[index] = label
 
-        batch_inputs = np.array(batch_inputs)
-        batch_targets = np.array(batch_targets)
-        # Add a dimension because images must be 3D where the last dimension
-        # is the number of channels. In this case there's only one channel.
-        batch_inputs = np.expand_dims(batch_inputs, axis=3)
-
-        yield (batch_inputs, batch_targets)
-
-        # Shift the start and end for the next batch
-        batch_start += batch_size
-        batch_end += batch_size
-
-        # If we're at the end but not past it, create the tail-end batch
-        if batch_start < num_samples < batch_end:
-            batch_end = num_samples
-
-        # If we're past the end, wrap around
-        if batch_start >= num_samples:
-            batch_start = 0
-            batch_end = batch_size if num_samples > batch_size else num_samples
+        return batch_inputs, batch_targets
 
 
 def get_sample_filenames():
