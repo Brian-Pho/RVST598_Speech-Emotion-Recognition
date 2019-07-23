@@ -133,9 +133,6 @@ def main():
     samples = get_sample_filenames()
     print(len(samples))
 
-    for inputs, targets in batch_generator(samples):
-        print(inputs.shape, targets.shape)
-
 
 if __name__ == "__main__":
     main()
