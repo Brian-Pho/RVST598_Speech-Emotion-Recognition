@@ -8,6 +8,7 @@ import os
 
 import numpy as np
 
+from src import em_constants as emc
 from src.database_processor import db_constants as dbc
 from src.neural_network import data_gen as dg
 
@@ -19,15 +20,22 @@ def calc_emotion_class(samples):
     :param samples: A list of sample filenames
 
     Sample output:
-
+        Emotion class: {
+            'NEUTRAL': 5994, 'ANGER': 6209, 'DISGUST': 1960, 'FEAR': 1884,
+            'HAPPY': 4745, 'SAD': 3040, 'SURPRISE': 883
+        }
     """
-    emotion_class_counts = np.zeros(7, dtype=int)
+    emotion_running_counts = np.zeros(7, dtype=int)
 
     for sample in samples:
         label = dg.read_label(sample)
-        emotion_class_counts += label
+        emotion_running_counts += label
 
-    print(emotion_class_counts)
+    emotion_total_counts = {}
+    for index, counts in enumerate(emotion_running_counts):
+        emotion_total_counts[emc.INVERT_EMOTION_MAP[index]] = counts
+
+    print("Emotion class:", emotion_total_counts)
 
 
 def calc_label_type(samples):
@@ -38,7 +46,9 @@ def calc_label_type(samples):
     :param samples: A list of sample filenames
 
     Sample output:
-
+        Label type map: {
+            1: 19884, 2: 727, 3: 1064, 4: 45, 5: 1
+        }
     """
     label_type_map = {}
 
@@ -51,7 +61,7 @@ def calc_label_type(samples):
 
         label_type_map[num_labels] += 1
 
-    print(label_type_map)
+    print("Label type map:", label_type_map)
 
 
 def count_samples_per_db(samples):
@@ -61,7 +71,9 @@ def count_samples_per_db(samples):
     :param samples: A list of sample filenames
 
     Sample output:
-
+        Samples per db: {
+            'CRE': 7442, 'IEM': 10039, 'RAV': 1440, 'TES': 2800
+        }
     """
     db_counts = {}
 
@@ -73,7 +85,7 @@ def count_samples_per_db(samples):
 
         db_counts[db] += 1
 
-    print(db_counts)
+    print("Samples per db:", db_counts)
 
 
 def main():
