@@ -5,11 +5,12 @@ RAVDESS, and TESS databases.
 
 import os
 
-# GENERAL DB PATHS
+# GENERAL DATA PATHS
 REPO_PATH = r"C:\Users\BT_Lab\Documents\RVST598_Speech-Emotion-Recognition"
 DATA_PATH = os.path.join(REPO_PATH, "data")
 RAW_DB_PATH = os.path.join(DATA_PATH, "raw")
 PROCESS_DB_PATH = os.path.join(DATA_PATH, "processed")
+MODEL_PATH = os.path.join(DATA_PATH, "model")
 MEL_SPEC_FN = "_{id}-{emo_label}.npy"
 
 # IEMOCAP DATABASE

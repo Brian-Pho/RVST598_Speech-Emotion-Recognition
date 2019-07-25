@@ -3,6 +3,8 @@ This file holds the entry point into this program. This loads the data and
 trains the ML model.
 """
 
+import time
+
 import numpy as np
 
 from src.neural_network import (
@@ -13,7 +15,7 @@ def main():
     """
     The main entry point of this program.
     """
-    # Get the data filenames (log-mel spectrograms in the form of .npy files)
+    # Get the samples (log-mel spectrograms in the form of .npy files)
     sample_fns = dg.get_sample_filenames()
     np.random.shuffle(sample_fns)  # Shuffle the dataset
 
@@ -22,6 +24,7 @@ def main():
     num_test = int(num_total_samples * nnc.TEST_ALLOC)
     num_valid = int(num_total_samples * nnc.VALID_ALLOC)
     num_not_train = num_test + num_valid
+    print("The total number of samples used:", num_total_samples)
 
     # Split the dataset into the train, valid, and test sets
     test_samples = sample_fns[:num_test]
@@ -34,12 +37,15 @@ def main():
     train_gen = dg.BatchGenerator(train_samples)
 
     # Create and train the model
+    start_train_time = time.time()
     model = nnm.build_model()
     # model.load_weights(nnc.MODEL_SAVE_PATH)
     history = model.fit_generator(
         generator=train_gen, epochs=nnc.NUM_EPOCHS, verbose=nnc.VERBOSE_LVL,
-        validation_data=valid_gen, use_multiprocessing=True, workers=6
+        validation_data=valid_gen, use_multiprocessing=True,
+        workers=nnc.NUM_WORKERS
     )
+    end_train_time = time.time()
 
     # for inputs, targets in train_gen:
     #     print(targets[0:1])
@@ -48,7 +54,11 @@ def main():
     # Save the model and training history
     model.save(nnc.MODEL_SAVE_PATH)
 
-    # Display the training history
+    # Save and display the training history
+    print(
+        "Training the model took {} seconds.".format(
+            end_train_time - start_train_time))
+    nnm.save_history(history)
     nnm.visualize_train_history(history)
 
     # Test the model on the test set

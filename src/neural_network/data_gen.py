@@ -8,6 +8,7 @@ import numpy as np
 from keras.utils import Sequence
 
 from src import em_constants as emc
+from src.audio_processor import au_constants as auc
 from src.database_processor import db_constants as dbc
 from src.neural_network import nn_constants as nnc
 
@@ -20,7 +21,7 @@ class BatchGenerator(Sequence):
     """
 
     def __init__(self, sample_fns, batch_size=nnc.BATCH_SIZE,
-                 dim=nnc.INPUT_SHAPE, n_channels=1,
+                 dim=auc.MEL_SPECGRAM_SHAPE, n_channels=nnc.NUM_CHANNELS,
                  n_classes=emc.NUM_EMOTIONS, shuffle=True):
         """
         Class initializer.
@@ -80,12 +81,15 @@ class BatchGenerator(Sequence):
         :return: Tuple consisting of inputs and targets
         """
         batch_inputs = np.empty((self.batch_size, *self.dim, self.n_channels))
-        batch_targets = np.empty(self.batch_size, dtype=int)
+        batch_targets = np.empty((self.batch_size, emc.NUM_EMOTIONS), dtype=int)
 
         for index, sample_fn in enumerate(batch_fns):
             # Load a sample
             sample_path = os.path.join(dbc.PROCESS_DB_PATH, sample_fn)
             sample = np.load(sample_path, allow_pickle=False)
+            # Add a dimension because images must be 3D where the last dimension
+            # is the number of channels. In this case there's only one channel.
+            sample = np.expand_dims(sample, axis=3)
 
             # Load a label
             label = read_label(sample_fn)

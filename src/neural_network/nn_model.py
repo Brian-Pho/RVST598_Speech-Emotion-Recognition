@@ -9,6 +9,7 @@ import numpy as np
 from keras import layers, models, backend, utils
 
 import nn_constants as nnc
+from src.database_processor import db_constants as dbc
 
 os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
@@ -47,21 +48,42 @@ def build_model():
     return model
 
 
+def save_history(history):
+    """
+    Saves the training history of a model to text files.
+
+    :param history: Keras.History object
+    """
+    cat_acc = history.history['categorical_accuracy']
+    val_cat_acc = history.history['val_categorical_accuracy']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
+
+    np.savetxt(
+        os.path.join(dbc.MODEL_PATH, "cat_acc.txt"), cat_acc, delimiter=",")
+    np.savetxt(
+        os.path.join(dbc.MODEL_PATH, "val_cat_acc.txt"), val_cat_acc,
+        delimiter=",")
+    np.savetxt(os.path.join(dbc.MODEL_PATH, "loss.txt"), loss, delimiter=",")
+    np.savetxt(
+        os.path.join(dbc.MODEL_PATH, "val_loss.txt"), val_loss, delimiter=",")
+
+
 def visualize_train_history(history):
     """
     Visualizes a neural network's training history.
 
     :param history: Dictionary from training a neural network
     """
-    acc = history.history['acc']
-    val_acc = history.history['val_acc']
+    cat_acc = history.history['categorical_accuracy']
+    val_cat_acc = history.history['val_categorical_accuracy']
     loss = history.history['loss']
     val_loss = history.history['val_loss']
 
-    epochs = range(1, len(acc) + 1)
+    epochs = range(1, len(cat_acc) + 1)
 
-    plt.plot(epochs, acc, 'bo', label='Training acc')
-    plt.plot(epochs, val_acc, 'b', label='Validation acc')
+    plt.plot(epochs, cat_acc, 'bo', label='Training cat_acc')
+    plt.plot(epochs, val_cat_acc, 'b', label='Validation cat_acc')
     plt.title('Training and validation accuracy')
     plt.legend()
 
