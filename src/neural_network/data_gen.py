@@ -133,9 +133,44 @@ def read_label(filename):
     return k_hot_encoded_label
 
 
+def get_class_weight(samples):
+    """
+    Gets the class weighting for use during training.
+
+    :param samples: List of sample filenames
+    :return: Dict of class weights
+    """
+    emotion_running_counts = np.zeros(7, dtype=int)
+
+    # Count how many times an emotion is present in the samples
+    for sample in samples:
+        label = read_label(sample)
+        emotion_running_counts += label
+
+    # Convert the emotions from indices into a readable emotion
+    emotion_total_counts = {}
+    for index, counts in enumerate(emotion_running_counts):
+        emotion_total_counts[emc.INVERT_EMOTION_MAP[index]] = counts
+
+    # Calculate how many times a class if off from the ideal balance. Ideally,
+    # the distribution is uniform so the number of samples per class is equal to
+    # the number of samples divided by the number of classes.
+    class_weights = {}
+    total = sum(emotion_total_counts.values())
+    ideal_num_samples = total / emc.NUM_EMOTIONS
+
+    for k, v in emotion_total_counts.items():
+        class_weights[k] = ideal_num_samples / v
+
+    print("Emotion class:", emotion_total_counts)
+    print("Class weights:", class_weights)
+    return class_weights
+
+
 def main():
-    samples = get_sample_filenames()
-    print(len(samples))
+    # samples = get_sample_filenames()
+    # print(len(samples))
+    get_class_weight()
 
 
 if __name__ == "__main__":

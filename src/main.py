@@ -37,13 +37,14 @@ def main():
     train_gen = dg.BatchGenerator(train_samples)
 
     # Create and train the model
-    start_train_time = time.time()
     model = nnm.build_model()
+    class_weights = dg.get_class_weight(train_samples)
     # model.load_weights(nnc.MODEL_SAVE_PATH)
+    start_train_time = time.time()
     history = model.fit_generator(
         generator=train_gen, epochs=nnc.NUM_EPOCHS, verbose=nnc.VERBOSE_LVL,
-        validation_data=valid_gen, use_multiprocessing=True,
-        workers=nnc.NUM_WORKERS
+        validation_data=valid_gen, class_weight=class_weights,
+        use_multiprocessing=True, workers=nnc.NUM_WORKERS
     )
     end_train_time = time.time()
 
