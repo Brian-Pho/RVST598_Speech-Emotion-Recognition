@@ -126,7 +126,7 @@ def read_label(filename):
     # Remove the file extension
     filename = os.path.splitext(filename)[0]
     # Parse the label
-    k_hot_encoded_label = filename.split("-")[1].split("_")
+    k_hot_encoded_label = filename.split("-")[1].split(b"_")
     # Convert into a numpy array
     k_hot_encoded_label = np.array(k_hot_encoded_label).astype(int)
 
@@ -147,10 +147,10 @@ def get_class_weight(samples):
         label = read_label(sample)
         emotion_running_counts += label
 
-    # Convert the emotions from indices into a readable emotion
+    # Convert the running count list into a total count dictionary
     emotion_total_counts = {}
     for index, counts in enumerate(emotion_running_counts):
-        emotion_total_counts[emc.INVERT_EMOTION_MAP[index]] = counts
+        emotion_total_counts[index] = counts
 
     # Calculate how many times a class if off from the ideal balance. Ideally,
     # the distribution is uniform so the number of samples per class is equal to
@@ -159,18 +159,16 @@ def get_class_weight(samples):
     total = sum(emotion_total_counts.values())
     ideal_num_samples = total / emc.NUM_EMOTIONS
 
-    for k, v in emotion_total_counts.items():
-        class_weights[k] = ideal_num_samples / v
+    for emotion, count in emotion_total_counts.items():
+        class_weights[emotion] = ideal_num_samples / count
 
-    print("Emotion class:", emotion_total_counts)
-    print("Class weights:", class_weights)
     return class_weights
 
 
 def main():
-    # samples = get_sample_filenames()
+    samples = get_sample_filenames()
     # print(len(samples))
-    get_class_weight()
+    get_class_weight(samples)
 
 
 if __name__ == "__main__":

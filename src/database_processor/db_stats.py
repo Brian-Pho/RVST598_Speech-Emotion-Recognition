@@ -81,7 +81,7 @@ def generate_db_stats(samples, labels):
 
 def calculate_cremad_accuracy():
     """
-    Calculates the accuracy of the CREMA-D databse. Accuracy is defined as the
+    Calculates the accuracy of the CREMA-D database. Accuracy is defined as the
     percent agreement between the intended emotion and the perceived emotion.
 
     Example:

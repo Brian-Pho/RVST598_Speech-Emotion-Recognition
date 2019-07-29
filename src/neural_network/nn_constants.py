@@ -5,7 +5,7 @@ shape.
 
 import os
 
-from keras.metrics import categorical_accuracy
+from keras import optimizers, losses, metrics
 
 from src.audio_processor import au_constants as auc
 from src.database_processor import db_constants as dbc
@@ -18,9 +18,9 @@ MODEL_PLOT_PATH = os.path.join(dbc.MODEL_PATH, "model.png")
 NUM_CHANNELS = 1
 INPUT_SHAPE = (
     auc.MEL_SPECGRAM_SHAPE[0], auc.MEL_SPECGRAM_SHAPE[1], NUM_CHANNELS)
-OPTIMIZER = "adam"
-LOSS = "binary_crossentropy"
-METRICS = [categorical_accuracy]
+OPTIMIZER = optimizers.adam(lr=0.0005)
+LOSS = losses.binary_crossentropy
+METRICS = [metrics.categorical_accuracy]
 
 # TRAINING CONFIGURATION
 NUM_EPOCHS = 10

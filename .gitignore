@@ -109,3 +109,7 @@ data/
 \.vscode/
 
 ~\$Database Statistics\.xlsx
+
+*.aux
+
+*.out
