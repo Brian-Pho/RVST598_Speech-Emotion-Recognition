@@ -36,6 +36,7 @@ def calc_emotion_class(samples):
         emotion_total_counts[emc.INVERT_EMOTION_MAP[index]] = counts
 
     print("Emotion class:", emotion_total_counts)
+    print("Total:", sum(emotion_total_counts.values()))
 
 
 def calc_label_type(samples):
@@ -62,6 +63,7 @@ def calc_label_type(samples):
         label_type_map[num_labels] += 1
 
     print("Label type map:", label_type_map)
+    print("Total:", sum(label_type_map.values()))
 
 
 def count_samples_per_db(samples):
@@ -86,6 +88,7 @@ def count_samples_per_db(samples):
         db_counts[db] += 1
 
     print("Samples per db:", db_counts)
+    print("Total:", sum(db_counts.values()))
 
 
 def main():

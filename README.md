@@ -36,7 +36,7 @@ The following databases were used/considered.
 
 | Database                                                                             | Year |       Using?       | File Type | Number of Files | Sampling Rate (Hz) | Label Type |     Label Level    |
 |--------------------------------------------------------------------------------------|:----:|:------------------:|:---------:|:---------------:|:------------------:|:----------:|:------------------:|
-| [IEMOCAP](https://sail.usc.edu/iemocap)                                              | 2008 | :heavy_check_mark: |    wav    |      10043      |        16000       |    Multi   | Sentence + Phoneme |
+| [IEMOCAP](https://sail.usc.edu/iemocap)                                              | 2008 | :heavy_check_mark: |    wav    |      10039      |        16000       |    Multi   | Sentence + Phoneme |
 | [CREMA-D](https://github.com/CheyneyComputerScience/CREMA-D)                         | 2014 | :heavy_check_mark: | mp3 + wav |       7442      |        16000       |    Multi   |      Sentence      |
 | [TESS](https://tspace.library.utoronto.ca/handle/1807/24487)                         | 2010 | :heavy_check_mark: |    wav    |       2800      |        24414       |   Single   |      Sentence      |
 | [RAVDESS](https://smartlaboratory.org/ravdess)                                       | 2018 | :heavy_check_mark: |    wav    |       1440      |        48000       |   Single   |      Sentence      |
@@ -78,3 +78,14 @@ Database names
 - The words "emotion" and "label" are used interchangably because they both represent the same idea
 - The words "time series" and "wav" are used interchangably
 - The words "amplitude" and "magnitude" are used interchangably when discussing spectrograms
+- The words "sample" and "input", "label" and "target".
+- Bigger window -> frequency, smaller windows -> time
+- Pad both sides to preserve edge data
+- Clean up database files using the command "find . -type f -name ".*" -delete/-print"
+- Normalization techniques (at what level?)
+  - File
+  - Database
+  - All databases
+  - Emotion class
+- Program has a memory leak for processing wav files
+- 

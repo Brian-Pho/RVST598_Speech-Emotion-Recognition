@@ -1,4 +1,4 @@
-# Progress Timeline
+# Project Timeline
 
 ---
 
@@ -36,7 +36,16 @@
 - Fuse spectrograms with raw waveforms using 1D CNN
 - Combine with some RNN/LSTM
 - Use MFCC
-- Use neuroscience based approach
+- Use neuroscience based approach/inspiration
+- Use neural network for complex numbers
+- Wavelets
+- Pretrained network like soundnet
+- Use different scales (log, Mel, custom, dB)
+- Use different representation (wavelets, cepstrum)
+- Use GAN for emotion style transfer
+- Apply heatmaps to CNN + LSTM
+- Use wavelet transform to deal with variable-length time signals
+- More emotions
 
 ### External Improvements
 
@@ -62,3 +71,4 @@
 - [ ] Calculate database statistics
 - [ ] Set new mel max hertz frequency cutoff as it's causing black bars on spectrograms
 - [ ] Update file_tree.txt
+- [ ] Use K-fold cross validation
