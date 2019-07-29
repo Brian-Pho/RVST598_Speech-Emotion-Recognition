@@ -14,4 +14,12 @@ Number of samples
 Number of samples per emotion
 Number of samples per database
 Sample shape: (200, 278, 1)
-Add title and axis labels for pictures
+
+## Accuracy and Agreement
+
+| Database        | Accuracy (%) | Agreement (%) |
+|-----------------|-------------:|--------------:|
+| CREMA-D         | 61.89        | 68.77         |
+| IEMOCAP         |              | 63.60         |
+| MSP-Improv      | 69.40/73.30  |               |
+| Yildirime et al | 68.30        |               |

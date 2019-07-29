@@ -18,11 +18,13 @@
 - [x] Train the ML model
 - [ ] Modify the model to improve accuracy
 - [ ] Complete experimentation
+- [ ] Add title and axis labels for pictures
 
 ## Completion
 
 - [ ] Write paper
 - [ ] Create presentation
+- [ ] Create poster
 - [ ] Submit to conference
 
 ## Future work / Improvements

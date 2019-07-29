@@ -71,6 +71,7 @@ Database names
 ## Random Notes
 
 - Multiclass, multilabel problem
+- Other names: vocal emotion recognition, speech emotion recognition, emotion perception
 - Sentence-level emotion labeling
 - Vocal emotion recognition, speech emotion recognition, emotion perception
 - CREMA-D baseline 68.77 agreement
