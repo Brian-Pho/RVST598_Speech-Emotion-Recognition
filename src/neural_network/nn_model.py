@@ -7,7 +7,9 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sn
 from keras import layers, models, backend, utils, regularizers
+from sklearn import metrics
 
 import nn_constants as nnc
 from src.database_processor import db_constants as dbc
@@ -32,7 +34,7 @@ def build_model():
                             kernel_regularizer=regularizers.l2(0.001)))
     model.add(layers.BatchNormalization())
     model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu',
+    model.add(layers.Conv2D(32, (3, 3), activation='relu',
                             kernel_regularizer=regularizers.l2(0.001)))
     model.add(layers.BatchNormalization())
     model.add(layers.Flatten())
@@ -167,4 +169,16 @@ def visualize_heatmap_activation(model, test_img):
     plt.pcolormesh(test_img[0, :, :, 0])
     plt.figure()
     plt.pcolormesh(heatmap, cmap="magma")
+    plt.show()
+
+
+def visualize_confusion_matrix(out_true, out_pred):
+    """
+    Visualizes the test set confusion matrix.
+
+    :param out_true: The ground-truth labels
+    :param out_pred: The labels predicted by the neural network
+    """
+    confusion_matrix = metrics.multilabel_confusion_matrix(out_true, out_pred)
+    sn.heatmap(confusion_matrix[0])
     plt.show()

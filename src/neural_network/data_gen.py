@@ -126,7 +126,7 @@ def read_label(filename):
     # Remove the file extension
     filename = os.path.splitext(filename)[0]
     # Parse the label
-    k_hot_encoded_label = filename.split("-")[1].split(b"_")
+    k_hot_encoded_label = filename.split("-")[1].split("_")
     # Convert into a numpy array
     k_hot_encoded_label = np.array(k_hot_encoded_label).astype(int)
 
@@ -168,7 +168,12 @@ def get_class_weight(samples):
 def main():
     samples = get_sample_filenames()
     # print(len(samples))
-    get_class_weight(samples)
+    # get_class_weight(samples)
+    x, y = BatchGenerator(samples)[0]
+    print(x)
+    # for x, y in BatchGenerator(samples):
+    #     print(x, y)
+    #     break
 
 
 if __name__ == "__main__":
