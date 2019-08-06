@@ -14,7 +14,7 @@ from sklearn import metrics
 import nn_constants as nnc
 from src.database_processor import db_constants as dbc
 
-os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
+# os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
 
 def build_model():
@@ -25,38 +25,35 @@ def build_model():
     """
     model = models.Sequential()
 
-    model.add(layers.Conv2D(128, (3, 3), activation='relu',
-                            input_shape=nnc.INPUT_SHAPE,
-                            kernel_regularizer=regularizers.l2(0.001)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Conv2D(64, (3, 3), activation='relu',
-                            kernel_regularizer=regularizers.l2(0.001)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.MaxPooling2D((2, 2)))
+                            input_shape=nnc.INPUT_SHAPE,
+                            ))
+    # model.add(layers.BatchNormalization())
     model.add(layers.Conv2D(32, (3, 3), activation='relu',
-                            kernel_regularizer=regularizers.l2(0.001)))
-    model.add(layers.BatchNormalization())
+                            ))
+    # model.add(layers.BatchNormalization())
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(32, (3, 3), activation='relu',))
+    model.add(layers.Conv2D(64, (3, 3), activation='relu',))
+    model.add(layers.MaxPooling2D((2, 2)))
+    # model.add(layers.BatchNormalization())
     model.add(layers.Flatten())
-    model.add(layers.Dense(64, activation='relu',
-                           kernel_regularizer=regularizers.l2(0.001)))
-    model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(32, activation='relu',
-                           kernel_regularizer=regularizers.l2(0.001)))
-    model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(16, activation='relu',
-                           kernel_regularizer=regularizers.l2(0.001)))
-    model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(7, activation='sigmoid'))
-    model.compile(optimizer=nnc.OPTIMIZER, loss=nnc.LOSS,
-                  metrics=nnc.METRICS)
+    model.add(layers.Dense(512, activation='relu',))
+    # model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(256, activation='relu',))
+    # model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(512, activation='relu',))
+    # model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(7, activation='softmax'))
+    model.compile(optimizer=nnc.OPTIMIZER, loss=nnc.LOSS, metrics=nnc.METRICS)
 
-    # Print the model to the console
-    model.summary()
-    # Print the model to a png file
-    utils.plot_model(model, show_shapes=True, to_file=nnc.MODEL_PLOT_PATH)
-    # Turn into multi-gpu model
+    # # Print the model to the console
+    # model.summary()
+    # # Print the model to a png file
+    # utils.plot_model(model, show_shapes=True, to_file=nnc.MODEL_PLOT_PATH)
+    # # Turn into multi-gpu model
     # model = utils.multi_gpu_model(model, gpus=2)
+
     return model
 
 

@@ -48,14 +48,24 @@ def main():
     )
     end_train_time = time.time()
 
-    # for inputs, targets in train_gen:
-    #     print(targets[0:1])
-    #     nnm.visualize_heatmap_activation(model, inputs[0:1])
+    # Save the model and training history
+    model.save(nnc.MODEL_SAVE_PATH)
 
-    # Display the confusion matrix
-    batch, true_out = test_gen[0]
-    pred_out = model.predict_on_batch(batch)
-    nnm.visualize_confusion_matrix(true_out, pred_out)
+    # Save and display the training history
+    print(
+        "Training the model took {} seconds.".format(
+            end_train_time - start_train_time))
+    nnm.save_history(history)
+    nnm.visualize_train_history(history)
+
+    # # Display the confusion matrix
+    # batch, true_out = test_gen[0]
+    # pred_out = model.predict_on_batch(batch)
+    # nnm.visualize_confusion_matrix(true_out, pred_out)
+
+    # Test the model on the test set
+    test_loss, test_acc = model.evaluate_generator(generator=test_gen)
+    print("Test loss:", test_loss, "Test acc:", test_acc)
 
 
 if __name__ == "__main__":

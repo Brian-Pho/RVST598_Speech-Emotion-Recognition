@@ -18,13 +18,13 @@ MODEL_PLOT_PATH = os.path.join(dbc.MODEL_PATH, "model.png")
 NUM_CHANNELS = 1
 INPUT_SHAPE = (
     auc.MEL_SPECGRAM_SHAPE[0], auc.MEL_SPECGRAM_SHAPE[1], NUM_CHANNELS)
-OPTIMIZER = optimizers.adam(lr=0.0005)
+OPTIMIZER = optimizers.rmsprop()
 LOSS = losses.binary_crossentropy
 METRICS = [metrics.categorical_accuracy]
 
 # TRAINING CONFIGURATION
 NUM_EPOCHS = 10
-NUM_WORKERS = 1
+NUM_WORKERS = 4
 BATCH_SIZE = 32
 VERBOSE_LVL = 1
 MIN_NUM_SAMPLES = 500
