@@ -29,30 +29,8 @@ window.chartColors = {
 	grey: 'rgb(231,233,237)'
 };
 
-// Number of male and female samples
-var mFPC = document.getElementById('maleFemalePieChart');
-resizeCanvas(mFPC)
-var myDoughnutChart = new Chart(mFPC, {
-    type: 'doughnut',
-    data: {
-        datasets: [{
-            data: [50, 50],
-            backgroundColor: [window.chartColors.red, window.chartColors.blue]
-        }],
-    
-        // These labels appear in the legend and in the tooltips when hovering different arcs
-        labels: ['Female', 'Male']
-    },
-    options: Object.assign(options, {
-        title: {
-            display: true,
-            text: 'Genders'
-        }
-    })
-});
-
 // Number of samples in each emotion class
-var eCPC = document.getElementById('emotionClassPieChart');
+var eCPC = document.getElementById('trainEmotionClassPieChart');
 resizeCanvas(eCPC)
 var myDoughnutChart = new Chart(eCPC, {
     type: 'doughnut',
