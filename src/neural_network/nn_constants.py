@@ -18,7 +18,7 @@ MODEL_PLOT_PATH = os.path.join(dbc.MODEL_PATH, "model.png")
 NUM_CHANNELS = 1
 INPUT_SHAPE = (
     auc.MEL_SPECGRAM_SHAPE[0], auc.MEL_SPECGRAM_SHAPE[1], NUM_CHANNELS)
-OPTIMIZER = optimizers.rmsprop()
+OPTIMIZER = optimizers.adam()
 LOSS = losses.binary_crossentropy
 METRICS = [metrics.categorical_accuracy]
 

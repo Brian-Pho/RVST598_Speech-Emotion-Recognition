@@ -27,30 +27,31 @@ def build_model():
     """
     model = models.Sequential()
 
-    model.add(layers.Conv2D(96, (3, 3), activation='relu',
-                            input_shape=nnc.INPUT_SHAPE,
-                            ))
+    # # Anti-overfit methods
     # model.add(layers.BatchNormalization())
-    model.add(layers.Conv2D(64, (3, 3), activation='relu',
-                            ))
-    # model.add(layers.BatchNormalization())
+    # model.add(layers.Dropout(0.5))
+    # regularizers.l1_l2(l1=0.01, l2=0.01)
+
+    model.add(layers.Conv2D(300, (3, 3), activation='relu',
+                            input_shape=nnc.INPUT_SHAPE))
     model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu',))
-    model.add(layers.Conv2D(96, (3, 3), activation='relu',))
+    model.add(layers.Conv2D(300, (3, 3), activation='relu'))
     model.add(layers.MaxPooling2D((2, 2)))
-    # model.add(layers.BatchNormalization())
+    model.add(layers.Conv2D(250, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(200, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
+    model.add(layers.Conv2D(150, (3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D((2, 2)))
     model.add(layers.Flatten())
-    model.add(layers.Dense(256, activation='relu',))
-    # model.add(layers.Dropout(0.5))
-    model.add(layers.Dense(256, activation='relu',))
-    # model.add(layers.Dropout(0.5))
     model.add(layers.Dense(512, activation='relu',))
-    # model.add(layers.Dropout(0.5))
+    model.add(layers.Dense(512, activation='relu',))
+    model.add(layers.Dense(512, activation='relu',))
     model.add(layers.Dense(7, activation='sigmoid'))
     model.compile(optimizer=nnc.OPTIMIZER, loss=nnc.LOSS, metrics=nnc.METRICS)
 
     # # Print the model to the console
-    # model.summary()
+    model.summary()
     # # Print the model to a png file
     # utils.plot_model(model, show_shapes=True, to_file=nnc.MODEL_PLOT_PATH)
     # # Turn into multi-gpu model
