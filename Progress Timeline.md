@@ -48,6 +48,7 @@
 - Apply heatmaps to CNN + LSTM
 - Use wavelet transform to deal with variable-length time signals
 - More emotions
+- Try binary relevance approach (each label is its own binary classifier)
 
 ### External Improvements
 
@@ -67,10 +68,10 @@
 - [x] Calculate human baseline for emotion classification for IEMOCAP
 - [x] Read in IEMOCAP
 - [x] Update model to handle multi-label classification
-- [ ] Remove noise from Crema-d and Iemocap
-- [ ] Consider using EmoV-DB
-- [ ] Set the cutoff length for all database wav files
-- [ ] Calculate database statistics
-- [ ] Set new mel max hertz frequency cutoff as it's causing black bars on spectrograms
-- [ ] Update file_tree.txt
-- [ ] Use K-fold cross validation
+- [x] Remove noise from Crema-d and Iemocap
+- [x] Consider using EmoV-DB
+- [x] Set the cutoff length for all database wav files
+- [x] Calculate database statistics
+- [x] Set new mel max hertz frequency cutoff as it's causing black bars on spectrograms
+- [x] Update file_tree.txt
+- [x] Use K-fold cross validation

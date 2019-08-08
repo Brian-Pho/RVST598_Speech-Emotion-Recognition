@@ -7,9 +7,10 @@ var options = {
     //     }
     // }
 }
+
 // Standard size
-const WIDTH = 500;
-const HEIGHT = 500;
+const WIDTH = 900;
+const HEIGHT = 900;
 function resizeCanvas(canvas) {
     canvas.width = WIDTH;
     canvas.height = HEIGHT;
@@ -18,6 +19,7 @@ function resizeCanvas(canvas) {
 Chart.helpers.merge(Chart.defaults.global.plugins.datalabels, {
     color: 'white'
 });
+
 // Standard colors
 window.chartColors = {
 	red: 'rgb(255, 99, 132)',
@@ -37,11 +39,14 @@ var myDoughnutChart = new Chart(eCPC, {
     data: {
         datasets: [{
             data: [5994, 6209, 1960, 1884, 4745, 3040, 883],
-            backgroundColor: [window.chartColors.red, window.chartColors.orange, window.chartColors.yellow,
-            window.chartColors.green,
-            window.chartColors.blue,
-            window.chartColors.purple,
-            window.chartColors.grey]
+            backgroundColor: [
+                window.chartColors.red, 
+                window.chartColors.orange, 
+                window.chartColors.yellow,
+                window.chartColors.green,
+                window.chartColors.blue,
+                window.chartColors.purple,
+                window.chartColors.grey]
         }],
     
         // These labels appear in the legend and in the tooltips when hovering different arcs
@@ -63,9 +68,12 @@ var myDoughnutChart = new Chart(lTPC, {
     data: {
         datasets: [{
             data: [19884, 727, 1064, 45, 1],
-            backgroundColor: [window.chartColors.red, window.chartColors.orange, window.chartColors.yellow,
-            window.chartColors.green,
-            window.chartColors.blue]
+            backgroundColor: [
+                window.chartColors.red, 
+                window.chartColors.orange, 
+                window.chartColors.yellow,
+                window.chartColors.green,
+                window.chartColors.blue]
         }],
     
         // These labels appear in the legend and in the tooltips when hovering different arcs
@@ -74,9 +82,34 @@ var myDoughnutChart = new Chart(lTPC, {
     options: Object.assign(options, {
         title: {
             display: true,
-            text: 'Label Types'
+            text: 'Multi-Label Types'
         }
     })
 });
 
 // Number of samples from each database
+// Number of samples in each label type
+var dOPC = document.getElementById('databaseOriginPieChart');
+resizeCanvas(dOPC)
+var myDoughnutChart = new Chart(dOPC, {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [7442, 10039, 1440, 2800],
+            backgroundColor: [
+                window.chartColors.red, 
+                window.chartColors.orange, 
+                window.chartColors.yellow,
+                window.chartColors.green]
+        }],
+    
+        // These labels appear in the legend and in the tooltips when hovering different arcs
+        labels: ["CREMA-D", "IEMOCAP", "RAVDESS", "TESS"]
+    },
+    options: Object.assign(options, {
+        title: {
+            display: true,
+            text: 'Samples per Database'
+        }
+    })
+});

@@ -5,7 +5,7 @@ My summer research project on using machine learning to detect emotions in speec
 ## Plan
 
 My goal is to detect which emotions are present in speech. I consider these seven
-emotions:
+emotions
 
 - Neutral
 - Anger
@@ -15,9 +15,13 @@ emotions:
 - Sad
 - Surprise
 
-And have found databases with speech files spoken in these emotion. The data flow looks like this:
+The data flow looks like this
 
-Raw waveform (time + amplitude) -> Spectrogram (time + frequency + ampltitude) -> Log-Mel Spectrogram (a spectrogram where frequency is converted into the mel scale) -> Convolutional Neural Network -> Output (one of the seven emotion)
+1. Raw waveform (time + amplitude)
+2. Spectrogram (time + frequency + ampltitude)
+3. Log-Mel Spectrogram (time + log-mel)
+4. Convolutional Neural Network
+5. Output (one of the seven emotion)
 
 ## File structure
 
@@ -56,11 +60,11 @@ A table comparing the different emotions in each dataset.
 | RAVDESS    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:   | :x:   | :x: | :x: | :x: |
 | SAVEE      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:   | :x:   | :x: | :x: | :x: |
 | EmoV-DB    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x: | :x: | :x: | :x:   | :x:   | :heavy_check_mark: | :heavy_check_mark: | :x: |
-| Emo-DB     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x:   | :x:   | :x: | :x: | :heavy_check_mark: 
+| Emo-DB     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x:   | :x:   | :x: | :x: | :heavy_check_mark: |
 
-The databases were not uploaded to Github due to their size and copy restrictions.
+The databases were not uploaded to Github due to copy restrictions and their size.
 
-Database names
+### Database Names
 
 - IEMOCAP: Interactive Emotional Dyadic Motion Capture
 - CREMA-D: Crowd-sourced Emotional Mutimodal Actors Dataset
@@ -74,8 +78,6 @@ Database names
 - Other names: vocal emotion recognition, speech emotion recognition, emotion perception
 - Sentence-level emotion labeling
 - Vocal emotion recognition, speech emotion recognition, emotion perception
-- CREMA-D baseline 68.77 agreement
-- Confusion matrix
 - The words "emotion" and "label" are used interchangably because they both represent the same idea
 - The words "time series" and "wav" are used interchangably
 - The words "amplitude" and "magnitude" are used interchangably when discussing spectrograms
@@ -89,4 +91,3 @@ Database names
   - All databases
   - Emotion class
 - Program has a memory leak for processing wav files
-- 
