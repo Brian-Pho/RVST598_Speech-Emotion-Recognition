@@ -78,10 +78,10 @@ class BatchGenerator(Sequence):
         Creates a batch given a list of sample filenames.
 
         :param batch_fns: A list of sample filenames
-        :return: Tuple consisting of inputs and targets
+        :return: Tuple, consisting of inputs and targets
         """
-        batch_inputs = np.empty((self.batch_size, *self.dim, self.n_channels))
-        batch_targets = np.empty((self.batch_size, emc.NUM_EMOTIONS), dtype=int)
+        batch_inputs = np.zeros((self.batch_size, *self.dim, self.n_channels))
+        batch_targets = np.zeros((self.batch_size, emc.NUM_EMOTIONS), dtype=int)
 
         for index, sample_fn in enumerate(batch_fns):
             # Load a sample
@@ -128,7 +128,7 @@ def read_label(filename):
     # Parse the label
     k_hot_encoded_label = filename.split("-")[1].split("_")
     # Convert into a numpy array
-    k_hot_encoded_label = np.array(k_hot_encoded_label).astype(int)
+    k_hot_encoded_label = np.array(k_hot_encoded_label, dtype=int)
 
     return k_hot_encoded_label
 
@@ -140,19 +140,19 @@ def get_class_weight(samples):
     :param samples: List of sample filenames
     :return: Dict of class weights
     """
-    emotion_running_counts = np.zeros(7, dtype=int)
+    emotion_running_count = np.zeros(emc.NUM_EMOTIONS, dtype=int)
 
     # Count how many times an emotion is present in the samples
     for sample in samples:
         label = read_label(sample)
-        emotion_running_counts += label
+        emotion_running_count += label
 
     # Convert the running count list into a total count dictionary
     emotion_total_counts = {}
-    for index, counts in enumerate(emotion_running_counts):
+    for index, counts in enumerate(emotion_running_count):
         emotion_total_counts[index] = counts
 
-    # Calculate how many times a class if off from the ideal balance. Ideally,
+    # Calculate how much a class is off from the ideal balance. Ideally,
     # the distribution is uniform so the number of samples per class is equal to
     # the number of samples divided by the number of classes.
     class_weights = {}
@@ -169,8 +169,8 @@ def main():
     samples = get_sample_filenames()
     # print(len(samples))
     # get_class_weight(samples)
-    x, y = BatchGenerator(samples)[0]
-    print(x)
+    generator = BatchGenerator(samples)
+    print(len(generator))
     # for x, y in BatchGenerator(samples):
     #     print(x, y)
     #     break

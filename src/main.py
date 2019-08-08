@@ -24,7 +24,11 @@ def main():
     num_test = int(num_total_samples * nnc.TEST_ALLOC)
     num_valid = int(num_total_samples * nnc.VALID_ALLOC)
     num_not_train = num_test + num_valid
-    print("The total number of samples used:", num_total_samples)
+    print("The number of samples for training:",
+          num_total_samples - num_not_train)
+    print("The number of samples for validation:", num_valid)
+    print("The number of samples for testing:", num_test)
+    print("The total number of samples:", num_total_samples)
 
     # Split the dataset into the train, valid, and test sets
     test_samples = sample_fns[:num_test]
@@ -38,32 +42,21 @@ def main():
 
     # Create and train the model
     model = nnm.build_model()
-    class_weights = dg.get_class_weight(train_samples)
     # model.load_weights(nnc.MODEL_SAVE_PATH)
-    start_train_time = time.time()
-    history = model.fit_generator(
-        generator=train_gen, epochs=nnc.NUM_EPOCHS, verbose=nnc.VERBOSE_LVL,
-        validation_data=valid_gen, class_weight=class_weights,
-        use_multiprocessing=True, workers=nnc.NUM_WORKERS
-    )
-    end_train_time = time.time()
+    class_weights = dg.get_class_weight(train_samples)
+    history = nnm.train_model(model, train_gen, valid_gen, class_weights)
 
     # Save the model and training history
     model.save(nnc.MODEL_SAVE_PATH)
-
-    # Save and display the training history
-    print(
-        "Training the model took {} seconds.".format(
-            end_train_time - start_train_time))
     nnm.save_history(history)
+
+    # Display the training history
     nnm.visualize_train_history(history)
 
-    # # Display the confusion matrix
-    # batch, true_out = test_gen[0]
-    # pred_out = model.predict_on_batch(batch)
-    # nnm.visualize_confusion_matrix(true_out, pred_out)
+    # Display the confusion matrix for the test set
+    nnm.visualize_confusion_matrix(model, test_gen)
 
-    # Test the model on the test set
+    # Evaluate the model on the test set
     test_loss, test_acc = model.evaluate_generator(generator=test_gen)
     print("Test loss:", test_loss, "Test acc:", test_acc)
 

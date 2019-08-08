@@ -4,22 +4,24 @@ model.
 """
 
 import os
+import time
 
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sn
-from keras import layers, models, backend, utils, regularizers
+from keras import layers, models, backend
 from sklearn import metrics
 
 import nn_constants as nnc
 from src.database_processor import db_constants as dbc
+from src import em_constants as emc
+
 
 # os.environ["PATH"] += os.pathsep + 'C:/Program Files (x86)/Graphviz2.38/bin/'
 
 
 def build_model():
     """
-    Builds a CNN model to classify emotions in speech using Keras.
+    Builds a neural network model to classify emotions in speech.
 
     :return: keras.model
     """
@@ -55,6 +57,30 @@ def build_model():
     # model = utils.multi_gpu_model(model, gpus=2)
 
     return model
+
+
+def train_model(model, train_gen, valid_gen, class_weights=None):
+    """
+    Trains a neural network model for speech emotion recognition.
+
+    :param model: The model to train
+    :param train_gen: The generator creating training samples
+    :param valid_gen: The generator creating validation samples
+    :param class_weights: The class weights if the dataset is imbalanced
+    :return: keras.History, representing the training history
+    """
+    start_train_time = time.time()
+    history = model.fit_generator(
+        generator=train_gen, epochs=nnc.NUM_EPOCHS, verbose=nnc.VERBOSE_LVL,
+        validation_data=valid_gen, class_weight=class_weights,
+        use_multiprocessing=True, workers=nnc.NUM_WORKERS
+    )
+    end_train_time = time.time()
+
+    print("Training the model took {} seconds.".format(
+        end_train_time - start_train_time))
+
+    return history
 
 
 def save_history(history):
@@ -169,13 +195,65 @@ def visualize_heatmap_activation(model, test_img):
     plt.show()
 
 
-def visualize_confusion_matrix(out_true, out_pred):
+def visualize_confusion_matrix(model, test_gen):
     """
     Visualizes the test set confusion matrix.
 
-    :param out_true: The ground-truth labels
-    :param out_pred: The labels predicted by the neural network
+    :param model: The ML model
+    :param test_gen: A BatchGenerator object containing the test samples
     """
-    confusion_matrix = metrics.multilabel_confusion_matrix(out_true, out_pred)
-    sn.heatmap(confusion_matrix[0])
-    plt.show()
+    true_output = []
+    pred_output = []
+
+    for batch_num in range(0, len(test_gen)):
+        # Get a batch
+        batch_inputs, batch_targets = test_gen[batch_num]
+        # Get the neural network's prediction from the batch input
+        pred_output.append(model.predict_on_batch(batch_inputs))
+        true_output.append(batch_targets)
+
+    # Convert to numpy array
+    true_output = np.array(true_output, dtype=int)
+    pred_output = np.array(pred_output, dtype=int)
+
+    # Reshape due to batches
+    true_output = true_output.reshape(
+        true_output.shape[0] * true_output.shape[1], true_output.shape[2])
+    pred_output = pred_output.reshape(
+        pred_output.shape[0] * pred_output.shape[1], pred_output.shape[2])
+
+    # Get the confusion matrix for each emotion
+    confusion_matrix = metrics.multilabel_confusion_matrix(
+        true_output, pred_output)
+
+    # Display the confusion matrix for each emotion
+    labels = ["0", "1"]
+
+    for emotion in range(0, emc.NUM_EMOTIONS):
+        # Plot the confusion matrix
+        fig, ax = plt.subplots()
+        im = ax.imshow(confusion_matrix[emotion])
+
+        # Create colorbar
+        ax.figure.colorbar(im, ax=ax)
+
+        # Set the x and y axis labels
+        ax.set_ylabel("True")
+        ax.set_xlabel("Predicted")
+
+        # Set the x and y axis tick values
+        ax.set_xticks(np.arange(len(labels)))
+        ax.set_yticks(np.arange(len(labels)))
+
+        # Set the x and y axis tick labels
+        ax.set_xticklabels(labels)
+        ax.set_yticklabels(labels)
+
+        # Display the value of each in the matrix
+        for row in range(confusion_matrix[emotion].shape[0]):
+            for col in range(confusion_matrix[emotion].shape[1]):
+                ax.text(col, row, confusion_matrix[emotion][row][col],
+                        ha="center", va="center", color="w")
+
+        fig.tight_layout()
+        plt.show()

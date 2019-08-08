@@ -81,7 +81,7 @@ def k_hot_encode_label(label):
 
     # Only count the emotions with the highest amount of votes
     k_hot_label = k_hot_label / np.max(k_hot_label)
-    k_hot_label = np.floor(k_hot_label).astype(int)
+    k_hot_label = np.floor(k_hot_label, dtype=int)
 
     # If they're all zero, then this sample doesn't fit with the set of labels
     # that we're considering so drop it
