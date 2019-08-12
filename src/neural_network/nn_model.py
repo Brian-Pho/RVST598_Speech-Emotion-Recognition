@@ -231,30 +231,28 @@ def visualize_confusion_matrix(model, test_gen):
     labels = ["0", "1"]
 
     for emotion in range(0, emc.NUM_EMOTIONS):
+        em_cm = confusion_matrix[emotion]
+
         # Plot the confusion matrix
-        fig, ax = plt.subplots()
-        im = ax.imshow(confusion_matrix[emotion])
+        plt.clf()
+        plt.imshow(em_cm, interpolation='nearest')
 
         # Create colorbar
-        ax.figure.colorbar(im, ax=ax)
+        plt.colorbar()
 
         # Set the x and y axis labels
-        ax.set_ylabel("True")
-        ax.set_xlabel("Predicted")
+        plt.ylabel("True")
+        plt.xlabel("Predicted")
 
-        # Set the x and y axis tick values
-        ax.set_xticks(np.arange(len(labels)))
-        ax.set_yticks(np.arange(len(labels)))
+        # Set the x and y tick values and tick labels
+        tick_marks = np.arange(len(labels))
+        plt.xticks(tick_marks, labels)
+        plt.yticks(tick_marks, labels)
 
-        # Set the x and y axis tick labels
-        ax.set_xticklabels(labels)
-        ax.set_yticklabels(labels)
+        # Display each value in the matrix
+        for row in range(em_cm.shape[0]):
+            for col in range(em_cm.shape[1]):
+                plt.text(col, row, em_cm[row][col])
 
-        # Display the value of each in the matrix
-        for row in range(confusion_matrix[emotion].shape[0]):
-            for col in range(confusion_matrix[emotion].shape[1]):
-                ax.text(col, row, confusion_matrix[emotion][row][col],
-                        ha="center", va="center", color="w")
-
-        fig.tight_layout()
+        plt.tight_layout()
         plt.show()
