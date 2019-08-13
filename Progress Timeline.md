@@ -27,38 +27,6 @@
 - [ ] Create poster
 - [ ] Submit to conference
 
-## Future work / Improvements
-
-### Internal Improvements
-
-- Improving accuracy, runtime, data efficiency, training efficiency, network efficiency
-- More data, more data variety (actual conversations, movies, music), less noisy data
-- Better multi-labels that output probabilities
-- Use phase data from STFT
-- Fuse spectrograms with raw waveforms using 1D CNN
-- Combine with some RNN/LSTM
-- Use MFCC
-- Use neuroscience based approach/inspiration
-- Use neural network for complex numbers
-- Wavelets
-- Pretrained network like soundnet
-- Use different scales (log, Mel, custom, dB)
-- Use different representation (wavelets, cepstrum)
-- Use GAN for emotion style transfer
-- Apply heatmaps to CNN + LSTM
-- Use wavelet transform to deal with variable-length time signals
-- More emotions
-- Try binary relevance approach (each label is its own binary classifier)
-
-### External Improvements
-
-- Use this system as a component of a larger system
-- Emotion style transfer using cycle-GANs
-- Emotion generation using WavSynth/GAN/VAE/GANSynth
-- Analyzing the neural network for more details on how it gets to its decision
-- Use network for deaf people in a device
-- Real-time emotion recognition
-
 ## TODO
 
 - [x] Move normalization steps into frequency domain
