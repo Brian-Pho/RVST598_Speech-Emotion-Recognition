@@ -20,6 +20,8 @@ Chart.helpers.merge(Chart.defaults.global.plugins.datalabels, {
     color: 'white'
 });
 
+Chart.defaults.global.defaultFontSize = 15;
+
 // Standard colors
 window.chartColors = {
 	red: 'rgb(255, 99, 132)',
@@ -28,7 +30,7 @@ window.chartColors = {
 	green: 'rgb(75, 192, 192)',
 	blue: 'rgb(54, 162, 235)',
 	purple: 'rgb(153, 102, 255)',
-	grey: 'rgb(231,233,237)'
+	grey: 'rgb(148, 150, 153)'
 };
 
 // Number of samples in each emotion class
@@ -55,7 +57,8 @@ var myDoughnutChart = new Chart(eCPC, {
     options: Object.assign(options, {
         title: {
             display: true,
-            text: 'Emotions'
+            text: 'Emotions',
+            fontSize: 15
         }
     })
 });
@@ -67,7 +70,7 @@ var myDoughnutChart = new Chart(lTPC, {
     type: 'doughnut',
     data: {
         datasets: [{
-            data: [19884, 727, 1064, 45, 1],
+            data: [19884, 727, 1064],
             backgroundColor: [
                 window.chartColors.red, 
                 window.chartColors.orange, 
@@ -77,7 +80,7 @@ var myDoughnutChart = new Chart(lTPC, {
         }],
     
         // These labels appear in the legend and in the tooltips when hovering different arcs
-        labels: ["1", "2", "3", "4", "5"]
+        labels: ["1", "2", "3"]
     },
     options: Object.assign(options, {
         title: {
