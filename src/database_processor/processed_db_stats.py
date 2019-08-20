@@ -91,8 +91,27 @@ def count_samples_per_db(samples):
     print("Total:", sum(db_counts.values()))
 
 
+def remove_label_type(samples, label_types):
+    """
+    Removes samples from the processed database that have a certain label type.
+    Label types are the number of labels a given sample has such as "2".
+
+    :param samples: A list of sample filenames
+    :param label_types: A list of label types to filter/remove
+    """
+    for sample in samples:
+        label = dg.read_label(sample)
+        num_labels = np.sum(label)
+
+        if num_labels in label_types:
+            sample_path = os.path.join(dbc.PROCESS_DB_PATH, sample)
+            os.remove(sample_path)
+            print("Removed sample:", sample)
+
+
 def main():
     sample_fns = os.listdir(dbc.PROCESS_DB_PATH)
+    remove_label_type(sample_fns, [4, 5])
     calc_emotion_class(sample_fns)
     calc_label_type(sample_fns)
     count_samples_per_db(sample_fns)
