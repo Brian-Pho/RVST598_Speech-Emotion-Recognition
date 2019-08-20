@@ -1,11 +1,6 @@
 // Standard/global options
 var options = {
     responsive: false,
-    // animation: {
-    //     onComplete: function(animation){
-    //         document.querySelector('.savegraph').setAttribute('href', this.toBase64Image());
-    //     }
-    // }
 }
 
 // Standard size
@@ -20,6 +15,7 @@ Chart.helpers.merge(Chart.defaults.global.plugins.datalabels, {
     color: 'white'
 });
 
+// Set font size
 Chart.defaults.global.defaultFontSize = 15;
 
 // Standard colors
@@ -40,7 +36,7 @@ var myDoughnutChart = new Chart(eCPC, {
     type: 'doughnut',
     data: {
         datasets: [{
-            data: [5994, 6209, 1960, 1884, 4745, 3040, 883],
+            data: [5954, 6177, 1934, 1851, 4732, 3006, 876],
             backgroundColor: [
                 window.chartColors.red, 
                 window.chartColors.orange, 
@@ -57,8 +53,7 @@ var myDoughnutChart = new Chart(eCPC, {
     options: Object.assign(options, {
         title: {
             display: true,
-            text: 'Emotions',
-            fontSize: 15
+            text: 'Emotions'
         }
     })
 });
@@ -80,7 +75,7 @@ var myDoughnutChart = new Chart(lTPC, {
         }],
     
         // These labels appear in the legend and in the tooltips when hovering different arcs
-        labels: ["1", "2", "3"]
+        labels: ["One", "Two", "Three"]
     },
     options: Object.assign(options, {
         title: {
@@ -98,7 +93,7 @@ var myDoughnutChart = new Chart(dOPC, {
     type: 'doughnut',
     data: {
         datasets: [{
-            data: [7442, 10039, 1440, 2800],
+            data: [7414, 10021, 1440, 2800],
             backgroundColor: [
                 window.chartColors.red, 
                 window.chartColors.orange, 
