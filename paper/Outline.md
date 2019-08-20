@@ -1,6 +1,4 @@
-# Multi-Label Emotion Classification in Speech Using Deep Learning
-
-# Aggregate Database for Emotion Classificiation
+# Multi-Label Emotion Classification in Speech Using Deep Learning / Aggregate Database for Emotion Classificiation / Multi-label Emotion Classification using 2D Convolutional Neural Networks
 
 ## Abstract
 
