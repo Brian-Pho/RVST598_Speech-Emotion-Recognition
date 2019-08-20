@@ -25,7 +25,7 @@ A speech sample is a few seconds long and flows through the following data proce
 
 ### Timeline
 
-- May: Read the `Deep Learning with Python` textbook by Francois Chollet to pickup deep learning. My personal notes can be found [here](https://brianpho.com/CR4-DL/textbooks/2019/06/02/deep-learning-with-python.html).
+- May: Read the `Deep Learning with Python` textbook by Francois Chollet to pickup deep learning. My notes can be found [here](https://brianpho.com/CR4-DL/textbooks/2019/06/02/deep-learning-with-python.html).
 - June: Decide on this project and start collecting and processing the databases.
 - July: Process the databases and start creating the neural network model.
 - August: Complete the neural network training, write the paper, and create the presentation.
@@ -70,7 +70,7 @@ I developed this program using PyCharm so that's the easiest way to run the code
 ### Preprocessing the Databases
 
 1. Copy the raw database samples and labels into its respective folder in `/repo/data/raw/[db]`. The proper structure is shown below.
-2. Run the corresponding database script in `/repo/src/database_processor/[db].py`. This processes the raw audio samples into log-mel spectrograms.
+2. Run the corresponding database script in `/repo/src/database_processor/[db].py`. This processes the raw audio samples into log-mel spectrograms. Note that this takes some time and lots of memory.
 3. The processed log-mel spectrograms should appear in the `/repo/data/processed` folder with filenames like `CRE_0-0_1_0_0_0_0_0.npy`. The filename format is `[DB]_[SAMPLE ID]-[ONE HOT ENCODED EMOTION].npy`.
 
 ```bash
