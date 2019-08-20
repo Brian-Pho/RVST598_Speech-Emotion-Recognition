@@ -33,4 +33,20 @@ Ethan Human Accuracy
 - Map
   - Frustration -> anger
   - Excitment - > happy
-- 
+- Multiclass, multilabel problem
+- Other names: vocal emotion recognition, speech emotion recognition, emotion perception
+- Sentence-level emotion labeling
+- Vocal emotion recognition, speech emotion recognition, emotion perception
+- The words "emotion" and "label" are used interchangably because they both represent the same idea
+- The words "time series" and "wav" are used interchangably
+- The words "amplitude" and "magnitude" are used interchangably when discussing spectrograms
+- The words "sample" and "input", "label" and "target".
+- Bigger window -> frequency, smaller windows -> time
+- Pad both sides to preserve edge data
+- Clean up database files using the command "find . -type f -name ".*" -delete/-print"
+- Normalization techniques (at what level?)
+  - File
+  - Database
+  - All databases
+  - Emotion class
+- Program has a memory leak for processing wav files
