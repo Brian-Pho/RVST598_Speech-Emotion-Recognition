@@ -67,15 +67,15 @@ The databases were not uploaded to Github due to copyright restrictions and size
 
 I developed this program using PyCharm so that's the easiest way to run the code but its possible to run the code using a Terminal or Anaconda.
 
-### Preprocess the Databases
+### Preprocessing the Databases
 
-1. Copy the raw database samples and labels into its respective folder in `/repo/data/raw/[db]`. The proper structure is below.
-2. Run the corresponding database script in `/repo/src/database_processor/[db].py`
-3. The processed log-mel spectrograms should appear in the `/repo/data/processed folder` with a filename like `CRE_0-0_1_0_0_0_0_0.npy`.
+1. Copy the raw database samples and labels into its respective folder in `/repo/data/raw/[db]`. The proper structure is shown below.
+2. Run the corresponding database script in `/repo/src/database_processor/[db].py`. This processes the raw audio samples into log-mel spectrograms.
+3. The processed log-mel spectrograms should appear in the `/repo/data/processed` folder with filenames like `CRE_0-0_1_0_0_0_0_0.npy`. The filename format is `[DB]_[SAMPLE ID]-[ONE HOT ENCODED EMOTION].npy`.
 
 ```bash
-└───data  # Holds the raw and processed databases (not uploaded to Github)
-    └───raw  # Holds the raw audio samples and labels from each database
+└───data
+    └───raw
         ├───cremad
         │   ├───tabulatedVotes.csv
         │   └───AudioWAV
@@ -93,9 +93,10 @@ I developed this program using PyCharm so that's the easiest way to run the code
                 └───OAF_back_angry.mp3
 ```
 
-### Train the Neural Network
+### Training the Neural Network
 
 1. Check the `/repo/data/processed` folder for files. If you're running the training on all four database, there should be 21,721 files/samples labeled like `CRE_0-0_1_0_0_0_0_0.npy`.
-2. Configure the model parameters in `/repo/src/neural_network/nn_model.py` under the `build_model()` function.
-3. Configure the training parameters under `/repo/src/neural_network/nn_constants.py`. This file lets you control the number of epochs, the batch size, the optimizer and loss, and more.
-4. Run the training script `/repo/src/main.py`.
+2. Run the script `/repo/src/database_processor/processed_db_stats.py` to remove the samples with 4 and 5 labels. There should now be 21,675 samples.
+3. Configure the model parameters in `/repo/src/neural_network/nn_model.py` under the `build_model()` function.
+4. Configure the training parameters under `/repo/src/neural_network/nn_constants.py`. This file lets you control the number of epochs, the batch size, the optimizer and loss, and more.
+5. Run the script `/repo/src/main.py` to train the neural network. This script will automagically create the train, validation, and test sets and display the training history.
