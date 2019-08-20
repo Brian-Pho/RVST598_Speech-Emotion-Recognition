@@ -1,4 +1,6 @@
-## Database Information
+# Tables
+
+## Databases
 
 The following databases were used/considered.
 
@@ -13,41 +15,52 @@ The following databases were used/considered.
 | [Emo-DB](http://emodb.bilderbar.info/index-1280.html)                                | 2005 |         :x:        |    wav    |       535       |        16000       |   Single   |      Sentence      |
 | [EmoV-DB](https://github.com/numediart/EmoV-DB)                                      | 2018 |         :x:        |    wav    |       6599      |        44100       |   Single   |      Sentence      |
 
-A table comparing the different emotions in each dataset.
+A comparision of the different emotions in each database.
 
 |            |  Neutral |   Anger  |  Disgust |   Fear   |   Happy  |    Sad   | Surprise |   Calm   | Excitement | Frustration |  Amused  |  Sleepy  |  Bored  |
 |------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:----------:|:----------:|:--------:|:--------:|:--------:|
 | IEMOCAP    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |  :heavy_check_mark:  | :heavy_check_mark:   | :x: | :x: | :x: |
-| MSP-IMPROV | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:   | :x:   | :x: | :x: | :x: |
 | CREMA-D    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x:   | :x:   | :x: | :x: | :x: |
 | TESS       | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:   | :x:   | :x: | :x: | :x: |
 | RAVDESS    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:   | :x:   | :x: | :x: | :x: |
+| MSP-IMPROV | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:   | :x:   | :x: | :x: | :x: |
 | SAVEE      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x:   | :x:   | :x: | :x: | :x: |
-| EmoV-DB    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x: | :x: | :x: | :x:   | :x:   | :heavy_check_mark: | :heavy_check_mark: | :x: |
 | Emo-DB     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x:   | :x:   | :x: | :x: | :heavy_check_mark: |
+| EmoV-DB    | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x: | :x: | :x: | :x:   | :x:   | :heavy_check_mark: | :heavy_check_mark: | :x: |
 
-# Database Statistics
+## Final Aggregate Database
 
-| Database | Number of Samples | Number of Outliers (> 3 STD) | Shortest | Longest | Shortest (after cutoff) | Longest (after cutoff) |
-|----------|------------------:|-----------------------------:|---------:|--------:|------------------------:|-----------------------:|
-| IEMOCAP  |             10039 |                              |          |         |                         |                        |
-| CREMA-D  |              7442 |                           70 |    60861 |  240240 |                   60681 |                 193794 |
-| TESS     |              2800 |                            0 |    60196 |  143271 |                   60196 |                 143271 |
-| RAVDESS  |              1440 |                           16 |    44941 |  157053 |                   44941 |                 128224 |
-| EmoV-DB  |              6599 |                              |          |         |                         |                        |
+### Properties
 
-## Final Aggregate Database Statistics
-
-| Statistic                      |         Value |
+| Property                       |         Value |
 |--------------------------------|--------------:|
 | Size                           |       4.50 GB |
 | Size per Sample                |        218 KB |
 | Number of Samples              |        21,675 |
 | Sample Shape                   | (200, 278, 1) |
-| Number of Samples per Emotion  |               |
-| Number of Samples per Database |               |
 
-## Accuracy and Agreement
+### Number of Samples per Emotion
+
+| Emotion  | Number of Samples |
+|----------|------------------:|
+| Neutral  |              5954 |
+| Anger    |              6177 |
+| Disgust  |              1934 |
+| Fear     |              1851 |
+| Happy    |              4732 |
+| Sad      |              3006 |
+| Surprise |               876 |
+
+### Number of Samples per Database
+
+| Database | Number of Samples |
+|----------|------------------:|
+| IEMOCAP  |             10021 |
+| CREMA-D  |              7414 |
+| TESS     |              2800 |
+| RAVDESS  |              1440 |
+
+## Database Accuracy and Agreement
 
 | Database        | Accuracy (%) | Agreement (%) |
 |-----------------|-------------:|--------------:|
@@ -56,7 +69,7 @@ A table comparing the different emotions in each dataset.
 | MSP-Improv      |  69.40/73.30 |               |
 | Yildirime et al |        68.30 |               |
 
-## Neural Network Statistics
+## Neural Network
 
 | Statistic                      |      Value |
 |--------------------------------|-----------:|
