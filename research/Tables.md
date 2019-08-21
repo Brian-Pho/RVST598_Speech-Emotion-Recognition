@@ -127,10 +127,10 @@ _________________________________________________________________
 
 | Statistic                      |      Value |
 |--------------------------------|-----------:|
-| Train Time                     |  2494.94 s |
+| Train Time                     |  2499.34 s |
 | Number of Trainable Parameters |  8,715,765 |
-| Test Loss                      |       0.36 |
-| Test Accuracy                  |    52.16 % |
+| Test Loss                      |       0.32 |
+| Test Accuracy                  |    52.57 % |
 | Epochs                         |         20 |
 
 Tables were created with <https://www.tablesgenerator.com/markdown_tables>.

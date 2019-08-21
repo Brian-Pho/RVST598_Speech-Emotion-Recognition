@@ -110,3 +110,18 @@
   - Analyzing the neural network for more details on how it gets to its decision
   - Use network for deaf people in a device
   - Real-time emotion recognition
+
+## Figure Set
+
+- Data flow diagram
+- NN architecture
+- Sample input batch
+- Confusion matrix
+- Sample spectrogram
+- Pi charts
+- Heatmaps
+
+Novelty from
+
+- Combined datasets
+- Mutlilabel

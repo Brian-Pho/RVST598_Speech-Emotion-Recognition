@@ -11,7 +11,7 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{Multi-Label Emotion Classification in Speech Using 2D CNNs}
+\title{Multi-Label Speech Emotion Recognition Using 2D CNNs}
 
 \author{\IEEEauthorblockN{Brian Pho, Thomas Truong, Svetlana Yanushkevich}
 \IEEEauthorblockA{\textit{Biometric Technologies Laboratory, Department of Electrical and Computer Engineering}\\
@@ -41,7 +41,7 @@ However, these models only consider a single emotion per speech sample and are o
 
 We approach the problem of multi-label emotion classification by using 2D convolution neural networks to classify speech samples into multiple emotions. We collected four databases, two with mutli-labeled and single-labeled samples, and two with only single-labeled samples. We then combined these four databases into an aggregate database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into a seven layer neural network consisting of four convolutional layers and three dense layers. After training the neural network, the model achieved a 50\% test accuracy.
 
-\section{Results}
+\section{Method}
 
 \subsection{Method Summary}
 
@@ -74,7 +74,7 @@ After training, the model was run on the testing set to get the final accuracy o
 
 \subsection{Rationale}
 
-
+\section{Results}
 
 \section{Discussion}
 
@@ -82,9 +82,9 @@ After training, the model was run on the testing set to get the final accuracy o
 
 We created a neural network model that achieved a classification accuracy of 50\% on the problem of multi-label emotion classification. This model can successfully classify multiple emotions in a sample and while this is a good result, we can do better.
 
-\subsection{Limitations}
+\subsection{Limitations and Future Work}
 
-\subsection{Future Work}
+\subsection{Conclusion}
 
 \section*{Acknowledgment}
 Acknowledge PURE award. Test citation: \cite{N.Fahlgren}
