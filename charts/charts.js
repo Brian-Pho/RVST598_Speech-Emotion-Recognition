@@ -16,7 +16,7 @@ Chart.helpers.merge(Chart.defaults.global.plugins.datalabels, {
 });
 
 // Set font size
-Chart.defaults.global.defaultFontSize = 15;
+Chart.defaults.global.defaultFontSize = 20;
 
 // Standard colors
 window.chartColors = {

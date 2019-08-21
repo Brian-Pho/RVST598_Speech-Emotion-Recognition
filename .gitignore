@@ -115,3 +115,9 @@ data/
 *.out
 
 paper/Figure Set/
+
+paper/paper.synctex.gz
+
+paper/paper.bbl
+
+paper/paper.blg

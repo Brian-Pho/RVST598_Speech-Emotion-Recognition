@@ -40,7 +40,7 @@
   - It would start as a raw waveform in the form of time series points specifying the amplitude at a certain time.
   - We then pad / crop the sample to a desired length. In our case, we set a maximum length of 4.5 seconds. Samples shorter than this were zero-padded on the only the right tail. Samples longer than this were cropped to this length and extra information discarded.
   - If the sample came from a database that we considered noisy, then a noise reduction function was ran on the sample to reduce the noise.
-    - We consider the IEMOCAP and CREMA-D databases to be noisy. We determined this by listening to the samples and by visually inspecting the generated spectrograms.
+    - We consider the IEMOCAP and CREMA-D databases to be noisy.
   - The sample is then converted into a log-mel scaled spectrogram using a short-time fourier transform and mel scale equation. The phase information was discarded as it doesn't seem to hold relevant information.
   - The final step is to normalize the spectrograms to have values between -1 and 1. This was done by using a minmax scale function.
 - After all of the databases were processed this way, the final aggregate dataset was fed into a neural network for training.
@@ -64,8 +64,9 @@
   - We convert the samples into a spectrogram because we believe this will make it easier for the model to extract features from the audio. This is also inspired by human hearing and how the cochlea converts audio into the frequency domain.
   - We use the Mel scale because it's better at emphasizing the lower frequencies and it's demonstrated to aid in training neural networks (Gansynth).
   - We normalize the samples because it's been shown to aid in neural network training by preventing large gradient updates due to highly variable data.
+  - We determined that IEM and CRE are noisy by listening to the samples and by visually inspecting the generated spectrograms.
 
-## Discusion
+## Discussion
 
 ### Results to conclusion
 
