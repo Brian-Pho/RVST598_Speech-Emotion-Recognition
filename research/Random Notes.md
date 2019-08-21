@@ -50,3 +50,4 @@ Ethan Human Accuracy
   - All databases
   - Emotion class
 - Program has a memory leak for processing wav files
+- Trained on a NVIDIA RTX 2080 8 GB

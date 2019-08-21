@@ -44,7 +44,6 @@ The databases were not uploaded to Github due to copyright restrictions and size
 
 ```bash
 └───repo  # Holds this repository
-    ├───charts  # Holds pie charts created using Chart.js for the paper and presentation
     ├───data  # Holds the raw and processed databases (not uploaded to Github)
     │   ├───model  # Holds the neural network saved weights and training history
     │   ├───processed  # Holds the log-mel spectrogram audio samples in the form of numpy arrays
@@ -53,8 +52,11 @@ The databases were not uploaded to Github due to copyright restrictions and size
     │       ├───iemocap
     │       ├───ravdess
     │       └───tess
-    ├───paper  # Holds the paper resulting from this research
-    ├───presentation  # Holds the presentation resulting from this research
+    ├───research  # Holds the files resulting from this research
+    │   ├───charts  # Holds pie charts created using Chart.js for the paper and presentation
+    │   ├───images  # Holds images from training, spectrograms, and testing.
+    │   ├───paper  # Holds the paper resulting from this research
+    │   └───presentation  # Holds the presentation resulting from this research
     └───src  # Holds the code for preprocessing the databases and the neural network model
         ├───audio_processor  # Holds the wav and spectrogram functions
         ├───database_processor  # Holds the preprocessing functions

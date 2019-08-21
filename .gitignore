@@ -105,19 +105,12 @@ venv.bak/
 
 # Custom
 \.idea/
-data/
 \.vscode/
-
+data/
 ~\$Database Statistics\.xlsx
 
 *.aux
-
 *.out
-
-paper/Figure Set/
-
-paper/paper.synctex.gz
-
-paper/paper.bbl
-
-paper/paper.blg
+*.gz
+*.bbl
+*.blg
