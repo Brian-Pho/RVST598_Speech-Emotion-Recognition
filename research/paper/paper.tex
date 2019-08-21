@@ -5,6 +5,7 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
+\graphicspath{{figures/}}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
@@ -22,7 +23,7 @@
 \maketitle
 
 \begin{abstract}
-Current emotion classification systems using machine learning often ignore the multi-label data that comes with databases. In this paper we question whether machine learning can be used to detect multiple emotions in speech. To answer this question, we created an aggregate database from four voice emotion-labeled databases and train a 2D convolutional neural network on it to determine if the model could recognize multiple emotions in a speech sample. The model was able to classify the samples with an accuracy of 50\%. While this result is better than the baseline, we suggest future improvements.
+Current emotion classification systems using machine learning often ignore the multi-label data that comes with databases. In this paper, we address the problem of whether machine learning can be used to detect multiple emotions in speech and how accurate they can identify the emotions present. We created an combined database from four voice emotion-labeled databases and trained a 2D convolutional neural network on it to determine if the model could recognize multiple emotions in a speech sample. The model was able to classify the samples with an accuracy of 50\%. This result shows that it is possible to apply machine learning to the problem of multi-label speech emotion recognition and to achieve a reasonable accuracy.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -39,7 +40,7 @@ However, these models only consider a single emotion per speech sample and are o
 
 \subsection{Summary}
 
-We approach the problem of multi-label emotion classification by using 2D convolution neural networks to classify speech samples into multiple emotions. We collected four databases, two with mutli-labeled and single-labeled samples, and two with only single-labeled samples. We then combined these four databases into an aggregate database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into a seven layer neural network consisting of four convolutional layers and three dense layers. After training the neural network, the model achieved a 50\% test accuracy.
+We approach the problem of multi-label emotion classification by using 2D convolution neural networks to classify speech samples into multiple emotions. We collected four databases, two with mutli-labeled and single-labeled samples, and two with only single-labeled samples. We then combined these four databases into an combined database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into a seven layer neural network consisting of four convolutional layers and three dense layers. After training the neural network, the model achieved a 50\% test accuracy.
 
 \section{Method}
 
@@ -47,12 +48,36 @@ We approach the problem of multi-label emotion classification by using 2D convol
 
 To determine if a machine learning model could perform multi-label emotion classification on speech, we first need to get speech samples with their labeled emotion. We considered eight databases and chose four based on accessibility and the number of common emotions. Given the variability of emotions in each database and the constraint adding more databases increases the difficulty of controlling the consistency of the samples, we chose the following databases
 \begin{itemize}
-	\item IEMOCAP
-	\item TESS
-	\item RAVDESS
-	\item CREMA-D
+	\item IEMOCAP \cite{busso_2008}
+	\item TESS \cite{dupuis_2011}
+	\item RAVDESS \cite{livingstone_2018}
+	\item CREMA-D \cite{cao_2014}
 \end{itemize}
-We specifically picked databases that were spoken in English to keep the language consistent.
+We specifically picked databases that were spoken in English to keep the language consistent. We combined these four databases for training, validating, and testing the neural network. The combined database is detailed in figures \ref{combined_db_db_split}, \ref{combined_db_db_split}, \ref{combined_db_db_split}
+
+\begin{figure}[h!]
+	\centering
+	\hspace{6mm}
+	\includegraphics[width=\linewidth]{combined_db_db_split.png} 
+	\caption{The proportion of each database in the combined database.}
+	\label{fig:combined_db_db_split}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\hspace{6mm}
+	\includegraphics[width=\linewidth]{combined_db_emotions.png} 
+	\caption{The proportion of each emotion in the combined database.}
+	\label{fig:combined_db_db_split}
+\end{figure}
+
+\begin{figure}[h!]
+	\centering
+	\hspace{6mm}
+	\includegraphics[width=\linewidth]{combined_db_label_types.png} 
+	\caption{The proportion of each label type in the combined database.}
+	\label{fig:combined_db_db_split}
+\end{figure}
 
 Each sample from a database would flow through the same preprocessing steps to maintain consistency. The preprocessing steps are
 \begin{enumerate}
@@ -63,18 +88,33 @@ Each sample from a database would flow through the same preprocessing steps to m
 	\item The final step is to normalize the spectrograms to have values between negative one and one. This was done by using a minmax scaling function.
 \end{enumerate}
 
-After all of the databases were processed this way, the final aggregate database was fed into a neural network for training. We constructed a seven layer neural network of four convolutional layers and three dense layers. The network architecture is shown in Figure \ref{label}. The training details follow.
+\begin{figure}[h!]
+	\centering
+	\hspace{6mm}
+	\includegraphics[width=\linewidth]{high_level_dataflow_diagram.png}
+	\caption{A high level overview of the processing stages that a speech sample goes through.}
+	\label{fig:high_level_dataflow_diagram}
+\end{figure}
+
+After all of the databases were processed this way, the final combined database was fed into a neural network for training. We constructed a seven layer neural network of four convolutional layers and three dense layers. The network architecture is shown in Figure \ref{label}. The training details follow.
 \begin{itemize}
 	\item We applied dropout to the dense layers and batch normalization to the convolutional layers to deal with overfitting.
-	\item We shuffled the aggregate database to make each training batch more homogenous and thus prevent large gradient updates.
-	\item We split the aggregate database into 80\% training, 10\% validation, and 10\% testing.
+	\item We shuffled the combined database to make each training batch more homogenous and thus prevent large gradient updates.
+	\item We split the combined database into 80\% training, 10\% validation, and 10\% testing.
 	\item We updated the model's hyperparameters based on the validation loss and accuracy to improve the model's accuracy and generalizability.
 \end{itemize}
-After training, the model was run on the testing set to get the final accuracy of the model. The final accuracy achieved was 50\%.
 
-\subsection{Rationale}
+\begin{figure}[h!]
+	\centering
+	\hspace{6mm}
+	\includegraphics[width=\linewidth]{neural_network_architecture.png}
+	\caption{The detailed architecture of the neural network including its eight layers and convolution filter size.}
+	\label{fig:high_level_dataflow_diagram}
+\end{figure}
 
 \section{Results}
+
+After training, the model was evaluated on the testing set to get the final accuracy of the model. The final accuracy achieved was 50\%. Confusion matrices for each emotion are shown in Figure \ref{}.
 
 \section{Discussion}
 
@@ -84,10 +124,20 @@ We created a neural network model that achieved a classification accuracy of 50\
 
 \subsection{Limitations and Future Work}
 
+One limitation of this work was that we only accounted for seven emotions but we know that there are more emotions than this. \cite{} Another limitations was that 
+Here we present future improvements of our work 
+\begin{itemize}
+	\item Improving the recognition accuracy by using more sophisticated neural network architectures such as LSTMs or using more databases.
+	\item Incorporating the phase data from the STFT and testing to see if that improves the accuracy.
+	\item Testing a binary relevant approach to this multi-label problem and comparing it to this model.
+\end{itemize}
+
 \subsection{Conclusion}
 
+Overall, this paper presented a convolutional neural network model that achieves a 50\% accuracy on multi-class, multi-label speech emotion recognition using four combined databases. We obtained this result by transforming raw speech samples into log-Mel spectrograms using STFT and the Mel scale. These log-Mel spectrograms are then fed into a eight layer neural network for classification for training. When we have completed training the neural network, the model was evaluated and achieved as 50\% accuracy. While this result is a promising start, we suggest improvements that future work can build upon to improve the accuracy.
+
 \section*{Acknowledgment}
-Acknowledge PURE award. Test citation: \cite{N.Fahlgren}
+Acknowledge PURE award.
 
 
 \bibliographystyle{IEEEtran}
