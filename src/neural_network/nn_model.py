@@ -233,31 +233,41 @@ def visualize_confusion_matrix(model, test_gen):
         true_output, pred_output)
 
     # Display the confusion matrix for each emotion
-    labels = ["0", "1"]
+    labels = ["Absent", "Present"]
 
-    for emotion in range(0, emc.NUM_EMOTIONS):
-        em_cm = confusion_matrix[emotion]
+    for em_index in range(0, emc.NUM_EMOTIONS):
+        # Normalize the confusion matrix
+        em_cm = confusion_matrix[em_index]
+        em_cm = em_cm.astype('float') / em_cm.sum(axis=1)[:, np.newaxis]
 
         # Plot the confusion matrix
-        plt.clf()
-        plt.imshow(em_cm, interpolation='nearest')
-
-        # Create colorbar
-        plt.colorbar()
+        fig, ax = plt.subplots()
+        im = ax.imshow(em_cm, interpolation='nearest',
+                       cmap=plt.get_cmap("Blues"))
+        ax.figure.colorbar(im, ax=ax)
 
         # Set the x and y axis labels
-        plt.ylabel("True")
-        plt.xlabel("Predicted")
+        em_label = emc.INVERT_EMOTION_MAP[em_index]
+        ax.set(xticks=np.arange(em_cm.shape[1]),
+               yticks=np.arange(em_cm.shape[0]),
+               # ... and label them with the respective list entries
+               xticklabels=labels, yticklabels=labels,
+               title='Normalized Confusion Matrix for {}'.format(em_label),
+               ylabel='True label',
+               xlabel='Predicted label')
 
-        # Set the x and y tick values and tick labels
-        tick_marks = np.arange(len(labels))
-        plt.xticks(tick_marks, labels)
-        plt.yticks(tick_marks, labels)
+        # Rotate the tick labels and set their alignment.
+        plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+                 rotation_mode="anchor")
 
-        # Display each value in the matrix
-        for row in range(em_cm.shape[0]):
-            for col in range(em_cm.shape[1]):
-                plt.text(col, row, em_cm[row][col])
+        # Loop over data dimensions and create text annotations.
+        fmt = '.2f'
+        thresh = em_cm.max() / 2.
+        for i in range(em_cm.shape[0]):
+            for j in range(em_cm.shape[1]):
+                ax.text(j, i, format(em_cm[i, j], fmt),
+                        ha="center", va="center",
+                        color="white" if em_cm[i, j] > thresh else "black")
 
-        plt.tight_layout()
+        fig.tight_layout()
         plt.show()

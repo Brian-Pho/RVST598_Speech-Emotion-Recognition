@@ -15,6 +15,8 @@ def main():
     """
     The main entry point of this program.
     """
+    # Used to keep the shuffling of samples consistent between runs
+    np.random.seed(0)
     # Get the samples (log-mel spectrograms in the form of .npy files)
     sample_fns = dg.get_sample_filenames()
     np.random.shuffle(sample_fns)  # Shuffle the dataset
