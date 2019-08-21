@@ -42,6 +42,9 @@ def main():
     valid_gen = dg.BatchGenerator(valid_samples)
     train_gen = dg.BatchGenerator(train_samples)
 
+    # # Visualize input batch to ensure the network is getting valid data
+    # nnm.visualize_input_batch(train_gen)
+
     # Create and train the model
     model = nnm.build_model()
     # model.load_weights(nnc.MODEL_SAVE_PATH)

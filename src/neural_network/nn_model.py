@@ -271,3 +271,21 @@ def visualize_confusion_matrix(model, test_gen):
 
         fig.tight_layout()
         plt.show()
+
+
+def visualize_input_batch(input_gen):
+    """
+    Visualizes a sample input batch to the neural network.
+
+    :param input_gen: A BatchGenerator object, can be train, valid, or test
+    """
+    # Get a batch from the generator
+    batch_inputs, batch_targets = input_gen[0]
+
+    plt_num = 1
+    for specgram in batch_inputs:
+        plt.subplot(4, 8, plt_num)
+        plt.pcolormesh(np.squeeze(specgram, axis=2), cmap="magma")
+        plt_num += 1
+
+    plt.show()
