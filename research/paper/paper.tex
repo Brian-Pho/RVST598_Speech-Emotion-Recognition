@@ -42,6 +42,13 @@ However, these models only consider a single emotion per speech sample and are o
 
 We approach the problem of multi-label emotion classification by using 2D convolution neural networks to classify speech samples into multiple emotions. We collected four databases, two with mutli-labeled and single-labeled samples, and two with only single-labeled samples. We then combined these four databases into an combined database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into a seven layer neural network consisting of four convolutional layers and three dense layers. After training the neural network, the model achieved a 50\% test accuracy.
 
+The paper is outlined as follows:
+\begin{itemize}
+	\item Section II details the methodology we use such as the how we combined four databases and the architecture of the neural network.
+	\item Section III details the results from training the neural network.
+	\item Section IV discusses the results in the context of the field and how future work can improve upon the work.
+\end{itemize}
+
 \section{Method}
 
 \subsection{Method Summary}
@@ -53,7 +60,8 @@ To determine if a machine learning model could perform multi-label emotion class
 	\item RAVDESS \cite{livingstone_2018}
 	\item CREMA-D \cite{cao_2014}
 \end{itemize}
-We specifically picked databases that were spoken in English to keep the language consistent. We combined these four databases for training, validating, and testing the neural network. The combined database is detailed in figures \ref{combined_db_db_split}, \ref{combined_db_db_split}, \ref{combined_db_db_split}
+
+We specifically picked databases that were spoken in English to keep the language consistent. We combined these four databases for training, validating, and testing the neural network. The combined database is detailed in figures \ref{fig:combined_db_db_split}, \ref{fig:combined_db_emotions}, \ref{fig:combined_db_label_types}.
 
 \begin{figure}[h!]
 	\centering
@@ -68,7 +76,7 @@ We specifically picked databases that were spoken in English to keep the languag
 	\hspace{6mm}
 	\includegraphics[width=\linewidth]{combined_db_emotions.png} 
 	\caption{The proportion of each emotion in the combined database.}
-	\label{fig:combined_db_db_split}
+	\label{fig:combined_db_emotions}
 \end{figure}
 
 \begin{figure}[h!]
@@ -76,7 +84,7 @@ We specifically picked databases that were spoken in English to keep the languag
 	\hspace{6mm}
 	\includegraphics[width=\linewidth]{combined_db_label_types.png} 
 	\caption{The proportion of each label type in the combined database.}
-	\label{fig:combined_db_db_split}
+	\label{fig:combined_db_label_types}
 \end{figure}
 
 Each sample from a database would flow through the same preprocessing steps to maintain consistency. The preprocessing steps are
