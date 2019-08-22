@@ -8,13 +8,6 @@
 - Decide the scope of the review
 - Use the bibliographies and references of research studies you find to locate others.
 
-- https://www.sciencedirect.com/science/article/pii/S089360801730059X?via%3Dihub
-- https://ieeexplore.ieee.org/abstract/document/7472667
-- https://ieeexplore.ieee.org/abstract/document/8461866
-- 
-- https://utd-ir.tdl.org/handle/10735.1/5937
-- https://utd-ir.tdl.org/handle/10735.1/6606
-
 ---
 
 ## Ten simple rules for structuring papers

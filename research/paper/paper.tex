@@ -38,6 +38,8 @@ The field of affective computing studies the development of systems that can rec
 
 However, these models only consider a single emotion per speech sample and are often only trained on one to two databases. This paper extends upon this work by considering the problem of multi-label emotion classification of speech using four databases. The IEMOCAP and CREMA-D databases both include multiple labels for each speech sample but the data is usually discarded by only considering the emotion with the majority votes. We argue that discarding the other emotions results in a less realistic model of emotion classification due to not matching human performance and because it sidesteps the problem of ambiguous samples.
 
+We use "model" and "neural network" interchangeably.
+
 \subsection{Summary}
 
 We approach the problem of multi-label emotion classification by using 2D convolution neural networks to classify speech samples into multiple emotions. We collected four databases, two with mutli-labeled and single-labeled samples, and two with only single-labeled samples. We then combined these four databases into an combined database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into a seven layer neural network consisting of four convolutional layers and three dense layers. After training the neural network, the model achieved a 50\% test accuracy.
@@ -51,7 +53,7 @@ The paper is outlined as follows:
 
 \section{Method}
 
-\subsection{Method Summary}
+\subsection{Preprocessing}
 
 To determine if a machine learning model could perform multi-label emotion classification on speech, we first need to get speech samples with their labeled emotion. We considered eight databases and chose four based on accessibility and the number of common emotions. Given the variability of emotions in each database and the constraint adding more databases increases the difficulty of controlling the consistency of the samples, we chose the following databases
 \begin{itemize}
@@ -119,6 +121,8 @@ After all of the databases were processed this way, the final combined database 
 	\caption{The detailed architecture of the neural network including its eight layers and convolution filter size.}
 	\label{fig:high_level_dataflow_diagram}
 \end{figure}
+
+\subsection{Neural Network}
 
 \section{Results}
 
