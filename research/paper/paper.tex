@@ -40,14 +40,14 @@ multi-label, speech, emotion, recognition, neural networks
 \end{IEEEkeywords}
 
 \section{Introduction}
-
-\subsection{Literature Review}
-
 The field of affective computing studies the development of systems that can recognize, interpret, process, and simulate human affects. A subfield of affective computing that we are interested in is speech emotion recognition (SER). SER is the problem of recognizing which emotions are present in speech and SER has been approached in two ways:
 \begin{itemize}
 	\item Feature engineering
 	\item Machine learning (ML)
-\end{itemize} 
+\end{itemize}
+
+\subsection{Literature Review}
+
 Feature engineering is a method of manually extracting desired parameters from the data for use in  recognition. For audio, examples of parameters include pitch, energy, and Mel-Frequency Cepstral Coefficients (MFCC).\cite{Rybka2013} Nassif et al. \cite{Nassif2019} found that most researchers used the MFCC parameter for deep learning models but also recommended other parameters such as Linear Predictive Coding. 
 
 Machine learning is a method of creating an artificial neural network that automatically extracts its own parameters for recognition. Examples include support vector machines (SVM), convolutional neural networks (CNN), and recurrent neural networks (RNN). Both approaches are not exclusive and a hybrid approach of feature engineering and machine learning results in better classification accuracy.\cite{Nassif2019}
@@ -60,9 +60,9 @@ However, this model and most other models only consider a single emotion per spe
 
 The IEMOCAP \cite{busso_2008} and CREMA-D \cite{cao_2014} databases both include multiple labels for each speech sample but the data is discarded by considering the emotion with the majority of votes. We argue that discarding the non-majority votes results in a less realistic model of emotion classification due to not matching human performance and due to the loss of information by discarding votes.
 
-\subsection{Summary}
+\subsection{Proposed Approach}
 
-We approach the problem of multi-label emotion classification by using a 2D CNN to classify speech samples into multiple emotions. We collected four databases: two with multi-label and single-label samples, and two with only single-label samples. We then combined the four databases into an a single database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into an eight-layer neural network consisting of four convolutional layers and four dense layers. After training the neural network, the model achieves a 52.57\% test accuracy.
+We approach the problem of multi-label emotion classification by using a 2D CNN to classify speech samples into multiple emotions. We collected four databases: two with multi-label and single-label samples, and two with only single-label samples. We then combined the four databases into an a single database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into an eight-layer neural network consisting of four convolutional layers and four dense layers.
 
 This paper is outlined as follows:
 \begin{itemize}
@@ -100,6 +100,10 @@ This paper is outlined as follows:
 
 
 \section{Methodology}
+
+We approach the problem of SER by preprocessing samples from four databases and then feeding those samples into a CNN. We preprocess the speech samples into log-Mel spectrogram to help the neural network extract features relevant to emotion recognition. This choice is based on previous work such as \cite{Engel2019} and \cite{Badshah2017}. The choice of using a CNN is based on previous work where Balakrishnan et al. \cite{Balakrishnan2017} found that CNN-based models have superior performance compared to RNNs. Another justification for using CNNs is due treating the log-Mel spectrograms as images where CNNs have been shown to perform well on.\cite{Krizhevsky2012}
+
+A high level overview of the data flow is shown in figure \ref{highLevelDataFlowDiagram} where samples flow through the four stages of processing. Both the preprocessing steps and the CNN were implemented in Python using the Librosa \cite{McFee2015} and Keras \cite{Chollet2015} library respectively.
 
 \subsection{Preprocessing}
 
@@ -144,7 +148,7 @@ We combined these four databases into a combined database to train, validate, an
 	\label{combinedDb}
 \end{figure*}
 
-Each sample from a database would flow through the same preprocessing steps to maintain consistency across all samples. A high level overview of the preprocessing steps is shown in figure \ref{highLevelDataFlowDiagram} and the detailed steps are described below.
+Each sample from a database would flow through the same preprocessing steps to maintain consistency across all samples. The detailed steps are described below.
 \begin{enumerate}
 	\item A sample starts as a raw waveform in the form of time series points specifying the amplitude at a certain point in time.
 	\item The sample is then padded or cropped to the desired length of 4.5s. Shorter samples were zero-padded on the right tail. Longer samples were cropped and the extra information discarded.
@@ -167,7 +171,7 @@ The Mel scale is defined in (\ref{melScale}) where $f$ is the frequency in hertz
 m = 2595 log_{10}(1 + \frac{f}{700})
 \end{equation}
 
-For the STFT, we used a window size of 3072 with a 75\% overlap. For the Mel spectrogram, we set the minimum frequency to 20 Hz and maximum frequency to 12 kHz with 200 Mel bins.
+For the STFT, we used a window size of 3072 with a 75\% overlap. This choice is based on the work of Zhao et al. \cite{Zhao2019} where they also use 75\% overlap but with a smaller window size (2048) and they achieved excellent results. For the Mel spectrogram, we set the minimum frequency to 20 Hz and maximum frequency to 12 kHz with 200 Mel bins. The frequency range was chosen after experimenting with various ranges and selecting the range that resulted in visually clean spectrograms. The number of Mel bins was also chosen after experimentation as too few bins resulted in poor temporal resolution while too many bins resulted in poor frequency resolution. This is due to the Gabor limit.
 
 \begin{figure}[]
 	\centering
@@ -198,10 +202,13 @@ After all of the databases were processed this way, the final combined database 
 
 Table \ref{modelHyperparams} describes the network hyperparameters and table \ref{trainHyperparams} describes the training hyperparameters.
 
+\bgroup
+\def\arraystretch{2}
 \begin{table}[h!]
+	\centering
 	\caption{The model's hyperparameters.}
 	\label{modelHyperparams}
-	\resizebox{\linewidth}{!}{%
+	{%
 		\begin{tabular}{|l|r|}
 			\hline
 			\textbf{Hyperparameter} & \textbf{Value} \\ \hline
@@ -216,11 +223,15 @@ Table \ref{modelHyperparams} describes the network hyperparameters and table \re
 		\end{tabular}%
 	}
 \end{table}
+\egroup
 
+\bgroup
+\def\arraystretch{2}
 \begin{table}[h!]
+	\centering
 	\caption{The training hyperparameters.}
 	\label{trainHyperparams}
-	\resizebox{\linewidth}{!}{%
+	{%
 		\begin{tabular}{|l|r|}
 			\hline
 			\textbf{Hyperparameter} & \textbf{Value} \\ \hline
@@ -235,8 +246,25 @@ Table \ref{modelHyperparams} describes the network hyperparameters and table \re
 		\end{tabular}%
 	}
 \end{table}
+\egroup
 
-\section{Results}
+The final model is evaluated on the testing set using two measures: categorical cross-entropy and accuracy. Categorical cross-entropy as defined in (\ref{cce}) where $N$ is the number of samples, $k$ is the number of classes, $t_{i,j}$ is 1 if the sample $i$ is in class $j$ and 0 otherwise, and $p_{i,j}$ is the model's predicted probability that sample $i$ is in class $j$.
+\begin{equation}
+\label{cce}
+CCE = -\frac{1}{N}\sum_{i=1}^{N}\sum_{j=1}^{k}t_{i,j}log(p_{i,j})
+\end{equation}
+The choice to use categorical cross-entropy is based on its ease of use and how prevalent it is used in mutli-label problems.
+
+The second measure, accuracy, is calculated from the confusion matrices shown in \ref{confusionMatrix}. The confusion matrices are calculated by comparing the true labels from the predicted labels for each emotion. There is a confusion matrix for each emotion due to the multi-label problem considering each emotion as independent. We define accuracy as the unweighted average accuracy of all emotions and this is mathematically described in (\ref{aveacc}) where $n$ is the total number of emotions (7 in this case), $TP_{i}$ is the number of true positives for emotion $i$, $TN_{i}$ is the number of true negatives for emotion $i$, and total is the total number of predictions.
+
+\begin{equation}
+\label{aveacc}
+Accuracy = \frac{\sum_{i=1}^{n}\frac{TP_{i} + TN_{i}}{Total_{i}}}{n}
+\end{equation}
+
+We chose this definition of accuracy so that we can compare our results to other papers that also use a similar measure.
+
+\section{Results and Discussion}
 
 After training the model, it was evaluated on the testing set to get the final accuracy. The final accuracy achieved was 52.57\%. Confusion matrices for each emotion are shown in Figure \ref{confusionMatrix}.
 
@@ -248,13 +276,13 @@ After training the model, it was evaluated on the testing set to get the final a
 	\label{confusionMatrix}
 \end{figure*}
 
-\section{Discussion}
-
 We created a neural network model that achieved a 52.57\% accuracy on the problem of multi-label speech emotion classification. This is better than the state-of-the-art result of 52.14\% achieved in the single-label case. \cite{Zhao2019} So we conclude that it is possible to achieve a reasonable accuracy on the problem of multi-label speech emotion recognition by applying deep learning to the problem. 
 
 In analyzing the confusion matrices, we see that the model predicts an emotion is absent in most of the samples with "surprise" being the exception. We suspect that "surprise" being an exception is due to the class imbalance that is shown in figure \ref{combinedDb}. The "surprise" class was the least represented class out of the seven classes and this makes the model predict it more due to the use of class weights. Class weights bias the model towards underrepresented classes in an attempt to balance classes but this seems to have affected the model's ability to learn.
 
-\subsection{Limitations and Future Work}
+\section{Conclusion and Future Work}
+
+Overall, this paper presented a 2D CNN model that achieved an accuracy of 52.57\% on the problem of multi-label speech emotion recognition using four combined databases. We obtained this result by transforming raw speech samples into log-Mel spectrograms using the STFT and the Mel scale. The log-Mel spectrograms are then fed into an eight layer neural network for classification. While this result is a promising start, we suggest improvements that future work can build upon to improve the accuracy of the model and to expand the scope of emotions considered.
 
 One limitation of this work is that we only accounted for seven emotions but recent research has suggested that there are more emotions such as boredom, shame, and triumph. \cite{Cordaro2018} However, one issue with expanding the set of considered emotions is the lack of databases with the labeled emotion.
 
@@ -267,10 +295,7 @@ The following list is a suggestion that future work could pursue:
 	\item Testing a binary relevance approach to this multi-label problem.
 	\item Replacing the use of STFT with a wavelet transform.
 \end{itemize}
-
-\subsection{Conclusion}
-
-Overall, this paper presented a 2D CNN model that achieved an accuracy of 52.57\% on the problem of multi-label speech emotion recognition using four combined databases. We obtained this result by transforming raw speech samples into log-Mel spectrograms using the STFT and the Mel scale. The log-Mel spectrograms are then fed into an eight layer neural network for classification. While this result is a promising start, we suggest improvements that future work can build upon to improve the accuracy of the model and to expand the scope of emotions considered.
+Rana et al. \cite{Rana2016} has also shown that SER systems can be more robust by introducing noise into the samples which is another promising future direction.
 
 \section*{Acknowledgment}
 This work was funded by the Program for Undergraduate Research Experience (PURE) award granted by the University of Calgary.
