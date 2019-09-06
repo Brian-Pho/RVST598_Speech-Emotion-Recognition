@@ -25,7 +25,6 @@ CM = np.array([
     ])
 
 
-
 def visualize_confusion_matrix():
     """
     Visualizes the test set confusion matrix.
