@@ -72,7 +72,7 @@ def visualize_confusion_matrix():
 
         fig.tight_layout()
         fig.set_size_inches(8, 8)
-        fig.savefig('{}.png'.format(em_label), dpi=600)
+        fig.savefig('{}.png'.format(em_label), dpi=300)
         # plt.show()
 
 
