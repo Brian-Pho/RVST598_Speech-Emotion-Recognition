@@ -27,12 +27,11 @@
 \graphicspath{{figures/}}
 \usepackage{hyperref}
 \usepackage{cite}
-
 %\usepackage{epsfig} % for postscript graphics files
 %\usepackage{mathptmx} % assumes new font selection scheme installed
 %\usepackage{times} % assumes new font selection scheme installed
 \usepackage{amsmath} % assumes amsmath package installed
-%\usepackage{amssymb}  % assumes amsmath package installed
+%\usepackage{amssymb} % assumes amsmath package installed
 
 \def\FGPaperID{****} % *** Enter the FG2020 Paper ID here
 
@@ -71,7 +70,8 @@ Multi-Label Speech Emotion Recognition Using 2D Convolutional Neural Networks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-Current speech emotion recognition systems often overlook the multi-label data that comes with databases. In this paper, we address the problem of whether machine learning can be used to detect multiple emotions in speech. We created a combined database consisting of four speech emotion-labeled databases, and we used it to train a 2D convolutional neural network to determine if the model could recognize multiple emotions in a speech sample. The model was able to classify the samples with an accuracy of 57.64\%. This shows that it is possible to apply machine learning to the problem of multi-label speech emotion recognition and to achieve a reasonable accuracy.\footnote{Code for this paper is available on Github at: \url{https://github.com/Brian-Pho/RVST598_Speech-Emotion-Recognition}}
+A problem with current speech emotion recognition systems is that they can only recognize one emotion, from a set of emotions, in speech. This is a problem because it does not match how people recognize emotions in speech. When people hear speech, they can perceive multiple emotions instead of a single emotion. We address this problem by building a 2D convolutional neural network that can also recognize multiple emotions and it achieves an accuracy of 57.64\%. This model demonstrates a more realistic approach to speech emotion recognition by more closely matching human data.
+%\footnote{Code for this paper is available on Github at: \url{https://github.com/Brian-Pho/RVST598_Speech-Emotion-Recognition}}
 
 \end{abstract}
 
@@ -83,27 +83,25 @@ The field of affective computing studies the development of systems that can rec
 
 \subsection{Literature Review}
 
-SER has historically been approached in two ways: feature engineering and machine learning (ML).
+SER has historically been approached in two ways: feature engineering (FE) and machine learning (ML). FE is a method of manually extracting desired parameters from the data for use in recognition. For audio, examples of parameters include pitch, energy, and Mel-Frequency Cepstral Coefficients (MFCC) \cite{Rybka2013}. Nassif et al. \cite{Nassif2019} found that most researchers used the MFCC parameter for deep learning models but also recommended other parameters such as Linear Predictive Coding. 
 
-Feature engineering is a method of manually extracting desired parameters from the data for use in  recognition. For audio, examples of parameters include pitch, energy, and Mel-Frequency Cepstral Coefficients (MFCC) \cite{Rybka2013}. Nassif et al. \cite{Nassif2019} found that most researchers used the MFCC parameter for deep learning models but also recommended other parameters such as Linear Predictive Coding. 
+ML is a method of creating models that automatically extract their own parameters for recognition without being manually programmed. Examples include convolutional neural networks (CNN), recurrent neural networks (RNN), and long short-term memory (LSTM). Both approaches are not exclusive and a hybrid approach of FE and ML results in better classification accuracy \cite{Nassif2019}.
 
-Machine learning is a method of creating models that automatically extract their own parameters for recognition without being manually programmed. Examples include convolutional neural networks (CNN), recurrent neural networks (RNN), and long short-term memory (LSTM). Both approaches are not exclusive and a hybrid approach of feature engineering and machine learning results in better classification accuracy \cite{Nassif2019}.
+A common example of combining both approaches is to convert an audio waveform into a spectrogram using the Short-Time Fourier Transform (STFT) and to feed the spectrogram into a neural network. Papers such as \cite{Engel2019}, \cite{Chen2018}, \cite{Badshah2019}, and \cite{Zhao2019} have demonstrated that this approach is successful for processing audio and for SER.
 
-A common example of combining both approaches is to convert an audio waveform into a spectrogram using the Short-Time Fourier Transform (STFT) and to feed the spectrogram into a neural network. Papers such as \cite{Engel2019}, \cite{Chen2018}, \cite{Badshah2019}, and \cite{Zhao2019} have demonstrated that this approach is successful for processing audio and for recognizing emotions in speech.
+Current state-of-the-art SER has achieved an accuracy of 52.14\% for the case of speaker-independent, single-label emotions on the IEMOCAP database \cite{Zhao2019}. This result was achieved using a 2D CNN LSTM model where the audio waveform was converted into a log-Mel spectrogram and then fed into the model.
 
-Current state-of-the-art SER has achieved an accuracy of 52.14\% for the case of speaker-independent, single-labeled emotions on the IEMOCAP database \cite{Zhao2019}. This result was achieved using a 2D CNN LSTM model where the audio waveform was converted into a log-Mel spectrogram and then fed into the model.
+However, this model, and other current models, only consider a single emotion per speech sample and are often only trained on one or two databases. Kim et al. \cite{Kim2018a} is an exception as they consider the multi-label case of SER but they did not use ML and they used visual data on top of audio data. This paper extends upon the current literature by considering the problem of multi-label SER by using four databases to train and test a 2D CNN.
 
-However, this model and most other models only consider a single emotion per speech sample and are often only trained on one or two databases. Kim et al. \cite{Kim2018a} is an exception as they consider the multi-label case of SER but they did not use machine learning and they used visual data on top of audio data. This paper extends upon current literature by considering the problem of multi-label SER using four databases to train and test a CNN.
-
-The IEMOCAP \cite{busso_2008} and CREMA-D \cite{cao_2014} databases both include multiple labels for each speech sample but the data is discarded by considering the emotion with the majority of votes. We argue that discarding the non-majority votes results in a less realistic model of emotion classification due to not matching human performance and due to the loss of information. For example, in the case of speech translation systems, translating "surprise" speech lacks the nuance of whether the surprise is "surprise-happy" such as the case of receiving a gift or if it is "surprise-sad" such as the case of receiving news of the death of a loved one. A single label is not able to capture this nuance compared to multiple labels and could result in inaccurate or offensive translations.
+The IEMOCAP \cite{busso_2008} and CREMA-D \cite{cao_2014} databases both include multiple labels for each speech sample but the data is usually discarded by considering the emotion with the majority of votes. We argue that discarding the non-majority votes results in a less realistic SER model, due to not matching human performance and due to the loss of information. For example, in the case of speech translation systems, translating "surprise" speech lacks the nuance of whether the surprise is "surprise-happy" such as the case of receiving a gift, or if it is "surprise-sad" such as the case of receiving news of a tragedy. A single label is not able to capture this nuance compared to multiple labels and this could result in inaccurate or offensive translations.
 
 \subsection{Proposed Approach}
 
-The main idea of this paper is to build a more realistic speech emotion recognition system that can recognize multiple emotions in speech. We approach this problem by using more data and by using a 2D CNN to classify speech samples into multiple emotions. We collected four databases: two with multi-label and single-label samples, and two with only single-label samples. We then combined the four databases into an a single database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into an eight-layer neural network consisting of four convolutional layers and four dense layers.
+The main idea of this paper is to build a more realistic SER system that can recognize multiple emotions in speech. We approach this problem by using more data and by using a 2D CNN to classify speech samples into multiple emotions. We used four public databases then combined the databases into an a single database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into an eight-layer neural network consisting of four convolutional layers and four dense layers. The final output of the neural network is a list of present emotions.
 
 This paper is outlined as follows:
 \begin{itemize}
-	\item Section 2 details the methodology we use such as the how we combined the four databases and describes the architecture of the neural network.
+	\item Section 2 details the methodology we use such as how we combined the four databases and describes the architecture of the neural network.
 	\item Section 3 describes and discusses the results from testing the neural network.
 	\item Section 4 concludes this paper and provides suggestions for future directions.
 \end{itemize}
@@ -112,9 +110,9 @@ This paper is outlined as follows:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{METHODOLOGY}
 
-We approach the problem of SER by preprocessing samples from four databases and then feeding those samples into a CNN. We preprocess the speech samples into log-Mel spectrogram to help the neural network extract features relevant to emotion recognition. This choice is based on previous work such as \cite{Engel2019} and \cite{Badshah2017}. The choice of using a CNN is also based on previous work where Balakrishnan et al. \cite{Balakrishnan2017} found that CNN-based models have superior performance compared to RNNs. Another justification for using CNNs is due to treating the log-Mel spectrograms as images and CNNs have been shown to perform well on images \cite{Krizhevsky2012}.
+We approach the problem of SER by preprocessing samples from four databases and then feeding those samples into a CNN. We preprocess the speech samples into log-Mel spectrogram to help the neural network extract features relevant to emotion recognition. This choice is based on the previous work by \cite{Engel2019} and \cite{Badshah2017} where log-Mel spectrograms were successfully used for extracting audio features. 
 
-A high level overview of the data flow is shown in figure \ref{highLevelDataFlowDiagram} where samples flow through three stages of processing. The stages are detailed further into the methodology. Both the preprocessing steps and the CNN were implemented in Python using the Librosa \cite{McFee2015} and Keras \cite{Chollet2015} libraries respectively.
+The choice to use a CNN is based on the previous work of Balakrishnan et al. \cite{Balakrishnan2017} which found that CNN-based models have superior performance compared to RNNs. Another justification for using CNNs is due to treating the log-Mel spectrograms as images and CNNs have been shown to perform well on images \cite{Krizhevsky2012}. Both the preprocessing steps and the CNN were implemented in Python using the Librosa \cite{McFee2015} and Keras \cite{Chollet2015} libraries respectively.
 
 \subsection{Preprocessing} \label{Preprocessing}
 
@@ -139,8 +137,9 @@ A high level overview of the data flow is shown in figure \ref{highLevelDataFlow
 %		\bottomrule
 %	\end{tabular}%
 %\end{table*}
+%Table \ref{dbEmoTable} compares the set of emotions of each database which makes it easier to identify overlapping emotions.
 
-To build a more realistic SER system, we first collect speech samples with their labeled emotion. We considered eight databases and chose four based on accessibility and based on the number of overlapping emotions. We chose four databases because it becomes more difficult to maintain consistency due to database variability. Databases can vary in
+To build a more realistic SER system, we first collect speech samples with their labeled emotion. We considered eight databases and chose four based on accessibility and based on the number of overlapping emotions. We chose four databases because it becomes more difficult to maintain consistency in the final samples due to database variability. Databases can vary in
 \begin{itemize}
 	\item The set and number of labeled emotions
 	\item The number of labels per sample
@@ -172,7 +171,7 @@ For the Mel scale, we set the minimum frequency to 20 Hz and maximum frequency t
 	\label{minmaxscale}
 	\begin{aligned}
 		X_{std} &= \frac{X - X_{min}}{X_{max} - X_{min}}\\
-		X_{scaled} &= X_{std} \cdot  (max - min) + min
+		X_{scaled} &= X_{std} \cdot (max - min) + min
 	\end{aligned}
 \end{equation}
 
@@ -196,7 +195,15 @@ The min-max scaling is defined in (\ref{minmaxscale}) where $X_{min}$ is the sma
 %	\label{neuralNetworkArchitecture}
 %\end{figure*}
 
-After all of the databases were processed as described in section \ref{Preprocessing}, the final combined database was fed into a neural network for training, validation, and testing. We constructed an eight layer neural network consisting of four convolutional layers and four dense layers. The training process is described below.
+\begin{figure}
+	\centering
+	\hspace{6mm}
+	\includegraphics[width=\linewidth]{neural_network_architecture.png}
+	\caption{Architecture for the SER network including the input layer and eight processing layers.}
+	\label{neuralNetworkArchitecture}
+\end{figure}
+
+After all of the databases were processed as described in section \ref{Preprocessing}, the final combined database was fed into a neural network for training, validation, and testing. We constructed an eight layer neural network consisting of four convolutional layers and four dense layers. The network architecture is shown in figure \ref{neuralNetworkArchitecture}. The training process is described below.
 \begin{itemize}
 	\item We shuffled the combined database to make each input batch more uniform thus mitigating large gradient updates.
 	\item We split the combined database into 80\% training, 10\% validation, and 10\% testing.
@@ -301,7 +308,7 @@ After training the model, it was evaluated on the testing set to get the final a
 
 The results achieved in this paper do not reach the state-of-the-art accuracy achieved for the single-label case. But considering how this is the first attempt on the more realistic problem of multi-label SER, we perform reasonably well. Compared to the literature shown in table \ref{litacccompare}, no other paper considers as many emotions as we do while also using four databases and also tackling the multi-label problem. So we conclude that we are successful in building a more realistic SER system by using ML and more data to tackle the problem of recognizing multiple emotions in speech.
 
-In analyzing the confusion matrices, we see that the model predicts an emotion is absent in most of the samples with "surprise" being the exception. We suspect that "surprise" being an exception is due to the class imbalance that is shown in figure \ref{combinedDb}. The "surprise" class was the least represented class out of the seven classes and this makes the model predict it more due to the use of class weights. Class weights bias the model towards underrepresented classes in an attempt to balance classes but this seems to have affected the model's ability to learn.
+In analyzing the confusion matrices, we see that the model predicts an emotion is absent in most of the samples with "surprise" being the exception. We suspect that "surprise" being an exception is due to the class imbalance. The "surprise" class was the least represented class out of the seven classes and this makes the model predict it more due to the use of class weights. Class weights bias the model towards underrepresented classes in an attempt to balance classes but this seems to have affected the model's ability to learn.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -309,7 +316,7 @@ In analyzing the confusion matrices, we see that the model predicts an emotion i
 
 Overall, this paper presented a 2D CNN model that achieved an accuracy of 57.64\% on the problem of multi-label speech emotion recognition using four combined databases. We obtained this result by transforming raw speech samples into log-Mel spectrograms using the STFT and the Mel scale. The log-Mel spectrograms are then fed into an eight layer neural network for classification. While this result is a promising start, we suggest improvements that future work can build upon to improve the accuracy of the model and to expand the scope of emotions considered.
 
-One limitation of this work is that we only accounted for seven emotions but recent research has suggested that there are more emotions such as boredom, shame, and triumph \cite{Cordaro2018}. However, one issue with expanding the set of considered emotions is the lack of databases with the labeled emotion.
+One limitation of this work is that we only considered seven emotions but research has suggested that there are more emotions such as boredom, shame, and triumph \cite{Cordaro2018}. However, one issue with expanding the set of considered emotions is the lack of databases with the labeled emotion.
 
 Another limitation of this work is that all samples are spoken in English so the model is biased towards Anglophones. In theory, the basic emotions are universal across languages and cultures so incorporating databases spoken in different languages, such as the Emo-DB database, would help the model generalize across languages \cite{Burkhardt2005}.
 
@@ -324,9 +331,8 @@ Rana et al. \cite{Rana2016} has also shown that SER systems can be more robust b
  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{ACKNOWLEDGMENTS}
-
-This work was funded by the Program for Undergraduate Research Experience (PURE) award granted by the University of Calgary.
+%\section{ACKNOWLEDGMENTS}
+%This work was funded by the PURE award granted by the University of Calgary.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
