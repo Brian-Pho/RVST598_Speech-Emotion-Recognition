@@ -46,14 +46,6 @@ Multi-Label Speech Emotion Recognition Using 2D Convolutional Neural Networks
     Biometric Technologies Laboratory, Department of Electrical and Computer Engineering, University of Calgary, Alberta, Canada\\}}
 }
 
-%use this in case of several affiliations
-%\author{\parbox{16cm}{\centering
-%    {\large Huibert Kwakernaak$^1$ and Pradeep Misra$^2$}\\
-%    {\normalsize
-%    $^1$ Faculty of Electrical Engineering, Mathematics and Computer Science, University of Twente, Enschede, The Netherlands\\
-%    $^2$ Department of Electrical Engineering, Wright State University, Dayton, USA}}
-%    \thanks{This work was not supported by any organization}% <-this % stops a space
-%}
 
 \begin{document}
 
@@ -97,7 +89,7 @@ The IEMOCAP \cite{busso_2008} and CREMA-D \cite{cao_2014} databases both include
 
 \subsection{Proposed Approach}
 
-The main idea of this paper is to build a more realistic SER system that can recognize multiple emotions in speech. We approach this problem by using more data and by using a 2D CNN to classify speech samples into multiple emotions. We used four public databases then combined the databases into an a single database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into an eight-layer neural network consisting of four convolutional layers and four dense layers. The final output of the neural network is a list of present emotions.
+The main idea of this paper is to build a more realistic SER system that can recognize multiple emotions in speech. We approach this problem by using more data and by using a 2D CNN to classify speech samples into multiple emotions. We used four public databases and combined them into an a single database by processing all of the speech samples into log-Mel spectrograms. These log-Mel spectrograms were then fed into an eight-layer neural network consisting of four convolutional layers and four dense layers. The final output of the neural network is a list of the emotions present in the speech sample.
 
 This paper is outlined as follows:
 \begin{itemize}
@@ -110,34 +102,11 @@ This paper is outlined as follows:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{METHODOLOGY}
 
-We approach the problem of SER by preprocessing samples from four databases and then feeding those samples into a CNN. We preprocess the speech samples into log-Mel spectrogram to help the neural network extract features relevant to emotion recognition. This choice is based on the previous work by \cite{Engel2019} and \cite{Badshah2017} where log-Mel spectrograms were successfully used for extracting audio features. 
+We approach the problem of SER by preprocessing samples from four databases and then feeding those samples into a CNN. We preprocess the speech samples into log-Mel spectrogram to help the neural network extract features relevant to emotion recognition. This choice is based on the work by \cite{Engel2019} and \cite{Badshah2017} where log-Mel spectrograms were successfully used for extracting audio features. 
 
-The choice to use a CNN is based on the previous work of Balakrishnan et al. \cite{Balakrishnan2017} which found that CNN-based models have superior performance compared to RNNs. Another justification for using CNNs is due to treating the log-Mel spectrograms as images and CNNs have been shown to perform well on images \cite{Krizhevsky2012}. Both the preprocessing steps and the CNN were implemented in Python using the Librosa \cite{McFee2015} and Keras \cite{Chollet2015} libraries respectively.
+The choice to use a CNN is based on the work of Balakrishnan et al. \cite{Balakrishnan2017} which found that CNN-based models have superior performance compared to RNNs. Another justification for using CNNs is due to treating the log-Mel spectrograms as images and CNNs have been shown to perform well on images \cite{Krizhevsky2012}. Both the preprocessing steps and the CNN were implemented in Python using the Librosa \cite{McFee2015} and Keras \cite{Chollet2015} libraries respectively.
 
 \subsection{Preprocessing} \label{Preprocessing}
-
-%\begin{table*}
-%	\centering
-%	\caption{Comparison of databases with their labeled emotions.}
-%	\label{dbEmoTable}
-%	\begin{tabular}{@{}lccccccccccccc@{}}
-%		\toprule
-%		Databases & \multicolumn{13}{c}{Emotions} \\ 
-%		\cmidrule{2-14}
-%		& Neutral & Anger & Disgust & Fear & Happy & Sad & Surprise & Calm & Excitement & Frustration & Amused & Sleepy & Bored \\ 
-%		\midrule
-%		IEMOCAP & x & x & x & x & x & x & x &   & x & x &   &   &   \\
-%		CREMA-D & x & x & x & x & x & x &   &   &   &   &   &   &   \\
-%		TESS & x & x & x & x & x & x & x &   &   &   &   &   &   \\
-%		RAVDESS & x & x & x & x & x & x & x & x &   &   &   &   &   \\
-%		MSP-IMPROV & x & x & x & x & x & x & x &   &   &   &   &   &   \\
-%		SAVEE & x & x & x & x & x & x & x &   &   &   &   &   &   \\
-%		Emo-DB & x & x & x & x & x & x &   &   &   &   &   &   & x \\
-%		EmoV-DB & x & x & x &   &   &   &   &   &   &   & x & x &   \\
-%		\bottomrule
-%	\end{tabular}%
-%\end{table*}
-%Table \ref{dbEmoTable} compares the set of emotions of each database which makes it easier to identify overlapping emotions.
 
 To build a more realistic SER system, we first collect speech samples with their labeled emotion. We considered eight databases and chose four based on accessibility and based on the number of overlapping emotions. We chose four databases because it becomes more difficult to maintain consistency in the final samples due to database variability. Databases can vary in
 \begin{itemize}
@@ -152,7 +121,7 @@ To control for the set and number of labeled emotions, we consider the following
 
 To control for the number of labels per sample, we mixed the multi-labeled data from the IEMOCAP and CREMA-D databases with the single-labeled data from the TESS and RAVDESS databases. We chose to mix of single- and multi- labeled data to increase the number of samples that the model can learn from and because the single-labels can be considered as special cases of multi-labeled data. However, we removed samples that were labeled with four or five emotions because we consider these samples to be ambiguous and because outliers can hinder a neural network's ability to learn. Outliers can hinder a neural network's ability to learn by causing large gradient updates that prevent the model from converging \cite{Chollet2017}.
 
-To control for the audio quality, we resampled all samples to 48 kHz, applied noise reduction to samples from the IEMOCAP and CREMA-D databases, and cropped all samples to 4.5 seconds. We used a kaiser filter for resampling and used spectral gating for noise reduction. We only applied noise reduction to the IEMOCAP and CREMA-D databases after listening to the audio. Lastly, we chose databases that are spoken in English to maintain language consistency.
+To control for the audio quality, we resampled all samples to 48 kHz, applied noise reduction to samples from the IEMOCAP and CREMA-D databases, and cropped all samples to 4.5 seconds. We used a kaiser filter for resampling and we used spectral gating for noise reduction. We only applied noise reduction to the IEMOCAP and CREMA-D databases after listening to the audio. Lastly, we chose databases that are spoken in English to maintain language consistency.
 
 We combined these four databases into a combined database to train, validate, and test the neural network. Each sample from a database went through the same preprocessing steps to maintain consistency across all samples. The detailed steps are described below.
 \begin{enumerate}
@@ -177,23 +146,7 @@ For the Mel scale, we set the minimum frequency to 20 Hz and maximum frequency t
 
 The min-max scaling is defined in (\ref{minmaxscale}) where $X_{min}$ is the smallest value in tensor $X$, $X_{max}$ is the largest value in tensor $X$, $min$ is the lower bound set to $-1$, and $max$ is the upper bound set to $1$. We scaled all spectrograms to only have values between $-1$ and $1$ as this reduces the chances of triggering large gradient updates that prevent the model from converging \cite{Chollet2017}.
 
-%\begin{figure}
-%	\centering
-%	\hspace{6mm}
-%	\includegraphics[width=\linewidth]{high_level_dataflow_diagram.png}
-%	\caption{High level overview of the processing stages that a speech sample goes through.}
-%	\label{highLevelDataFlowDiagram}
-%\end{figure}
-
 \subsection{Neural Network}
-
-%\begin{figure*}
-%	\centering
-%	\hspace{6mm}
-%	\includegraphics[width=\textwidth]{neural_network_architecture.png}
-%	\caption{Architecture for the SER network including the input layer and eight processing layers.}
-%	\label{neuralNetworkArchitecture}
-%\end{figure*}
 
 \begin{figure}
 	\centering
