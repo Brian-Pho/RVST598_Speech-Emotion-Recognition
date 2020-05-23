@@ -25,7 +25,7 @@ A speech sample is a few seconds long and flows through the following data proce
 
 ### Timeline
 
-- May: Read the `Deep Learning with Python` textbook by Francois Chollet to pickup deep learning. My notes can be found [here](https://brianpho.com/CR4-DL/textbooks/2019/06/02/deep-learning-with-python.html).
+- May: Read the `Deep Learning with Python` textbook by Francois Chollet to pickup deep learning.
 - June: Decide on this project and start collecting and processing the databases.
 - July: Process the databases and start creating the neural network model.
 - August: Complete the neural network training, write the paper, and create the presentation.
@@ -38,7 +38,7 @@ A speech sample is a few seconds long and flows through the following data proce
 - RAVDESS: Ryerson Audio-Visual Database of Emotional Speech and Song
 - EmoV-DB: Emotional Voices Database
 
-The databases were not uploaded to Github due to copyright restrictions and size. However, my final processed database can be found [here](https://github.com/Brian-Pho/RVST598_Speech-Emotion-Recognition).
+The databases were not uploaded to Github due to copyright restrictions and size.
 
 ## Repo Structure and Description
 
@@ -57,9 +57,9 @@ The databases were not uploaded to Github due to copyright restrictions and size
     │   ├───images  # Holds images from training, spectrograms, and testing.
     │   ├───paper  # Holds the paper resulting from this research
     │   └───presentation  # Holds the presentation resulting from this research
-    └───src  # Holds the code for preprocessing the databases and the neural network model
+    └───src  # Holds the code for preprocessing the databases and for creating/training the neural network model
         ├───audio_processor  # Holds the wav and spectrogram functions
-        ├───database_processor  # Holds the preprocessing functions
+        ├───database_processor  # Holds the database preprocessing functions
         ├───neural_network  # Holds the neural network model
         ├───em_constants.py  # Holds the common emotions used throughout the program
         └───main.py  # Holds the main function to run to train and test the neural network model
@@ -67,13 +67,13 @@ The databases were not uploaded to Github due to copyright restrictions and size
 
 ## How to Run
 
-I developed this program using PyCharm so that's the easiest way to run the code but its possible to run the code using a Terminal or Anaconda.
+I developed this program using PyCharm so that's the easiest way to run the code but its possible to run the code using a Terminal or using Anaconda.
 
 ### Preprocessing the Databases
 
-1. Copy the raw database samples and labels into its respective folder in `/repo/data/raw/[db]`. The proper structure is shown below.
-2. Run the corresponding database script in `/repo/src/database_processor/[db].py`. This processes the raw audio samples into log-mel spectrograms. Note that this takes some time and lots of memory.
-3. The processed log-mel spectrograms should appear in the `/repo/data/processed` folder with filenames like `CRE_0-0_1_0_0_0_0_0.npy`. The filename format is `[DB]_[SAMPLE ID]-[ONE HOT ENCODED EMOTION].npy`.
+1. Copy the raw database samples and labels into their respective folder in `/repo/data/raw/[db]`. The proper structure is shown below.
+2. Run the corresponding database script in `/repo/src/database_processor/[db].py`. This processes the raw audio samples into log-mel spectrograms. Note: this takes some time and lots of memory (16GB+).
+3. The processed log-mel spectrograms should appear in the `/repo/data/processed` folder with filenames like `CRE_0-0_1_0_0_0_0_0.npy`. The filename format is `[DB]_[SAMPLE ID]-[ONE HOT ENCODED EMOTION].npy`. The mapping for the one-hot encoding to emotion can be found in the code.
 
 ```bash
 └───data
